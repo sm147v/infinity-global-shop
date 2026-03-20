@@ -109,3 +109,5 @@ Incluye pruebas de:
 - Configurar `DATABASE_PROVIDER="postgresql"` y su `DATABASE_URL` real.
 - Activar claves reales de Wompi y URL publica para webhook.
 - Mantener `NODE_ENV=production` para deshabilitar confirmacion manual mock.
+
+Checklist de seguridad adicional en `SECURITY.md`.
