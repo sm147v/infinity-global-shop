@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { CartItem, loadCart, saveCart } from "@/lib/cart";
 
@@ -71,6 +72,18 @@ export function CheckoutClient() {
     saveCart(updated);
   }
 
+  function increaseQuantity(productId: number) {
+    const item = items.find((entry) => entry.productId === productId);
+    if (!item) return;
+    setQuantity(productId, item.quantity + 1);
+  }
+
+  function decreaseQuantity(productId: number) {
+    const item = items.find((entry) => entry.productId === productId);
+    if (!item) return;
+    setQuantity(productId, item.quantity - 1);
+  }
+
   function removeItem(productId: number) {
     const updated = items.filter((item) => item.productId !== productId);
     setItems(updated);
@@ -138,44 +151,92 @@ export function CheckoutClient() {
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
-      <section className="card p-5">
-        <h2 className="text-xl font-semibold">Resumen de compra</h2>
+      <section className="card p-5 sm:p-6">
+        <h2 className="text-2xl font-semibold">Resumen de compra</h2>
         <div className="mt-4 space-y-3">
-          {items.length === 0 && <p className="muted">No hay productos en carrito.</p>}
+          {items.length === 0 && (
+            <div className="soft-panel p-4">
+              <p className="muted">No hay productos en carrito.</p>
+              <Link className="btn mt-3" href="/products">
+                Explorar productos
+              </Link>
+            </div>
+          )}
           {items.map((item) => (
-            <article key={item.productId} className="rounded-lg border border-line p-3">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <h3 className="font-medium">{item.name}</h3>
-                  <p className="text-sm muted">${item.price.toFixed(2)} c/u</p>
+            <article key={item.productId} className="soft-panel p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start gap-3">
+                  {item.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="h-16 w-16 rounded-lg border border-line object-cover"
+                    />
+                  ) : (
+                    <div className="h-16 w-16 rounded-lg border border-line bg-white" />
+                  )}
+
+                  <div>
+                    <h3 className="font-medium">{item.name}</h3>
+                    <p className="text-sm muted">${item.price.toFixed(2)} c/u</p>
+                  </div>
                 </div>
                 <button
-                  className="btn btn-danger"
+                  className="btn btn-danger px-3"
                   type="button"
                   onClick={() => removeItem(item.productId)}
                 >
                   Eliminar
                 </button>
               </div>
-              <div className="mt-2 flex items-center gap-2">
-                <label className="text-sm">Cantidad</label>
+
+              <div className="mt-3 flex items-center justify-between gap-3">
+                <div className="inline-flex items-center gap-2 rounded-lg border border-line bg-white p-1">
+                  <button
+                    className="btn px-3 py-1"
+                    type="button"
+                    onClick={() => decreaseQuantity(item.productId)}
+                    disabled={item.quantity <= 1}
+                  >
+                    -
+                  </button>
+                  <span className="min-w-7 text-center font-semibold">{item.quantity}</span>
+                  <button
+                    className="btn px-3 py-1"
+                    type="button"
+                    onClick={() => increaseQuantity(item.productId)}
+                    disabled={item.quantity >= 20}
+                  >
+                    +
+                  </button>
+                </div>
+
                 <input
                   className="field max-w-20"
                   type="number"
                   min={1}
                   max={20}
                   value={item.quantity}
+                  aria-label={`Cantidad de ${item.name}`}
                   onChange={(e) => setQuantity(item.productId, Number(e.target.value))}
                 />
+
+                <p className="text-sm font-semibold">
+                  ${(item.price * item.quantity).toFixed(2)}
+                </p>
               </div>
             </article>
           ))}
         </div>
-        <p className="mt-4 text-lg font-bold">Total: ${total.toFixed(2)}</p>
+        <div className="mt-5 rounded-xl bg-slate-900 p-4 text-white">
+          <p className="text-sm text-slate-300">Total a pagar</p>
+          <p className="mt-1 text-2xl font-bold">${total.toFixed(2)}</p>
+        </div>
       </section>
 
-      <section className="card p-5">
-        <h2 className="text-xl font-semibold">Datos del cliente</h2>
+      <section className="card p-5 sm:p-6">
+        <h2 className="text-2xl font-semibold">Datos del cliente</h2>
         <form className="mt-4 space-y-3" onSubmit={handleCheckout}>
           <input
             className="field"

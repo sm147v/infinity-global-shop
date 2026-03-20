@@ -7,6 +7,7 @@ export type CartItem = {
 };
 
 const STORAGE_KEY = "igs_cart_v1";
+const CART_UPDATED_EVENT = "igs-cart-updated";
 
 function isCartItem(value: unknown): value is CartItem {
   if (!value || typeof value !== "object") return false;
@@ -38,6 +39,31 @@ export function loadCart(): CartItem[] {
 export function saveCart(items: CartItem[]): void {
   if (typeof window === "undefined") return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+  window.dispatchEvent(new Event(CART_UPDATED_EVENT));
+}
+
+export function isProductInCart(productId: number): boolean {
+  return loadCart().some((item) => item.productId === productId);
+}
+
+export function subscribeToCartUpdates(onUpdate: () => void): () => void {
+  if (typeof window === "undefined") {
+    return () => {};
+  }
+
+  const onStorage = (event: StorageEvent) => {
+    if (!event.key || event.key === STORAGE_KEY) {
+      onUpdate();
+    }
+  };
+
+  window.addEventListener(CART_UPDATED_EVENT, onUpdate);
+  window.addEventListener("storage", onStorage);
+
+  return () => {
+    window.removeEventListener(CART_UPDATED_EVENT, onUpdate);
+    window.removeEventListener("storage", onStorage);
+  };
 }
 
 export function addItemToCart(item: CartItem): CartItem[] {
@@ -52,4 +78,8 @@ export function addItemToCart(item: CartItem): CartItem[] {
 
   saveCart(cart);
   return cart;
+}
+
+export function clearCart(): void {
+  saveCart([]);
 }
