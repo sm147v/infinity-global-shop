@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Geist, Geist_Mono } from "next/font/google";
+import { DM_Sans, Fraunces } from "next/font/google";
+import { HeaderCart } from "@/components/header-cart";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
 });
 
@@ -25,17 +26,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${dmSans.variable} ${fraunces.variable} antialiased`}>
         <header className="site-header">
           <div className="container nav-wrap">
-            <Link href="/" className="brand">
-              Infinity Global Shop
+            <Link href="/" className="brand" aria-label="Infinity Global Shop inicio">
+              <span className="brand-mark">IG</span>
+              <span className="brand-text">Infinity Global Shop</span>
             </Link>
             <nav className="nav-links">
               <Link href="/products">Productos</Link>
               <Link href="/checkout">Checkout</Link>
+              <HeaderCart />
               <Link href="/admin">Admin</Link>
             </nav>
           </div>

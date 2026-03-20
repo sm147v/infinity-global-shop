@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { addItemToCart } from "@/lib/cart";
+import { useEffect, useState } from "react";
+import { addItemToCart, isProductInCart, subscribeToCartUpdates } from "@/lib/cart";
 
 type Props = {
   productId: number;
@@ -13,6 +13,14 @@ type Props = {
 export function AddToCartButton({ productId, name, price, image }: Props) {
   const [isAdded, setIsAdded] = useState(false);
 
+  useEffect(() => {
+    setIsAdded(isProductInCart(productId));
+
+    return subscribeToCartUpdates(() => {
+      setIsAdded(isProductInCart(productId));
+    });
+  }, [productId]);
+
   function onClick() {
     addItemToCart({
       productId,
@@ -22,12 +30,16 @@ export function AddToCartButton({ productId, name, price, image }: Props) {
       quantity: 1,
     });
     setIsAdded(true);
-    setTimeout(() => setIsAdded(false), 1200);
   }
 
   return (
-    <button className="btn btn-primary" onClick={onClick} type="button">
-      {isAdded ? "Agregado" : "Agregar al carrito"}
+    <button
+      className={isAdded ? "btn border-emerald-200 bg-emerald-50 text-emerald-800" : "btn btn-primary"}
+      onClick={onClick}
+      type="button"
+      aria-pressed={isAdded}
+    >
+      {isAdded ? "Ya agregado al carrito" : "Agregar al carrito"}
     </button>
   );
 }
