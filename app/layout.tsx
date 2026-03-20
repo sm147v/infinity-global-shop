@@ -1,0 +1,47 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "Infinity Global Shop",
+  description: "Small, secure and fast eCommerce base built with Next.js.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="es">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <header className="site-header">
+          <div className="container nav-wrap">
+            <Link href="/" className="brand">
+              Infinity Global Shop
+            </Link>
+            <nav className="nav-links">
+              <Link href="/products">Productos</Link>
+              <Link href="/checkout">Checkout</Link>
+              <Link href="/admin">Admin</Link>
+            </nav>
+          </div>
+        </header>
+        <main className="container main-content">{children}</main>
+      </body>
+    </html>
+  );
+}

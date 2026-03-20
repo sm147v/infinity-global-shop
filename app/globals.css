@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f7faf8;
+  --foreground: #152018;
+  --surface: #ffffff;
+  --muted: #5b665e;
+  --brand: #1a7f50;
+  --brand-dark: #0d5936;
+  --line: #d8e2db;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-brand: var(--brand);
+  --color-brand-dark: var(--brand-dark);
+  --color-line: var(--line);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), sans-serif;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 1100px;
+  padding: 0 1rem;
+}
+
+.site-header {
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(135deg, #f1f8f3 0%, #ffffff 100%);
+}
+
+.nav-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 64px;
+  gap: 1rem;
+}
+
+.brand {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  color: var(--brand-dark);
+}
+
+.main-content {
+  padding-top: 1.25rem;
+  padding-bottom: 2rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  padding: 0.6rem 0.9rem;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  transition: 150ms ease;
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+
+.btn-primary:hover {
+  background: var(--brand-dark);
+  border-color: var(--brand-dark);
+}
+
+.btn-danger {
+  background: #fff;
+  color: #b42318;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.field,
+.select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.6rem 0.75rem;
+  background: #fff;
+}
+
+.field:focus,
+.select:focus {
+  outline: 2px solid color-mix(in srgb, var(--brand) 30%, #fff);
+  outline-offset: 1px;
+}
+
+.muted {
+  color: var(--muted);
+}
