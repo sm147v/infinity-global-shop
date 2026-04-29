@@ -28,7 +28,7 @@ export async function createOrderFromPayload(payload: unknown) {
     throw new ApiError("Some products do not exist", 400);
   }
 
-  const map = new Map(products.map((product) => [product.id, product]));
+const map = new Map(products.map((product: any) => [product.id, product]));
 
   const orderItems = data.items.map((item) => {
     const product = map.get(item.productId);
