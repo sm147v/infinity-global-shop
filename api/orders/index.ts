@@ -31,7 +31,7 @@ export async function createOrderFromPayload(payload: unknown) {
 const map = new Map(products.map((product: any) => [product.id, product]));
 
   const orderItems = data.items.map((item) => {
-    const product = map.get(item.productId);
+    const product: any = map.get(item.productId);
     if (!product) {
       throw new ApiError("Product not found", 400);
     }
