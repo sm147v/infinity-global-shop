@@ -1,68 +1,47 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ApiError } from "@/lib/errors";
-import { updateDeliveryStatusSchema } from "@/lib/validation";
 import { prisma } from "@/lib/prisma";
-import { hasAdminSession } from "@/lib/admin-auth";
-import { checkRateLimit, getClientIp, isSameOriginRequest } from "@/lib/security";
+import { generateOrderNumber } from "@/lib/order-number";
+import { sendOrderConfirmationToCustomer, sendNewOrderNotificationToAdmin } from "@/lib/email";
+import { whatsappLink, orderReceivedMessage } from "@/lib/whatsapp";
 
-type Context = {
-  params: Promise<{ id: string }>;
-};
+const VALID_STATUSES = ["PENDING", "PAID", "PREPARING", "SHIPPED", "DELIVERED", "CANCELLED"];
 
-export async function PATCH(request: NextRequest, context: Context) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    if (!isSameOriginRequest(request)) {
-      return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
+    const adminToken = req.headers.get("x-admin-token");
+    if (adminToken !== process.env.ADMIN_TOKEN) {
+      return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
-    if (!hasAdminSession(request)) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const { status, notes } = await req.json();
+
+    if (!VALID_STATUSES.includes(status)) {
+      return NextResponse.json({ error: "Estado inválido" }, { status: 400 });
     }
 
-    const ip = getClientIp(request);
-    const rl = await checkRateLimit(`orders:status:${ip}`, 40, 60_000);
-    if (!rl.allowed) {
-      return NextResponse.json(
-        { error: "Too many requests. Try again later." },
-        {
-          status: 429,
-          headers: {
-            "Retry-After": String(rl.retryAfterSec),
-          },
-        },
-      );
-    }
-
-    const { id } = await context.params;
-    const orderId = Number(id);
-    if (!Number.isInteger(orderId) || orderId <= 0) {
-      throw new ApiError("Invalid order id", 400);
-    }
-
-    const payload = (await request.json()) as unknown;
-    const parsed = updateDeliveryStatusSchema.safeParse(payload);
-    if (!parsed.success) {
-      throw new ApiError(parsed.error.issues[0]?.message ?? "Invalid payload", 400);
-    }
-
-    const updated = await prisma.order.update({
-      where: { id: orderId },
+    const order = await prisma.order.update({
+      where: { id: parseInt(params.id) },
       data: {
-        deliveryStatus: parsed.data.deliveryStatus,
-        status: parsed.data.deliveryStatus === "DELIVERED" ? "DELIVERED" : undefined,
+        status,
+        ...(notes && { notes }),
       },
-      select: {
-        id: true,
-        status: true,
-        deliveryStatus: true,
+      include: {
+        items: { include: { product: true } },
       },
     });
 
-    return NextResponse.json(updated);
+    return NextResponse.json({
+      success: true,
+      order,
+      whatsappLink: whatsappLink(
+        order.customerPhone,
+        orderReceivedMessage(order.customerName, order.orderNumber ?? "")
+      ),
+    });
   } catch (error) {
-    if (error instanceof ApiError) {
-      return NextResponse.json({ error: error.message }, { status: error.status });
-    }
-    return NextResponse.json({ error: "Unexpected error" }, { status: 500 });
+    return NextResponse.json({ error: "Error al actualizar" }, { status: 500 });
   }
 }
