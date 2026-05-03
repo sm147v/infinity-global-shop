@@ -4,6 +4,7 @@ import { CartProvider } from "@/components/cart-context";
 import { CartDrawer } from "@/components/cart-drawer";
 import { SiteHeader } from "@/components/site-header";
 import { BottomNav } from "@/components/bottom-nav";
+import { WhatsAppFloating } from "@/components/whatsapp-floating";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -16,8 +17,17 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Infinity Global Shop · Salud, belleza y bienestar",
-  description: "Productos importados de USA en 24 horas en Medellín. Vitaminas, belleza, cuidado del cabello y más.",
+  title: "Infinity Global Shop · Productos importados de USA en Medellín",
+  description: "Vitaminas, productos de belleza y cuidado capilar importados de Estados Unidos. Envío gratis +$150.000. Entrega en 24h en Medellín.",
+  keywords: ["vitaminas USA Medellín", "productos importados Colombia", "Nature's Bounty Colombia", "vitaminas originales", "belleza Medellín"],
+  openGraph: {
+    title: "Infinity Global Shop",
+    description: "Productos importados de USA en 24 horas en Medellín",
+    url: "https://www.infinityglobalshop.com",
+    siteName: "Infinity Global Shop",
+    locale: "es_CO",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -42,12 +52,7 @@ export default function RootLayout({
             zIndex: 100,
           }}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
-              <span style={{
-                width: 6, height: 6,
-                background: "#C9A96E",
-                borderRadius: "50%",
-                display: "inline-block",
-              }} />
+              <span style={{ width: 6, height: 6, background: "#C9A96E", borderRadius: "50%", display: "inline-block" }} />
               Envío gratis a partir de $150.000 · Solo en Medellín
             </span>
           </div>
@@ -58,6 +63,7 @@ export default function RootLayout({
           </main>
           <BottomNav />
           <CartDrawer />
+          <WhatsAppFloating />
         </CartProvider>
       </body>
     </html>

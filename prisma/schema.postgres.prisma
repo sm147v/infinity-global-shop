@@ -21,6 +21,7 @@ model Product {
   longDescription String?
   features        String[]    @default([])
   items           OrderItem[]
+  Review          Review[]
 }
 
 model Order {
@@ -57,6 +58,24 @@ model OrderItem {
 
   @@index([orderId])
   @@index([productId])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model Review {
+  id            Int       @id @default(autoincrement())
+  productId     Int
+  customerName  String
+  customerEmail String?
+  orderNumber   String?
+  rating        Int
+  comment       String
+  location      String?
+  approved      Boolean?  @default(false)
+  createdAt     DateTime? @default(now()) @db.Timestamp(6)
+  Product       Product   @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([approved], map: "review_approved_idx")
+  @@index([productId], map: "review_product_idx")
 }
 
 enum OrderStatus {
