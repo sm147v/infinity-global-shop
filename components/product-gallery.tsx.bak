@@ -12,7 +12,7 @@ function optimizeImage(url: string): string {
   if (!url) return "";
   if (url.includes("cloudinary.com")) {
     // Insertar transformaciones de Cloudinary: cuadrado 800x800 con fit y auto-quality
-    return url.replace("/upload/", "/upload/w_800,h_800,c_pad,b_auto:predominant,f_auto,q_auto/");
+    return url.replace("/upload/", "/upload/w_800,h_800,c_fill,g_auto,f_auto,q_auto/");
   }
   return url;
 }
@@ -20,7 +20,7 @@ function optimizeImage(url: string): string {
 function thumbImage(url: string): string {
   if (!url) return "";
   if (url.includes("cloudinary.com")) {
-    return url.replace("/upload/", "/upload/w_200,h_200,c_pad,b_auto:predominant,f_auto,q_auto/");
+    return url.replace("/upload/", "/upload/w_200,h_200,c_fill,g_auto,f_auto,q_auto/");
   }
   return url;
 }

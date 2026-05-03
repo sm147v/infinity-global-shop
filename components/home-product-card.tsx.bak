@@ -16,7 +16,7 @@ const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
 function optimizeCard(url: string | null): string {
   if (!url) return "";
   if (url.includes("cloudinary.com")) {
-    return url.replace("/upload/", "/upload/w_400,h_400,c_pad,b_auto:predominant,f_auto,q_auto/");
+    return url.replace("/upload/", "/upload/w_400,h_400,c_fill,g_auto,f_auto,q_auto/");
   }
   return url;
 }
