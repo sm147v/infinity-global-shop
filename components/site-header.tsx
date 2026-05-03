@@ -2,9 +2,18 @@
 
 import Link from "next/link";
 import { useCart } from "./cart-context";
+import { useEffect, useState } from "react";
 
 export function SiteHeader() {
   const { itemCount, openCart } = useCart();
+  const [showAdmin, setShowAdmin] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const isAdmin = localStorage.getItem("adminToken") || window.location.search.includes("admin");
+      setShowAdmin(!!isAdmin);
+    }
+  }, []);
 
   return (
     <header style={{
@@ -31,34 +40,39 @@ export function SiteHeader() {
       </Link>
 
       <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-        <Link href="/products" style={{
-          width: 40, height: 40,
-          borderRadius: "50%",
-          background: "#EDE3CD",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "#4A5D3A",
+        <Link href="/pedido" style={{
+          fontSize: "0.78rem",
+          color: "#4A4F45",
           textDecoration: "none",
+          padding: "0.5rem 0.85rem",
+          borderRadius: 100,
+          fontWeight: 500,
         }}>
+          Mi pedido
+        </Link>
+
+        {showAdmin && (
+          <Link href="/admin" style={{
+            fontSize: "0.78rem",
+            color: "#C97B5C",
+            textDecoration: "none",
+            padding: "0.5rem 0.85rem",
+            borderRadius: 100,
+            fontWeight: 600,
+            border: "1px solid rgba(201, 123, 92, 0.3)",
+          }}>
+            Admin
+          </Link>
+        )}
+
+        <Link href="/products" style={iconBtnStyle}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="11" cy="11" r="8"/>
             <path d="m21 21-4.35-4.35"/>
           </svg>
         </Link>
 
-        <button onClick={openCart} style={{
-          width: 40, height: 40,
-          borderRadius: "50%",
-          background: "#EDE3CD",
-          border: "none",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "relative",
-          color: "#4A5D3A",
-          cursor: "pointer",
-        }}>
+        <button onClick={openCart} style={{ ...iconBtnStyle, position: "relative", border: "none", cursor: "pointer" }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
             <line x1="3" y1="6" x2="21" y2="6"/>
@@ -86,3 +100,15 @@ export function SiteHeader() {
     </header>
   );
 }
+
+const iconBtnStyle: React.CSSProperties = {
+  width: 40,
+  height: 40,
+  borderRadius: "50%",
+  background: "#EDE3CD",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: "#4A5D3A",
+  textDecoration: "none",
+};
