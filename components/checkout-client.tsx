@@ -38,7 +38,7 @@ export function CheckoutClient() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ orderId, transactionId, status: "APPROVED" }),
         });
-        setMessage("Pago confirmado para la orden #" + orderId);
+        window.location.href = "/gracias?orderNumber=" + (orderJson?.orderNumber || "");
         setItems([]);
         saveCart([]);
       } catch {

@@ -5,10 +5,13 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { CartItem, loadCart, saveCart } from "@/lib/cart";
 
+const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
+
 export function CheckoutClient() {
   const searchParams = useSearchParams();
   const [items, setItems] = useState<CartItem[]>([]);
   const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerAddress, setCustomerAddress] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -20,37 +23,22 @@ export function CheckoutClient() {
   }, []);
 
   useEffect(() => {
-    if (process.env.NODE_ENV === "production") {
-      return;
-    }
-
+    if (process.env.NODE_ENV === "production") return;
     const isMockPaid = searchParams.get("mockPaid") === "1";
     const orderId = Number(searchParams.get("orderId"));
     const transactionId = searchParams.get("transactionId");
-
-    if (!isMockPaid || !Number.isInteger(orderId) || !transactionId) {
-      return;
-    }
-
-    const key = `mock_confirmed_${orderId}`;
-    if (sessionStorage.getItem(key)) {
-      return;
-    }
-
+    if (!isMockPaid || !Number.isInteger(orderId) || !transactionId) return;
+    const key = "mock_confirmed_" + orderId;
+    if (sessionStorage.getItem(key)) return;
     sessionStorage.setItem(key, "1");
     void (async () => {
       try {
         await fetch("/api/payments/confirm", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            orderId,
-            transactionId,
-            status: "APPROVED",
-          }),
+          body: JSON.stringify({ orderId, transactionId, status: "APPROVED" }),
         });
-
-        setMessage(`Pago confirmado para la orden #${orderId}`);
+        setMessage("Pago confirmado para la orden #" + orderId);
         setItems([]);
         saveCart([]);
       } catch {
@@ -59,9 +47,10 @@ export function CheckoutClient() {
     })();
   }, [searchParams]);
 
-  const total = useMemo(() => {
-    return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  }, [items]);
+  const subtotal = useMemo(() => items.reduce((sum, item) => sum + item.price * item.quantity, 0), [items]);
+  const isFreeShipping = subtotal >= 150000;
+  const shipping = isFreeShipping ? 0 : 8000;
+  const total = subtotal + shipping;
 
   function setQuantity(productId: number, quantity: number) {
     const normalized = Math.min(20, Math.max(1, quantity));
@@ -70,18 +59,6 @@ export function CheckoutClient() {
     );
     setItems(updated);
     saveCart(updated);
-  }
-
-  function increaseQuantity(productId: number) {
-    const item = items.find((entry) => entry.productId === productId);
-    if (!item) return;
-    setQuantity(productId, item.quantity + 1);
-  }
-
-  function decreaseQuantity(productId: number) {
-    const item = items.find((entry) => entry.productId === productId);
-    if (!item) return;
-    setQuantity(productId, item.quantity - 1);
   }
 
   function removeItem(productId: number) {
@@ -96,18 +73,18 @@ export function CheckoutClient() {
     setMessage(null);
 
     if (items.length === 0) {
-      setError("El carrito esta vacio.");
+      setError("El carrito está vacío.");
       return;
     }
 
     try {
       setLoading(true);
-
       const orderResponse = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           customerName,
+          customerEmail,
           customerPhone,
           customerAddress,
           items: items.map((item) => ({
@@ -117,13 +94,9 @@ export function CheckoutClient() {
         }),
       });
 
-      const orderJson = (await orderResponse.json()) as {
-        orderId?: number;
-        error?: string;
-      };
-
+      const orderJson = await orderResponse.json();
       if (!orderResponse.ok || !orderJson.orderId) {
-        throw new Error(orderJson.error ?? "No se pudo crear la orden");
+        throw new Error(orderJson.error || "No se pudo crear la orden");
       }
 
       const paymentResponse = await fetch("/api/payments", {
@@ -132,13 +105,9 @@ export function CheckoutClient() {
         body: JSON.stringify({ orderId: orderJson.orderId }),
       });
 
-      const paymentJson = (await paymentResponse.json()) as {
-        paymentUrl?: string;
-        error?: string;
-      };
-
+      const paymentJson = await paymentResponse.json();
       if (!paymentResponse.ok || !paymentJson.paymentUrl) {
-        throw new Error(paymentJson.error ?? "No se pudo iniciar el pago");
+        throw new Error(paymentJson.error || "No se pudo iniciar el pago");
       }
 
       window.location.href = paymentJson.paymentUrl;
@@ -150,125 +119,268 @@ export function CheckoutClient() {
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
-      <section className="card p-5 sm:p-6">
-        <h2 className="text-2xl font-semibold">Resumen de compra</h2>
-        <div className="mt-4 space-y-3">
-          {items.length === 0 && (
-            <div className="soft-panel p-4">
-              <p className="muted">No hay productos en carrito.</p>
-              <Link className="btn mt-3" href="/products">
-                Explorar productos
-              </Link>
-            </div>
-          )}
-          {items.map((item) => (
-            <article key={item.productId} className="soft-panel p-4">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-start gap-3">
-                  {item.image ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="h-16 w-16 rounded-lg border border-line object-cover"
-                    />
-                  ) : (
-                    <div className="h-16 w-16 rounded-lg border border-line bg-white" />
-                  )}
+    <div style={{ display: "grid", gap: "1.5rem", maxWidth: 1100, margin: "0 auto", padding: "1rem" }} className="checkout-grid">
+      
+      <section style={{ background: "#FDFAF3", borderRadius: 18, padding: "1.5rem", border: "1px solid #EDE3CD" }}>
+        <h2 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.4rem", color: "#4A5D3A", margin: "0 0 1.25rem", fontWeight: 500 }}>
+          Resumen de compra
+        </h2>
 
-                  <div>
-                    <h3 className="font-medium">{item.name}</h3>
-                    <p className="text-sm muted">${item.price.toFixed(2)} c/u</p>
-                  </div>
-                </div>
-                <button
-                  className="btn btn-danger px-3"
-                  type="button"
-                  onClick={() => removeItem(item.productId)}
-                >
-                  Eliminar
+        {items.length === 0 && (
+          <div style={{ background: "#F7F1E5", padding: "1.5rem", borderRadius: 12, textAlign: "center" }}>
+            <p style={{ color: "#4A4F45", marginBottom: "1rem" }}>No hay productos en carrito.</p>
+            <Link href="/products" style={{
+              display: "inline-block",
+              padding: "0.75rem 1.5rem",
+              background: "#4A5D3A",
+              color: "#F7F1E5",
+              borderRadius: 100,
+              textDecoration: "none",
+              fontSize: "0.9rem",
+              fontWeight: 500,
+            }}>
+              Explorar productos
+            </Link>
+          </div>
+        )}
+
+        {items.map((item) => (
+          <div key={item.productId} style={{
+            display: "flex",
+            gap: "0.85rem",
+            padding: "1rem 0",
+            borderBottom: "1px solid #EDE3CD",
+          }}>
+            <div style={{
+              width: 70, height: 70,
+              borderRadius: 10,
+              flexShrink: 0,
+              overflow: "hidden",
+              background: "linear-gradient(135deg, #EDE3CD, #A8B584)",
+            }}>
+              {item.image && <img src={item.image} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.4rem" }}>
+                <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "0.95rem", color: "#4A5D3A", margin: 0, fontWeight: 500 }}>
+                  {item.name}
+                </h3>
+                <button onClick={() => removeItem(item.productId)} style={{
+                  background: "rgba(201,83,61,0.08)",
+                  border: "1px solid rgba(201,83,61,0.2)",
+                  color: "#C9533D",
+                  width: 28, height: 28,
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                  fontSize: "0.78rem",
+                  flexShrink: 0,
+                }}>
+                  ✕
                 </button>
               </div>
-
-              <div className="mt-3 flex items-center justify-between gap-3">
-                <div className="inline-flex items-center gap-2 rounded-lg border border-line bg-white p-1">
+              <p style={{ fontSize: "0.78rem", color: "#4A4F45", margin: "0 0 0.5rem" }}>
+                {fmt(item.price)} c/u
+              </p>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  background: "#F7F1E5",
+                  borderRadius: 100,
+                  padding: "0.2rem",
+                  border: "1px solid #EDE3CD",
+                }}>
                   <button
-                    className="btn px-3 py-1"
                     type="button"
-                    onClick={() => decreaseQuantity(item.productId)}
+                    onClick={() => setQuantity(item.productId, item.quantity - 1)}
                     disabled={item.quantity <= 1}
-                  >
-                    -
-                  </button>
-                  <span className="min-w-7 text-center font-semibold">{item.quantity}</span>
+                    style={qtyBtnStyle}
+                  >−</button>
+                  <span style={{ minWidth: 28, textAlign: "center", fontSize: "0.85rem", fontWeight: 600, color: "#4A5D3A" }}>
+                    {item.quantity}
+                  </span>
                   <button
-                    className="btn px-3 py-1"
                     type="button"
-                    onClick={() => increaseQuantity(item.productId)}
+                    onClick={() => setQuantity(item.productId, item.quantity + 1)}
                     disabled={item.quantity >= 20}
-                  >
-                    +
-                  </button>
+                    style={qtyBtnStyle}
+                  >+</button>
                 </div>
-
-                <input
-                  className="field max-w-20"
-                  type="number"
-                  min={1}
-                  max={20}
-                  value={item.quantity}
-                  aria-label={`Cantidad de ${item.name}`}
-                  onChange={(e) => setQuantity(item.productId, Number(e.target.value))}
-                />
-
-                <p className="text-sm font-semibold">
-                  ${(item.price * item.quantity).toFixed(2)}
+                <p style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1rem", fontWeight: 600, color: "#4A5D3A", margin: 0 }}>
+                  {fmt(item.price * item.quantity)}
                 </p>
               </div>
-            </article>
-          ))}
-        </div>
-        <div className="mt-5 rounded-xl bg-slate-900 p-4 text-white">
-          <p className="text-sm text-slate-300">Total a pagar</p>
-          <p className="mt-1 text-2xl font-bold">${total.toFixed(2)}</p>
-        </div>
+            </div>
+          </div>
+        ))}
+
+        {items.length > 0 && (
+          <div style={{ paddingTop: "1rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", padding: "0.4rem 0", fontSize: "0.88rem", color: "#4A4F45" }}>
+              <span>Subtotal</span>
+              <span>{fmt(subtotal)}</span>
+            </div>
+            <div style={{
+              display: "flex",
+              justifyContent: "space-between",
+              padding: "0.4rem 0",
+              fontSize: "0.88rem",
+              color: isFreeShipping ? "#5C8A5E" : "#4A4F45",
+              fontWeight: isFreeShipping ? 600 : 400,
+            }}>
+              <span>Envío</span>
+              <span>{isFreeShipping ? "GRATIS ✨" : fmt(shipping)}</span>
+            </div>
+            <div style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontFamily: "var(--font-fraunces), Georgia, serif",
+              fontSize: "1.4rem",
+              fontWeight: 600,
+              color: "#4A5D3A",
+              borderTop: "2px solid #4A5D3A",
+              marginTop: "0.5rem",
+              paddingTop: "0.75rem",
+            }}>
+              <span>Total</span>
+              <span>{fmt(total)}</span>
+            </div>
+          </div>
+        )}
       </section>
 
-      <section className="card p-5 sm:p-6">
-        <h2 className="text-2xl font-semibold">Datos del cliente</h2>
-        <form className="mt-4 space-y-3" onSubmit={handleCheckout}>
+      <section style={{ background: "#FDFAF3", borderRadius: 18, padding: "1.5rem", border: "1px solid #EDE3CD" }}>
+        <h2 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.4rem", color: "#4A5D3A", margin: "0 0 0.4rem", fontWeight: 500 }}>
+          Tus datos
+        </h2>
+        <p style={{ fontSize: "0.85rem", color: "#4A4F45", marginBottom: "1.25rem" }}>
+          Necesitamos estos datos para enviarte el pedido y mantenerte al tanto.
+        </p>
+
+        <form onSubmit={handleCheckout} style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
           <input
-            className="field"
-            placeholder="Nombre"
+            placeholder="Nombre completo"
             value={customerName}
             onChange={(e) => setCustomerName(e.target.value)}
             required
+            style={inputStyle}
           />
           <input
-            className="field"
-            placeholder="Telefono"
+            type="email"
+            placeholder="Tu email (para enviarte el seguimiento)"
+            value={customerEmail}
+            onChange={(e) => setCustomerEmail(e.target.value)}
+            required
+            style={inputStyle}
+          />
+          <input
+            placeholder="Teléfono / WhatsApp"
             value={customerPhone}
             onChange={(e) => setCustomerPhone(e.target.value)}
             required
+            style={inputStyle}
           />
           <textarea
-            className="field"
-            placeholder="Direccion"
+            placeholder="Dirección completa con barrio"
             rows={3}
             value={customerAddress}
             onChange={(e) => setCustomerAddress(e.target.value)}
             required
+            style={{ ...inputStyle, resize: "vertical", borderRadius: 16 }}
           />
 
-          {error && <p className="text-sm text-red-700">{error}</p>}
-          {message && <p className="text-sm text-emerald-700">{message}</p>}
+          {error && (
+            <div style={{ background: "rgba(201,83,61,0.1)", border: "1px solid rgba(201,83,61,0.3)", padding: "0.85rem", borderRadius: 12, color: "#C9533D", fontSize: "0.85rem" }}>
+              ⚠️ {error}
+            </div>
+          )}
+          {message && (
+            <div style={{ background: "rgba(92,138,94,0.1)", border: "1px solid rgba(92,138,94,0.3)", padding: "0.85rem", borderRadius: 12, color: "#5C8A5E", fontSize: "0.85rem" }}>
+              ✅ {message}
+            </div>
+          )}
 
-          <button className="btn btn-primary w-full" type="submit" disabled={loading}>
-            {loading ? "Procesando..." : "Crear orden y pagar"}
+          <button
+            type="submit"
+            disabled={loading || items.length === 0}
+            style={{
+              width: "100%",
+              background: "#4A5D3A",
+              color: "#F7F1E5",
+              border: "none",
+              padding: "1.1rem",
+              borderRadius: 100,
+              fontSize: "1rem",
+              fontWeight: 500,
+              cursor: loading || items.length === 0 ? "not-allowed" : "pointer",
+              opacity: loading || items.length === 0 ? 0.6 : 1,
+              fontFamily: "inherit",
+              marginTop: "0.5rem",
+            }}
+          >
+            {loading ? "Procesando..." : "Pagar con Wompi · " + fmt(total)}
           </button>
+
+          <div style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "0.4rem",
+            marginTop: "0.5rem",
+            fontSize: "0.7rem",
+            color: "#4A4F45",
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}>
+            <span>Aceptamos:</span>
+            {["Visa", "Master", "PSE", "Nequi"].map(m => (
+              <span key={m} style={{
+                background: "#F7F1E5",
+                padding: "0.2rem 0.5rem",
+                borderRadius: 6,
+                fontWeight: 600,
+                border: "1px solid rgba(74, 93, 58, 0.1)",
+                fontSize: "0.65rem",
+              }}>{m}</span>
+            ))}
+          </div>
         </form>
       </section>
+
+      <style>{`
+        @media (min-width: 1024px) {
+          .checkout-grid {
+            grid-template-columns: 1fr 1fr;
+            align-items: start;
+          }
+        }
+      `}</style>
     </div>
   );
 }
+
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "0.95rem 1rem",
+  borderRadius: 100,
+  border: "1px solid #EDE3CD",
+  background: "#F7F1E5",
+  fontSize: "0.95rem",
+  outline: "none",
+  boxSizing: "border-box",
+  fontFamily: "inherit",
+  color: "#4A5D3A",
+};
+
+const qtyBtnStyle: React.CSSProperties = {
+  width: 26, height: 26,
+  borderRadius: "50%",
+  border: "none",
+  background: "#FDFAF3",
+  color: "#4A5D3A",
+  fontSize: "0.95rem",
+  fontWeight: 600,
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
