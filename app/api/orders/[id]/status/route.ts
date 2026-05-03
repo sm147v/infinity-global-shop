@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { generateOrderNumber } from "@/lib/order-number";
-import { sendOrderConfirmationToCustomer, sendNewOrderNotificationToAdmin } from "@/lib/email";
 import { whatsappLink, orderReceivedMessage } from "@/lib/whatsapp";
 
 const VALID_STATUSES = ["PENDING", "PAID", "PREPARING", "SHIPPED", "DELIVERED", "CANCELLED"];
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const adminToken = req.headers.get("x-admin-token");
@@ -16,6 +14,7 @@ export async function PATCH(
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
+    const { id } = await context.params;
     const { status, notes } = await req.json();
 
     if (!VALID_STATUSES.includes(status)) {
@@ -23,7 +22,7 @@ export async function PATCH(
     }
 
     const order = await prisma.order.update({
-      where: { id: parseInt(params.id) },
+      where: { id: parseInt(id) },
       data: {
         status,
         ...(notes && { notes }),
@@ -42,6 +41,7 @@ export async function PATCH(
       ),
     });
   } catch (error) {
+    console.error("Error al actualizar:", error);
     return NextResponse.json({ error: "Error al actualizar" }, { status: 500 });
   }
 }

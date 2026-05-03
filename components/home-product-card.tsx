@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCart } from "./cart-context";
 
 interface Product {
@@ -26,39 +27,42 @@ export function HomeProductCard({ product }: { product: Product }) {
       display: "flex",
       flexDirection: "column",
     }}>
-      <div style={{
-        width: "100%",
-        aspectRatio: "1",
-        borderRadius: 12,
-        marginBottom: "0.6rem",
-        overflow: "hidden",
-        background: "linear-gradient(135deg, #EDE3CD 0%, #A8B584 100%)",
-      }}>
-        {product.image && (
-          <img src={product.image} alt={product.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-        )}
-      </div>
+      <Link href={"/products/" + product.id} style={{ textDecoration: "none", color: "inherit" }}>
+        <div style={{
+          width: "100%",
+          aspectRatio: "1",
+          borderRadius: 12,
+          marginBottom: "0.6rem",
+          overflow: "hidden",
+          background: "linear-gradient(135deg, #EDE3CD 0%, #A8B584 100%)",
+          cursor: "pointer",
+        }}>
+          {product.image && (
+            <img src={product.image} alt={product.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          )}
+        </div>
 
-      <div style={{
-        fontFamily: "var(--font-fraunces), Georgia, serif",
-        fontSize: "0.88rem",
-        fontWeight: 500,
-        lineHeight: 1.2,
-        color: "#4A5D3A",
-        marginBottom: "0.4rem",
-        minHeight: "2.1rem",
-      }}>
-        {product.name}
-      </div>
+        <div style={{
+          fontFamily: "var(--font-fraunces), Georgia, serif",
+          fontSize: "0.88rem",
+          fontWeight: 500,
+          lineHeight: 1.2,
+          color: "#4A5D3A",
+          marginBottom: "0.4rem",
+          minHeight: "2.1rem",
+        }}>
+          {product.name}
+        </div>
 
-      <div style={{
-        fontSize: "0.98rem",
-        fontWeight: 700,
-        color: "#2A2E26",
-        marginBottom: "0.5rem",
-      }}>
-        {fmt(product.price)}
-      </div>
+        <div style={{
+          fontSize: "0.98rem",
+          fontWeight: 700,
+          color: "#2A2E26",
+          marginBottom: "0.5rem",
+        }}>
+          {fmt(product.price)}
+        </div>
+      </Link>
 
       <div style={{ marginTop: "auto" }}>
         {qty === 0 ? (
@@ -97,10 +101,7 @@ export function HomeProductCard({ product }: { product: Product }) {
             width: "100%",
             justifyContent: "space-between",
           }}>
-            <button
-              onClick={() => updateQty(product.id, -1)}
-              style={qtyBtnStyle}
-            >−</button>
+            <button onClick={() => updateQty(product.id, -1)} style={qtyBtnStyle}>−</button>
             <span style={{
               color: "#F7F1E5",
               fontSize: "0.85rem",
