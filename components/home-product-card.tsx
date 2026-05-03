@@ -13,6 +13,14 @@ interface Product {
 
 const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
 
+function optimizeCard(url: string | null): string {
+  if (!url) return "";
+  if (url.includes("cloudinary.com")) {
+    return url.replace("/upload/", "/upload/w_400,h_400,c_fill,g_auto,f_auto,q_auto/");
+  }
+  return url;
+}
+
 export function HomeProductCard({ product }: { product: Product }) {
   const { items, addItem, updateQty } = useCart();
   const inCart = items.find(item => item.id === product.id);
@@ -38,7 +46,16 @@ export function HomeProductCard({ product }: { product: Product }) {
           cursor: "pointer",
         }}>
           {product.image && (
-            <img src={product.image} alt={product.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <img
+              src={optimizeCard(product.image)}
+              alt={product.name}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: "center",
+              }}
+            />
           )}
         </div>
 
@@ -50,6 +67,10 @@ export function HomeProductCard({ product }: { product: Product }) {
           color: "#4A5D3A",
           marginBottom: "0.4rem",
           minHeight: "2.1rem",
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
         }}>
           {product.name}
         </div>
@@ -110,11 +131,7 @@ export function HomeProductCard({ product }: { product: Product }) {
             }}>
               {qty} en carrito
             </span>
-            <button
-              onClick={() => updateQty(product.id, 1)}
-              disabled={qty >= product.stock}
-              style={{ ...qtyBtnStyle, opacity: qty >= product.stock ? 0.4 : 1 }}
-            >+</button>
+            <button onClick={() => updateQty(product.id, 1)} disabled={qty >= product.stock} style={{ ...qtyBtnStyle, opacity: qty >= product.stock ? 0.4 : 1 }}>+</button>
           </div>
         )}
       </div>

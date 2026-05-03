@@ -5,24 +5,7 @@ import { AdminImageUpload } from "@/components/admin-image-upload";
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState("");
-  const [authed, setAuthed] = useState(false);
-  const [error, setError] = useState("");
-
-  async function login() {
-    const res = await fetch("/api/admin/verify", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token }),
-    });
-    if (res.ok) {
-      localStorage.setItem("adminToken", token);
-      setAuthed(true);
-      loadProducts();
-    } else {
-      setError("Token incorrecto");
-    }
-  }
+  const [search, setSearch] = useState("");
 
   async function loadProducts() {
     const res = await fetch("/api/products");
@@ -33,78 +16,81 @@ export default function AdminProductsPage() {
     setLoading(false);
   }
 
-  useEffect(() => {
-    const saved = localStorage.getItem("adminToken");
-    if (saved) {
-      setToken(saved);
-      setAuthed(true);
-      loadProducts();
-    } else {
-      setLoading(false);
-    }
-  }, []);
+  useEffect(() => { loadProducts(); }, []);
 
-  if (!authed) {
-    return (
-      <main style={{ minHeight: "100vh", background: "#F7F1E5", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
-        <div style={{ background: "#FDFAF3", borderRadius: 20, padding: "2rem", border: "1px solid #EDE3CD", width: "100%", maxWidth: 360 }}>
-          <h2 style={{ fontFamily: "Georgia, serif", color: "#4A5D3A", margin: "0 0 1.5rem", textAlign: "center" }}>Admin · Imágenes</h2>
-          <input
-            type="password"
-            placeholder="Token de acceso"
-            value={token}
-            onChange={e => setToken(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && login()}
-            style={{ width: "100%", padding: "0.85rem 1rem", borderRadius: 100, border: "1px solid #EDE3CD", fontSize: "0.95rem", marginBottom: "1rem", outline: "none" }}
-          />
-          {error && <p style={{ color: "#C9533D", fontSize: "0.85rem", textAlign: "center", margin: "0 0 1rem" }}>{error}</p>}
-          <button onClick={login} style={{ width: "100%", background: "#4A5D3A", color: "#F7F1E5", border: "none", padding: "1rem", borderRadius: 100, fontSize: "0.95rem", fontWeight: 500, cursor: "pointer" }}>
-            Entrar
-          </button>
-        </div>
-      </main>
-    );
-  }
+  const filtered = products.filter(p =>
+    !search.trim() || p.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   if (loading) {
     return (
-      <main style={{ minHeight: "100vh", background: "#F7F1E5", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <main style={{ minHeight: "calc(100vh - 100px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <p style={{ color: "#4A5D3A", fontFamily: "Georgia, serif", fontSize: "1.2rem" }}>Cargando...</p>
       </main>
     );
   }
 
   return (
-    <main style={{ minHeight: "100vh", background: "#F7F1E5", padding: "2rem 1.25rem", maxWidth: 1280, margin: "0 auto" }}>
-      <div style={{ marginBottom: "2rem" }}>
-        <h1 style={{ fontFamily: "Georgia, serif", fontSize: "1.8rem", color: "#4A5D3A", fontWeight: 400, margin: "0 0 0.4rem" }}>
+    <main style={{ padding: "2rem 1.5rem", maxWidth: 1280, margin: "0 auto" }}>
+      <div style={{ marginBottom: "1.5rem" }}>
+        <h1 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.8rem", color: "#4A5D3A", fontWeight: 400, margin: "0 0 0.4rem" }}>
           Imágenes de productos
         </h1>
-        <p style={{ color: "#4A4F45", fontSize: "0.9rem" }}>
-          Sube una imagen para cada producto. Se guarda automáticamente en Cloudinary.
+        <p style={{ color: "#4A4F45", fontSize: "0.9rem", marginBottom: "1rem" }}>
+          Sube varias imágenes por producto. La primera o la que selecciones será la principal.
         </p>
+
+        <input
+          type="text"
+          placeholder="Buscar producto..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={{
+            width: "100%",
+            maxWidth: 400,
+            padding: "0.85rem 1rem",
+            borderRadius: 100,
+            border: "1px solid #EDE3CD",
+            background: "#FDFAF3",
+            fontSize: "0.9rem",
+            outline: "none",
+            fontFamily: "inherit",
+            color: "#4A5D3A",
+          }}
+        />
       </div>
+
+      <p style={{ fontSize: "0.85rem", color: "#4A4F45", marginBottom: "1rem" }}>
+        Mostrando {filtered.length} de {products.length} productos
+      </p>
 
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+        gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
         gap: "1.25rem",
       }}>
-        {products.map(p => (
+        {filtered.map(p => (
           <div key={p.id}>
-            <div style={{
-              fontFamily: "Georgia, serif",
-              fontSize: "0.95rem",
-              color: "#4A5D3A",
-              marginBottom: "0.5rem",
-              fontWeight: 500,
-            }}>
-              {p.name}
+            <div style={{ marginBottom: "0.5rem" }}>
+              <p style={{
+                fontFamily: "var(--font-fraunces), Georgia, serif",
+                fontSize: "0.92rem",
+                color: "#4A5D3A",
+                margin: "0 0 0.2rem",
+                fontWeight: 500,
+                lineHeight: 1.2,
+              }}>
+                {p.name}
+              </p>
+              <p style={{ fontSize: "0.78rem", color: "#4A4F45", margin: 0 }}>
+                ${Number(p.price).toLocaleString("es-CO")} · Stock: {p.stock}
+              </p>
             </div>
-            <div style={{ fontSize: "0.78rem", color: "#4A4F45", marginBottom: "0.5rem" }}>
-              ${Number(p.price).toLocaleString("es-CO")}
-            </div>
-            <AdminImageUpload productId={p.id} currentImage={p.image} />
+            <AdminImageUpload
+              productId={p.id}
+              currentImage={p.image}
+              currentImages={p.images || []}
+            />
           </div>
         ))}
       </div>

@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { ProductDetailClient } from "@/components/product-detail-client";
 
@@ -18,7 +17,7 @@ export default async function ProductPage({
   if (!product) notFound();
 
   const related = await prisma.product.findMany({
-    where: { id: { not: product.id } },
+    where: { id: { not: product.id }, category: product.category },
     take: 4,
     orderBy: { id: "desc" },
   });
@@ -31,7 +30,9 @@ export default async function ProductPage({
         description: product.description,
         price: Number(product.price),
         image: product.image,
+        images: product.images || [],
         stock: product.stock,
+        category: product.category,
       }}
       related={related.map(p => ({
         id: p.id,

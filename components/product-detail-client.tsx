@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCart } from "./cart-context";
 import { HomeProductCard } from "./home-product-card";
 import { ResponsiveGrid } from "./responsive-grid";
+import { ProductGallery } from "./product-gallery";
 
 interface Product {
   id: number;
@@ -11,7 +12,9 @@ interface Product {
   description: string;
   price: number;
   image: string | null;
+  images: string[];
   stock: number;
+  category: string;
 }
 
 interface RelatedProduct {
@@ -32,6 +35,12 @@ export function ProductDetailClient({ product, related }: { product: Product; re
   const lowStock = product.stock > 0 && product.stock <= 5;
   const outOfStock = product.stock === 0;
 
+  // Combinar image y images en un solo array
+  const allImages = [...new Set([
+    ...(product.images || []),
+    ...(product.image ? [product.image] : [])
+  ])].filter(Boolean);
+
   function shareWhatsApp() {
     const url = typeof window !== "undefined" ? window.location.href : "";
     const text = "Mira este producto en Infinity Global Shop: " + product.name + " " + url;
@@ -46,6 +55,12 @@ export function ProductDetailClient({ product, related }: { product: Product; re
           <Link href="/" style={{ color: "#4A4F45", textDecoration: "none" }}>Inicio</Link>
           <span style={{ margin: "0 0.5rem", opacity: 0.5 }}>›</span>
           <Link href="/products" style={{ color: "#4A4F45", textDecoration: "none" }}>Productos</Link>
+          {product.category && (
+            <>
+              <span style={{ margin: "0 0.5rem", opacity: 0.5 }}>›</span>
+              <span style={{ color: "#4A4F45" }}>{product.category}</span>
+            </>
+          )}
           <span style={{ margin: "0 0.5rem", opacity: 0.5 }}>›</span>
           <span style={{ color: "#4A5D3A", fontWeight: 500 }}>{product.name}</span>
         </nav>
@@ -53,28 +68,13 @@ export function ProductDetailClient({ product, related }: { product: Product; re
         <div className="product-detail-grid">
 
           <div>
-            <div style={{
-              width: "100%",
-              aspectRatio: "1",
-              borderRadius: 24,
-              overflow: "hidden",
-              background: "linear-gradient(135deg, #EDE3CD, #A8B584)",
-              border: "1px solid rgba(74, 93, 58, 0.08)",
-            }}>
-              {product.image ? (
-                <img src={product.image} alt={product.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              ) : (
-                <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#4A5D3A", fontFamily: "var(--font-fraunces), Georgia, serif", fontStyle: "italic", padding: "2rem", textAlign: "center" }}>
-                  {product.name}
-                </div>
-              )}
-            </div>
+            <ProductGallery images={allImages} productName={product.name} />
           </div>
 
           <div>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", marginBottom: "1rem" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginBottom: "1rem" }}>
               <span style={{
-                padding: "0.25rem 0.65rem",
+                padding: "0.3rem 0.8rem",
                 background: "#EDE3CD",
                 color: "#4A5D3A",
                 borderRadius: 100,
@@ -85,9 +85,21 @@ export function ProductDetailClient({ product, related }: { product: Product; re
               }}>
                 ✓ Importado USA
               </span>
+              <span style={{
+                padding: "0.3rem 0.8rem",
+                background: "rgba(92,138,94,0.15)",
+                color: "#5C8A5E",
+                borderRadius: 100,
+                fontSize: "0.7rem",
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+              }}>
+                100% Original
+              </span>
               {lowStock && (
                 <span style={{
-                  padding: "0.25rem 0.65rem",
+                  padding: "0.3rem 0.8rem",
                   background: "rgba(201,83,61,0.1)",
                   color: "#C9533D",
                   borderRadius: 100,
@@ -113,6 +125,7 @@ export function ProductDetailClient({ product, related }: { product: Product; re
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1.25rem" }}>
               <span style={{ color: "#C9A96E", fontSize: "1rem", letterSpacing: "0.1em" }}>★★★★★</span>
               <span style={{ fontSize: "0.85rem", color: "#4A4F45" }}>5.0 · 124 reseñas</span>
+              <span style={{ fontSize: "0.78rem", color: "#5C8A5E", fontWeight: 600, marginLeft: "0.5rem" }}>✓ Verificadas</span>
             </div>
 
             <div style={{ marginBottom: "1.5rem" }}>
@@ -123,6 +136,9 @@ export function ProductDetailClient({ product, related }: { product: Product; re
                 color: "#4A5D3A",
               }}>
                 {fmt(product.price)}
+              </span>
+              <span style={{ fontSize: "0.78rem", color: "#5C8A5E", marginLeft: "0.85rem", fontWeight: 600 }}>
+                IVA incluido
               </span>
             </div>
 
@@ -147,6 +163,7 @@ export function ProductDetailClient({ product, related }: { product: Product; re
                 { icon: "⚡", text: "Recibe en 24 horas en Medellín" },
                 { icon: "🔒", text: "Pago seguro con Wompi" },
                 { icon: "✨", text: "100% original e importado de USA" },
+                { icon: "💬", text: "Soporte directo por WhatsApp" },
               ].map(b => (
                 <div key={b.text} style={{ display: "flex", alignItems: "center", gap: "0.65rem", padding: "0.4rem 0", fontSize: "0.85rem", color: "#4A5D3A" }}>
                   <span style={{ fontSize: "1.1rem" }}>{b.icon}</span>
@@ -169,7 +186,7 @@ export function ProductDetailClient({ product, related }: { product: Product; re
                 fontFamily: "inherit",
                 marginBottom: "1rem",
               }}>
-                Agotado
+                Agotado por ahora
               </button>
             ) : qty === 0 ? (
               <button
@@ -257,6 +274,38 @@ export function ProductDetailClient({ product, related }: { product: Product; re
           </div>
         </div>
 
+        <section style={{ marginTop: "3rem", marginBottom: "3rem" }}>
+          <div className="trust-section">
+            {[
+              { icon: "🇺🇸", title: "Importado de EE.UU.", desc: "Productos auténticos directamente desde Estados Unidos" },
+              { icon: "🛡️", title: "Garantía de calidad", desc: "Si no quedas satisfecha, te devolvemos tu dinero" },
+              { icon: "📦", title: "Empaque cuidado", desc: "Cada pedido empacado con detalle y cariño" },
+            ].map(t => (
+              <div key={t.title} style={{
+                background: "#FDFAF3",
+                border: "1px solid #EDE3CD",
+                borderRadius: 18,
+                padding: "1.5rem",
+                textAlign: "center",
+              }}>
+                <div style={{ fontSize: "2rem", marginBottom: "0.6rem" }}>{t.icon}</div>
+                <h4 style={{
+                  fontFamily: "var(--font-fraunces), Georgia, serif",
+                  fontSize: "1.05rem",
+                  color: "#4A5D3A",
+                  fontWeight: 500,
+                  margin: "0 0 0.4rem",
+                }}>
+                  {t.title}
+                </h4>
+                <p style={{ fontSize: "0.85rem", color: "#4A4F45", margin: 0, lineHeight: 1.5 }}>
+                  {t.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {related.length > 0 && (
           <section style={{ marginTop: "4rem" }}>
             <h2 style={{
@@ -284,11 +333,20 @@ export function ProductDetailClient({ product, related }: { product: Product; re
           grid-template-columns: 1fr;
           gap: 2rem;
         }
+        .trust-section {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
         @media (min-width: 768px) {
           .product-detail-grid {
             grid-template-columns: 1fr 1fr;
             gap: 3rem;
             align-items: start;
+          }
+          .trust-section {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
           }
         }
       `}</style>
