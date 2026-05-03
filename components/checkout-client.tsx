@@ -16,21 +16,22 @@ export function CheckoutClient() {
   const [customerAddress, setCustomerAddress] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     setItems(loadCart());
   }, []);
 
+  // Cuando regresa del mock pago, confirmar y redirigir a gracias
   useEffect(() => {
-    if (process.env.NODE_ENV === "production") return;
     const isMockPaid = searchParams.get("mockPaid") === "1";
     const orderId = Number(searchParams.get("orderId"));
+    const orderNumber = searchParams.get("orderNumber") || "";
     const transactionId = searchParams.get("transactionId");
     if (!isMockPaid || !Number.isInteger(orderId) || !transactionId) return;
     const key = "mock_confirmed_" + orderId;
     if (sessionStorage.getItem(key)) return;
     sessionStorage.setItem(key, "1");
+
     void (async () => {
       try {
         await fetch("/api/payments/confirm", {
@@ -38,11 +39,11 @@ export function CheckoutClient() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ orderId, transactionId, status: "APPROVED" }),
         });
-        window.location.href = "/gracias?orderNumber=" + (orderJson?.orderNumber || "");
-        setItems([]);
         saveCart([]);
+        window.dispatchEvent(new Event("igs-cart-updated"));
+        window.location.href = "/gracias?orderNumber=" + orderNumber;
       } catch {
-        setError("No se pudo confirmar el pago mock.");
+        setError("No se pudo confirmar el pago.");
       }
     })();
   }, [searchParams]);
@@ -70,7 +71,6 @@ export function CheckoutClient() {
   async function handleCheckout(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
-    setMessage(null);
 
     if (items.length === 0) {
       setError("El carrito está vacío.");
@@ -99,6 +99,7 @@ export function CheckoutClient() {
         throw new Error(orderJson.error || "No se pudo crear la orden");
       }
 
+      // Llamar al payment para crear la URL del mock o de Wompi real
       const paymentResponse = await fetch("/api/payments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -110,7 +111,17 @@ export function CheckoutClient() {
         throw new Error(paymentJson.error || "No se pudo iniciar el pago");
       }
 
-      window.location.href = paymentJson.paymentUrl;
+      // Si es mock, agregar el orderNumber a la URL
+      let paymentUrl = paymentJson.paymentUrl;
+      if (paymentUrl.includes("mockPaid=1")) {
+        paymentUrl += "&orderNumber=" + (orderJson.orderNumber || "");
+      } else {
+        // Es Wompi real - limpiar carrito ya, porque la persona se va a otra página
+        saveCart([]);
+        window.dispatchEvent(new Event("igs-cart-updated"));
+      }
+
+      window.location.href = paymentUrl;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error inesperado");
     } finally {
@@ -120,7 +131,7 @@ export function CheckoutClient() {
 
   return (
     <div style={{ display: "grid", gap: "1.5rem", maxWidth: 1100, margin: "0 auto", padding: "1rem" }} className="checkout-grid">
-      
+
       <section style={{ background: "#FDFAF3", borderRadius: 18, padding: "1.5rem", border: "1px solid #EDE3CD" }}>
         <h2 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.4rem", color: "#4A5D3A", margin: "0 0 1.25rem", fontWeight: 500 }}>
           Resumen de compra
@@ -190,21 +201,9 @@ export function CheckoutClient() {
                   padding: "0.2rem",
                   border: "1px solid #EDE3CD",
                 }}>
-                  <button
-                    type="button"
-                    onClick={() => setQuantity(item.productId, item.quantity - 1)}
-                    disabled={item.quantity <= 1}
-                    style={qtyBtnStyle}
-                  >−</button>
-                  <span style={{ minWidth: 28, textAlign: "center", fontSize: "0.85rem", fontWeight: 600, color: "#4A5D3A" }}>
-                    {item.quantity}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setQuantity(item.productId, item.quantity + 1)}
-                    disabled={item.quantity >= 20}
-                    style={qtyBtnStyle}
-                  >+</button>
+                  <button type="button" onClick={() => setQuantity(item.productId, item.quantity - 1)} disabled={item.quantity <= 1} style={qtyBtnStyle}>−</button>
+                  <span style={{ minWidth: 28, textAlign: "center", fontSize: "0.85rem", fontWeight: 600, color: "#4A5D3A" }}>{item.quantity}</span>
+                  <button type="button" onClick={() => setQuantity(item.productId, item.quantity + 1)} disabled={item.quantity >= 20} style={qtyBtnStyle}>+</button>
                 </div>
                 <p style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1rem", fontWeight: 600, color: "#4A5D3A", margin: 0 }}>
                   {fmt(item.price * item.quantity)}
@@ -258,89 +257,38 @@ export function CheckoutClient() {
         </p>
 
         <form onSubmit={handleCheckout} style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
-          <input
-            placeholder="Nombre completo"
-            value={customerName}
-            onChange={(e) => setCustomerName(e.target.value)}
-            required
-            style={inputStyle}
-          />
-          <input
-            type="email"
-            placeholder="Tu email (para enviarte el seguimiento)"
-            value={customerEmail}
-            onChange={(e) => setCustomerEmail(e.target.value)}
-            required
-            style={inputStyle}
-          />
-          <input
-            placeholder="Teléfono / WhatsApp"
-            value={customerPhone}
-            onChange={(e) => setCustomerPhone(e.target.value)}
-            required
-            style={inputStyle}
-          />
-          <textarea
-            placeholder="Dirección completa con barrio"
-            rows={3}
-            value={customerAddress}
-            onChange={(e) => setCustomerAddress(e.target.value)}
-            required
-            style={{ ...inputStyle, resize: "vertical", borderRadius: 16 }}
-          />
+          <input placeholder="Nombre completo" value={customerName} onChange={(e) => setCustomerName(e.target.value)} required style={inputStyle} />
+          <input type="email" placeholder="Tu email (para enviarte el seguimiento)" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} required style={inputStyle} />
+          <input placeholder="Teléfono / WhatsApp" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} required style={inputStyle} />
+          <textarea placeholder="Dirección completa con barrio" rows={3} value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} required style={{ ...inputStyle, resize: "vertical", borderRadius: 16 }} />
 
           {error && (
             <div style={{ background: "rgba(201,83,61,0.1)", border: "1px solid rgba(201,83,61,0.3)", padding: "0.85rem", borderRadius: 12, color: "#C9533D", fontSize: "0.85rem" }}>
               ⚠️ {error}
             </div>
           )}
-          {message && (
-            <div style={{ background: "rgba(92,138,94,0.1)", border: "1px solid rgba(92,138,94,0.3)", padding: "0.85rem", borderRadius: 12, color: "#5C8A5E", fontSize: "0.85rem" }}>
-              ✅ {message}
-            </div>
-          )}
 
-          <button
-            type="submit"
-            disabled={loading || items.length === 0}
-            style={{
-              width: "100%",
-              background: "#4A5D3A",
-              color: "#F7F1E5",
-              border: "none",
-              padding: "1.1rem",
-              borderRadius: 100,
-              fontSize: "1rem",
-              fontWeight: 500,
-              cursor: loading || items.length === 0 ? "not-allowed" : "pointer",
-              opacity: loading || items.length === 0 ? 0.6 : 1,
-              fontFamily: "inherit",
-              marginTop: "0.5rem",
-            }}
-          >
+          <button type="submit" disabled={loading || items.length === 0} style={{
+            width: "100%",
+            background: "#4A5D3A",
+            color: "#F7F1E5",
+            border: "none",
+            padding: "1.1rem",
+            borderRadius: 100,
+            fontSize: "1rem",
+            fontWeight: 500,
+            cursor: loading || items.length === 0 ? "not-allowed" : "pointer",
+            opacity: loading || items.length === 0 ? 0.6 : 1,
+            fontFamily: "inherit",
+            marginTop: "0.5rem",
+          }}>
             {loading ? "Procesando..." : "Pagar con Wompi · " + fmt(total)}
           </button>
 
-          <div style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "0.4rem",
-            marginTop: "0.5rem",
-            fontSize: "0.7rem",
-            color: "#4A4F45",
-            alignItems: "center",
-            flexWrap: "wrap",
-          }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: "0.4rem", marginTop: "0.5rem", fontSize: "0.7rem", color: "#4A4F45", alignItems: "center", flexWrap: "wrap" }}>
             <span>Aceptamos:</span>
             {["Visa", "Master", "PSE", "Nequi"].map(m => (
-              <span key={m} style={{
-                background: "#F7F1E5",
-                padding: "0.2rem 0.5rem",
-                borderRadius: 6,
-                fontWeight: 600,
-                border: "1px solid rgba(74, 93, 58, 0.1)",
-                fontSize: "0.65rem",
-              }}>{m}</span>
+              <span key={m} style={{ background: "#F7F1E5", padding: "0.2rem 0.5rem", borderRadius: 6, fontWeight: 600, border: "1px solid rgba(74, 93, 58, 0.1)", fontSize: "0.65rem" }}>{m}</span>
             ))}
           </div>
         </form>
