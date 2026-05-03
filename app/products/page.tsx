@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import { AddToCartButton } from "@/components/add-to-cart-button";
-import Link from "next/link";
+import { HomeProductCard } from "@/components/home-product-card";
+import { ResponsiveGrid } from "@/components/responsive-grid";
 
 export const dynamic = "force-dynamic";
 
@@ -8,60 +8,70 @@ export default async function ProductsPage() {
   const products = await prisma.product.findMany({ orderBy: { id: "desc" } });
 
   return (
-    <section className="space-y-6">
-      <div className="hero-shell p-6 sm:p-7">
-        <span className="eyebrow">Catalogo curado</span>
-        <h1 className="display-title mt-3">Encuentra tu rutina ideal de salud, piel y cabello</h1>
-        <p className="mt-3 max-w-2xl muted">
-          Explora productos seleccionados para una tienda especializada, con stock visible,
-          precios claros y compra en pocos pasos.
-        </p>
-      </div>
+    <div style={{ background: "#F7F1E5", fontFamily: "var(--font-dm-sans), Inter, sans-serif", paddingBottom: "3rem" }}>
 
-      {products.length === 0 && (
-        <div className="card p-5">
-          <p className="muted">No hay productos cargados. Ejecuta el seed para poblar catalogo.</p>
+      <section style={{ padding: "2rem 1.5rem 1.5rem", maxWidth: "1280px", margin: "0 auto" }}>
+        <div style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          fontSize: "0.7rem",
+          fontWeight: 500,
+          textTransform: "uppercase",
+          letterSpacing: "0.18em",
+          color: "#C97B5C",
+          marginBottom: "0.75rem",
+        }}>
+          <span style={{ width: 20, height: 1, background: "#C97B5C" }} />
+          Catálogo curado
         </div>
-      )}
 
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {products.map((product) => (
-          <article key={product.id} className="card flex h-full flex-col p-4">
-            {product.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={product.image}
-                alt={product.name}
-                className="h-48 w-full rounded-lg border border-line object-cover"
+        <h1 style={{
+          fontFamily: "var(--font-fraunces), Georgia, serif",
+          fontSize: "clamp(1.85rem, 4vw, 2.8rem)",
+          lineHeight: 1.1,
+          fontWeight: 400,
+          letterSpacing: "-0.02em",
+          color: "#4A5D3A",
+          marginBottom: "0.75rem",
+        }}>
+          Todos nuestros <em style={{ fontStyle: "italic", fontWeight: 300, color: "#C97B5C" }}>productos</em>
+        </h1>
+
+        <p style={{ fontSize: "0.95rem", color: "#4A4F45", maxWidth: "560px" }}>
+          {products.length} productos importados desde EE.UU., con stock disponible y entrega rápida en Medellín.
+        </p>
+      </section>
+
+      <section style={{ padding: "0 1.5rem", maxWidth: "1280px", margin: "0 auto" }}>
+        {products.length === 0 ? (
+          <div style={{
+            background: "#FDFAF3",
+            borderRadius: 18,
+            padding: "2rem 1.25rem",
+            border: "1px solid rgba(74, 93, 58, 0.08)",
+            textAlign: "center",
+          }}>
+            <p style={{ color: "#4A4F45" }}>No hay productos cargados todavía.</p>
+          </div>
+        ) : (
+          <ResponsiveGrid>
+            {products.map((product) => (
+              <HomeProductCard
+                key={product.id}
+                product={{
+                  id: product.id,
+                  name: product.name,
+                  price: Number(product.price),
+                  image: product.image,
+                  stock: product.stock,
+                }}
               />
-            ) : (
-              <div className="h-48 w-full rounded-lg border border-line bg-slate-50" />
-            )}
+            ))}
+          </ResponsiveGrid>
+        )}
+      </section>
 
-            <div className="mt-3 inline-flex w-fit rounded-full border border-line px-2 py-1 text-xs font-semibold text-emerald-800">
-              En tendencia
-            </div>
-            <h2 className="mt-2 text-lg font-semibold">{product.name}</h2>
-            <p className="mt-1 line-clamp-2 text-sm muted">{product.description}</p>
-            <div className="mt-3 flex items-end justify-between gap-2">
-              <p className="text-xl font-bold">${Number(product.price).toFixed(2)}</p>
-              <p className="text-sm muted">Stock: {product.stock}</p>
-            </div>
-
-            <div className="mt-4 flex items-center gap-2">
-              <Link className="btn" href={`/products/${product.id}`}>
-                Ver detalle
-              </Link>
-              <AddToCartButton
-                productId={product.id}
-                name={product.name}
-                price={Number(product.price)}
-                image={product.image}
-              />
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
+    </div>
   );
 }

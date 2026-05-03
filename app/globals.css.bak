@@ -420,24 +420,23 @@ body {
   }
 }
 
-
 /* ━━━ RESPONSIVE GRID ━━━ */
 .responsive-grid {
-  display: grid !important;
+  display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.85rem;
 }
 
 @media (min-width: 640px) {
   .responsive-grid {
-    grid-template-columns: repeat(3, 1fr) !important;
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
   }
 }
 
 @media (min-width: 1024px) {
   .responsive-grid {
-    grid-template-columns: repeat(4, 1fr) !important;
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.25rem;
   }
 
