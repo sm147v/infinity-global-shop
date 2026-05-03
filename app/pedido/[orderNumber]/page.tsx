@@ -1,119 +1,169 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
-const statusSteps = [
-  { key: "PENDING",   label: "Pedido recibido",      emoji: "📋" },
-  { key: "PAID",      label: "Pago confirmado",       emoji: "✅" },
-  { key: "PREPARING", label: "Preparando tu paquete", emoji: "📦" },
-  { key: "SHIPPED",   label: "En camino",             emoji: "🚚" },
-  { key: "DELIVERED", label: "Entregado",             emoji: "🌿" },
-];
+const STATUS_LABELS: Record<string, { label: string; emoji: string; color: string; step: number }> = {
+  PENDING:   { label: "Pendiente de pago", emoji: "📋", color: "#C9A96E", step: 1 },
+  PAID:      { label: "Pago confirmado",   emoji: "✅", color: "#5C8A5E", step: 2 },
+  PREPARING: { label: "Preparando pedido", emoji: "📦", color: "#6B7B4F", step: 3 },
+  SHIPPED:   { label: "En camino",         emoji: "🚚", color: "#4A5D3A", step: 4 },
+  DELIVERED: { label: "Entregado",         emoji: "🌿", color: "#4A5D3A", step: 5 },
+  CANCELLED: { label: "Cancelado",         emoji: "❌", color: "#C9533D", step: 0 },
+};
 
-function getStepIndex(status: string) {
-  return statusSteps.findIndex(s => s.key === status);
-}
-
-function formatPrice(n: number) {
-  return "$" + n.toLocaleString("es-CO");
-}
+const fmt = (n: number) => "$" + Math.round(Number(n)).toLocaleString("es-CO");
 
 export default async function OrderTrackingPage({
   params,
 }: {
-  params: { orderNumber: string };
+  params: Promise<{ orderNumber: string }>;
 }) {
+  const { orderNumber } = await params;
+
+  if (!orderNumber) notFound();
+
   const order = await prisma.order.findUnique({
-    where: { orderNumber: params.orderNumber },
+    where: { orderNumber },
     include: {
-      items: {
-        include: { product: true },
-      },
+      items: { include: { product: true } },
     },
   });
 
-  if (!order || order.status === "CANCELLED") {
-    notFound();
-  }
+  if (!order) notFound();
 
-  const currentStep = getStepIndex(order.status);
+  const currentStatus = STATUS_LABELS[order.status] || STATUS_LABELS.PENDING;
+  const currentStep = currentStatus.step;
+
+  const steps = [
+    { num: 1, label: "Pendiente", emoji: "📋" },
+    { num: 2, label: "Pagado", emoji: "✅" },
+    { num: 3, label: "Preparando", emoji: "📦" },
+    { num: 4, label: "En camino", emoji: "🚚" },
+    { num: 5, label: "Entregado", emoji: "🌿" },
+  ];
 
   return (
-    <main style={{ minHeight: "100vh", background: "#F7F1E5", fontFamily: "Inter, sans-serif", padding: "2rem 1.25rem", maxWidth: "480px", margin: "0 auto" }}>
-      
-      <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-        <h1 style={{ fontFamily: "Georgia, serif", fontSize: "1.8rem", color: "#4A5D3A", fontWeight: 400, margin: "0 0 4px" }}>
-          Infinity <em style={{ color: "#C97B5C" }}>Global</em>
-        </h1>
-        <p style={{ color: "#6B7B4F", fontSize: "13px", margin: 0 }}>Seguimiento de pedido</p>
-      </div>
+    <main style={{ minHeight: "calc(100vh - 200px)", background: "#F7F1E5", padding: "2rem 1.25rem", fontFamily: "var(--font-dm-sans), Inter, sans-serif" }}>
+      <div style={{ maxWidth: 720, margin: "0 auto" }}>
 
-      <div style={{ background: "#4A5D3A", borderRadius: "16px", padding: "1.25rem", textAlign: "center", marginBottom: "1.25rem" }}>
-        <p style={{ color: "#C9A96E", fontSize: "12px", textTransform: "uppercase", letterSpacing: "2px", margin: "0 0 4px" }}>Tu pedido</p>
-        <h2 style={{ fontFamily: "Georgia, serif", fontSize: "1.6rem", color: "#F7F1E5", fontWeight: 400, margin: 0 }}>
-          {order.orderNumber}
-        </h2>
-      </div>
-
-      <div style={{ background: "#FDFAF3", borderRadius: "20px", padding: "1.5rem", border: "1px solid #EDE3CD", marginBottom: "1.25rem" }}>
-        <p style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "2px", color: "#C97B5C", margin: "0 0 1.25rem", fontWeight: 600 }}>
-          Estado actual
-        </p>
-        <div style={{ position: "relative", paddingLeft: "1.75rem" }}>
-          <div style={{ position: "absolute", left: "10px", top: "8px", bottom: "8px", width: "2px", background: "#EDE3CD" }} />
-          {statusSteps.map((step, i) => {
-            const isDone = i <= currentStep;
-            const isActive = i === currentStep;
-            return (
-              <div key={step.key} style={{ position: "relative", paddingBottom: i < statusSteps.length - 1 ? "1.25rem" : 0 }}>
-                <div style={{
-                  position: "absolute", left: "-1.75rem", top: "3px",
-                  width: "20px", height: "20px", borderRadius: "50%",
-                  background: isDone ? (isActive ? "#C97B5C" : "#4A5D3A") : "#EDE3CD",
-                  border: "3px solid #FDFAF3",
-                  boxShadow: isActive ? "0 0 0 4px rgba(201,123,92,0.2)" : "none",
-                  zIndex: 1,
-                }} />
-                <div style={{ opacity: isDone ? 1 : 0.4 }}>
-                  <p style={{ fontFamily: "Georgia, serif", fontSize: "0.95rem", color: isDone ? "#4A5D3A" : "#4A4F45", fontWeight: isActive ? 600 : 400, margin: "0 0 2px" }}>
-                    {step.emoji} {step.label}
-                  </p>
-                  {isActive && (
-                    <p style={{ fontSize: "0.75rem", color: "#C97B5C", margin: 0, fontWeight: 600 }}>← Estado actual</p>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+        <div style={{ marginBottom: "1.5rem" }}>
+          <Link href="/pedido" style={{ fontSize: "0.85rem", color: "#4A4F45", textDecoration: "none" }}>
+            ← Buscar otro pedido
+          </Link>
         </div>
-      </div>
 
-      <div style={{ background: "#FDFAF3", borderRadius: "20px", padding: "1.5rem", border: "1px solid #EDE3CD", marginBottom: "1.25rem" }}>
-        <p style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "2px", color: "#C97B5C", margin: "0 0 1rem", fontWeight: 600 }}>Tu compra</p>
-        {order.items.map((item) => (
-          <div key={item.id} style={{ display: "flex", justifyContent: "space-between", padding: "0.6rem 0", borderBottom: "1px solid #EDE3CD" }}>
-            <span style={{ fontSize: "0.9rem", color: "#4A4F45" }}>{item.quantity}× {item.product.name}</span>
-            <span style={{ fontSize: "0.9rem", color: "#4A5D3A", fontWeight: 600 }}>{formatPrice(Number(item.subtotal))}</span>
+        <div style={{ background: "#FDFAF3", borderRadius: 24, padding: "2rem 1.5rem", border: "1px solid #EDE3CD", marginBottom: "1.5rem" }}>
+          <p style={{ fontSize: "0.78rem", color: "#C97B5C", textTransform: "uppercase", letterSpacing: "0.15em", margin: "0 0 0.4rem", fontWeight: 600 }}>
+            Tu pedido
+          </p>
+          <h1 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.8rem", color: "#4A5D3A", fontWeight: 400, margin: "0 0 1.5rem" }}>
+            {order.orderNumber}
+          </h1>
+
+          <div style={{
+            background: currentStatus.color + "15",
+            border: "1px solid " + currentStatus.color + "40",
+            borderRadius: 16,
+            padding: "1.25rem",
+            marginBottom: "1.5rem",
+            textAlign: "center",
+          }}>
+            <p style={{ fontSize: "0.78rem", color: currentStatus.color, textTransform: "uppercase", letterSpacing: "0.15em", margin: "0 0 0.4rem", fontWeight: 600 }}>
+              Estado actual
+            </p>
+            <h2 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.4rem", color: currentStatus.color, margin: 0, fontWeight: 500 }}>
+              {currentStatus.emoji} {currentStatus.label}
+            </h2>
           </div>
-        ))}
-        <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "0.75rem" }}>
-          <span style={{ fontFamily: "Georgia, serif", fontSize: "1.1rem", color: "#4A5D3A" }}>Total</span>
-          <span style={{ fontFamily: "Georgia, serif", fontSize: "1.2rem", color: "#4A5D3A", fontWeight: 600 }}>{formatPrice(Number(order.total))}</span>
+
+          {order.status !== "CANCELLED" && (
+            <div style={{ marginBottom: "0.5rem" }}>
+              {steps.map((step, i) => {
+                const done = step.num <= currentStep;
+                const isLast = i === steps.length - 1;
+                return (
+                  <div key={step.num} style={{ display: "flex", alignItems: "flex-start", gap: "0.85rem", paddingBottom: isLast ? 0 : "0.85rem" }}>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0 }}>
+                      <div style={{
+                        width: 32, height: 32,
+                        borderRadius: "50%",
+                        background: done ? "#4A5D3A" : "#EDE3CD",
+                        color: done ? "#F7F1E5" : "#4A4F45",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "0.85rem",
+                        fontWeight: 700,
+                      }}>
+                        {done ? "✓" : step.num}
+                      </div>
+                      {!isLast && (
+                        <div style={{
+                          width: 2,
+                          height: 24,
+                          background: done ? "#4A5D3A" : "#EDE3CD",
+                          marginTop: "0.25rem",
+                        }} />
+                      )}
+                    </div>
+                    <div style={{ paddingTop: "0.4rem" }}>
+                      <p style={{ margin: 0, fontSize: "0.92rem", fontWeight: done ? 600 : 400, color: done ? "#4A5D3A" : "#4A4F45" }}>
+                        {step.emoji} {step.label}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
-      </div>
 
-      <div style={{ background: "#FDFAF3", borderRadius: "20px", padding: "1.5rem", border: "1px solid #EDE3CD", marginBottom: "1.5rem" }}>
-        <p style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "2px", color: "#C97B5C", margin: "0 0 1rem", fontWeight: 600 }}>Datos de entrega</p>
-        <p style={{ color: "#4A5D3A", fontWeight: 600, margin: "0 0 4px" }}>{order.customerName}</p>
-        <p style={{ color: "#4A4F45", fontSize: "0.88rem", margin: "0 0 4px" }}>📞 {order.customerPhone}</p>
-        <p style={{ color: "#4A4F45", fontSize: "0.88rem", margin: 0 }}>📍 {order.customerAddress}</p>
-      </div>
+        <div style={{ background: "#FDFAF3", borderRadius: 20, padding: "1.5rem", border: "1px solid #EDE3CD", marginBottom: "1rem" }}>
+          <p style={{ fontSize: "0.78rem", color: "#C97B5C", textTransform: "uppercase", letterSpacing: "0.15em", margin: "0 0 0.85rem", fontWeight: 600 }}>
+            Productos
+          </p>
+          {order.items.map((item) => (
+            <div key={item.id} style={{ display: "flex", justifyContent: "space-between", padding: "0.6rem 0", borderBottom: "1px solid #EDE3CD", fontSize: "0.9rem" }}>
+              <span style={{ color: "#4A4F45" }}>{item.quantity}× {item.product?.name || "Producto"}</span>
+              <span style={{ color: "#4A5D3A", fontWeight: 600 }}>{fmt(item.subtotal)}</span>
+            </div>
+          ))}
+          <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "0.85rem", marginTop: "0.4rem" }}>
+            <strong style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.1rem", color: "#4A5D3A" }}>Total</strong>
+            <strong style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.2rem", color: "#4A5D3A", fontWeight: 600 }}>{fmt(order.total)}</strong>
+          </div>
+        </div>
 
-      <div style={{ textAlign: "center" }}>
-        <a href="https://wa.me/573054223600" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "#25D366", color: "white", textDecoration: "none", padding: "0.9rem 1.5rem", borderRadius: "100px", fontSize: "0.9rem", fontWeight: 500 }}>
-          💬 ¿Dudas? Escríbenos por WhatsApp
-        </a>
-      </div>
+        <div style={{ background: "#FDFAF3", borderRadius: 20, padding: "1.5rem", border: "1px solid #EDE3CD", marginBottom: "1.5rem" }}>
+          <p style={{ fontSize: "0.78rem", color: "#C97B5C", textTransform: "uppercase", letterSpacing: "0.15em", margin: "0 0 0.85rem", fontWeight: 600 }}>
+            Datos de entrega
+          </p>
+          <p style={{ color: "#4A5D3A", fontWeight: 600, margin: "0 0 0.3rem", fontSize: "1rem" }}>{order.customerName}</p>
+          <p style={{ color: "#4A4F45", fontSize: "0.88rem", margin: "0 0 0.2rem" }}>📞 {order.customerPhone}</p>
+          <p style={{ color: "#4A4F45", fontSize: "0.88rem", margin: 0 }}>📍 {order.customerAddress}</p>
+        </div>
 
+        <div style={{ textAlign: "center", padding: "1rem 0" }}>
+          <p style={{ color: "#4A4F45", fontSize: "0.88rem", marginBottom: "0.85rem" }}>
+            ¿Alguna pregunta sobre tu pedido?
+          </p>
+          <a href={"https://wa.me/573054223600?text=" + encodeURIComponent("Hola, quiero saber sobre mi pedido " + order.orderNumber)} target="_blank" rel="noreferrer" style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            padding: "0.85rem 1.5rem",
+            background: "#25D366",
+            color: "white",
+            borderRadius: 100,
+            textDecoration: "none",
+            fontSize: "0.9rem",
+            fontWeight: 600,
+          }}>
+            💬 Escríbenos por WhatsApp
+          </a>
+        </div>
+
+      </div>
     </main>
   );
 }
