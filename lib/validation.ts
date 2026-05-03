@@ -20,8 +20,17 @@ const addressSchema = z
   .max(200)
   .transform((v) => sanitizeText(v, 200));
 
+const emailSchema = z
+  .string()
+  .email("Email invalido")
+  .max(120)
+  .transform((v) => sanitizeText(v, 120))
+  .optional()
+  .or(z.literal(""));
+
 export const createOrderSchema = z.object({
   customerName: nameSchema,
+  customerEmail: emailSchema,
   customerPhone: phoneSchema,
   customerAddress: addressSchema,
   items: z
@@ -41,10 +50,6 @@ export const createPaymentSchema = z.object({
 
 export const confirmPaymentSchema = z.object({
   orderId: z.number().int().positive(),
-  transactionId: z.string().min(3).max(120),
-  status: z.enum(["APPROVED", "DECLINED", "ERROR"]),
-});
-
-export const updateDeliveryStatusSchema = z.object({
-  deliveryStatus: z.enum(["PENDING", "ON_ROUTE", "DELIVERED"]),
+  transactionId: z.string().min(1),
+  status: z.enum(["APPROVED", "DECLINED", "VOIDED", "PENDING", "ERROR"]),
 });

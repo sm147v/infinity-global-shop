@@ -89,7 +89,7 @@ export async function createOrderFromPayload(payload: unknown) {
     });
   });
 
-  console.log("📧 Enviando emails para pedido", orderNumber, "email cliente:", data.customerEmail);
+  // Enviar emails (no bloquea si falla)
   try {
     const emailData = {
       orderNumber,
