@@ -1,8 +1,40 @@
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { ProductDetailClient } from "@/components/product-detail-client";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const product = await prisma.product.findUnique({ where: { id: parseInt(id) } });
+
+  if (!product) {
+    return { title: "Producto no encontrado · Infinity Global Shop" };
+  }
+
+  const description = (product.description || "").substring(0, 155);
+  const title = product.name + " · " + product.category + " · Infinity Global Shop";
+
+  return {
+    title: title,
+    description: description + " · Importado de USA · Envío gratis +$150.000 en Medellín.",
+    keywords: [product.name, product.category, "vitaminas Medellín", "productos importados USA"],
+    openGraph: {
+      title: product.name,
+      description: description,
+      url: "https://www.infinityglobalshop.com/products/" + product.id,
+      siteName: "Infinity Global Shop",
+      images: product.image ? [{ url: product.image, width: 800, height: 800, alt: product.name }] : [],
+      locale: "es_CO",
+      type: "website",
+    },
+  };
+}
 
 export default async function ProductPage({
   params,
@@ -10,9 +42,7 @@ export default async function ProductPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const product = await prisma.product.findUnique({
-    where: { id: parseInt(id) },
-  });
+  const product = await prisma.product.findUnique({ where: { id: parseInt(id) } });
 
   if (!product) notFound();
 
