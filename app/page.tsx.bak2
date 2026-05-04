@@ -89,10 +89,6 @@ export default async function Home() {
         <style>{`@keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }`}</style>
       </div>
 
-      <section style={{ padding: "2.5rem 1.5rem 0", maxWidth: "1280px", margin: "0 auto" }}>
-        <CouponBanner />
-      </section>
-
       <section style={{ padding: "3rem 1.5rem", maxWidth: "1280px", margin: "0 auto" }}>
         <div style={{ marginBottom: "2rem", textAlign: "center" }}>
           <span style={{ fontSize: "0.7rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.18em", color: "#C97B5C", marginBottom: "0.5rem", display: "block" }}>— Lo más querido</span>

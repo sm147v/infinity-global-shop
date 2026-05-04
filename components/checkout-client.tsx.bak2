@@ -17,7 +17,6 @@ export function CheckoutClient() {
   const [customerAddress, setCustomerAddress] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
 
   useEffect(() => {
     setItems(loadCart());
@@ -51,12 +50,9 @@ export function CheckoutClient() {
   }, [searchParams]);
 
   const subtotal = useMemo(() => items.reduce((sum, item) => sum + item.price * item.quantity, 0), [items]);
-  const baseFreeShipping = subtotal >= 150000;
-  const couponFreeShipping = appliedCoupon ? appliedCoupon.freeShipping : false;
-  const isFreeShipping = baseFreeShipping || couponFreeShipping;
+  const isFreeShipping = subtotal >= 150000;
   const shipping = isFreeShipping ? 0 : 8000;
-  const couponDiscount = (appliedCoupon && !appliedCoupon.freeShipping) ? appliedCoupon.discount : 0;
-  const total = Math.max(0, subtotal + shipping - couponDiscount);
+  const total = subtotal + shipping;
 
   function setQuantity(productId: number, quantity: number) {
     const normalized = Math.min(20, Math.max(1, quantity));
@@ -220,19 +216,10 @@ export function CheckoutClient() {
 
         {items.length > 0 && (
           <div style={{ paddingTop: "1rem" }}>
-            <div style={{ marginBottom: "0.85rem" }}>
-              <CouponInput subtotal={subtotal} appliedCoupon={appliedCoupon} onApply={setAppliedCoupon} />
-            </div>
             <div style={{ display: "flex", justifyContent: "space-between", padding: "0.4rem 0", fontSize: "0.88rem", color: "#4A4F45" }}>
               <span>Subtotal</span>
               <span>{fmt(subtotal)}</span>
             </div>
-            {appliedCoupon && !appliedCoupon.freeShipping && couponDiscount > 0 && (
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "0.4rem 0", fontSize: "0.88rem", color: "#5C8A5E", fontWeight: 600 }}>
-                <span>🎟️ Descuento ({appliedCoupon.code})</span>
-                <span>−{fmt(couponDiscount)}</span>
-              </div>
-            )}
             <div style={{
               display: "flex",
               justifyContent: "space-between",

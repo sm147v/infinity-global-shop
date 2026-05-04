@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/site-header";
 import { BottomNav } from "@/components/bottom-nav";
 import { WhatsAppFloating } from "@/components/whatsapp-floating";
 import { WelcomePopup } from "@/components/welcome-popup";
+import { WelcomePopup } from "@/components/welcome-popup";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -38,35 +39,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <head>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Store",
-            "name": "Infinity Global Shop",
-            "description": "Tienda online de productos importados de USA: vitaminas, belleza, cuidado capilar. Envío 24h en Medellín.",
-            "url": "https://www.infinityglobalshop.com",
-            "telephone": "+573054223600",
-            "address": {
-              "@type": "PostalAddress",
-              "addressLocality": "Medellín",
-              "addressRegion": "Antioquia",
-              "addressCountry": "CO"
-            },
-            "areaServed": {
-              "@type": "AdministrativeArea",
-              "name": "Medellín, Antioquia"
-            },
-            "currenciesAccepted": "COP",
-            "paymentAccepted": "Visa, Mastercard, PSE, Nequi, Bancolombia",
-            "openingHours": "Mo-Su 09:00-19:00",
-            "sameAs": [
-              "https://www.instagram.com/infinityglobalshop",
-              "https://wa.me/573054223600"
-            ]
-          })
-        }} />
-      </head>
       <body className={`${dmSans.variable} ${fraunces.variable} antialiased`} style={{ margin: 0, background: "#F7F1E5" }}>
         <CartProvider>
           <div style={{

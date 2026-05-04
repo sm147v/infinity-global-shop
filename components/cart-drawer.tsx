@@ -1,12 +1,13 @@
 "use client";
 
 import { useCart, SHIPPING } from "./cart-context";
+import { CouponInput } from "./coupon-input";
 import Link from "next/link";
 
 const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
 
 export function CartDrawer() {
-  const { items, isOpen, closeCart, updateQty, removeItem, subtotal, itemCount } = useCart();
+  const { items, isOpen, closeCart, updateQty, removeItem, subtotal, itemCount, appliedCoupon, applyCoupon } = useCart();
 
   const remaining = SHIPPING.FREE_THRESHOLD - subtotal;
   const isFree = subtotal >= SHIPPING.FREE_THRESHOLD;
@@ -215,6 +216,15 @@ export function CartDrawer() {
               <span>Subtotal</span>
               <span>{fmt(subtotal)}</span>
             </div>
+            <div style={{ margin: "0.75rem 0" }}>
+              <CouponInput subtotal={subtotal} appliedCoupon={appliedCoupon} onApply={applyCoupon} />
+            </div>
+            {appliedCoupon && !appliedCoupon.freeShipping && couponDiscount > 0 && (
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "0.4rem 0", fontSize: "0.88rem", color: "#5C8A5E", fontWeight: 600 }}>
+                <span>🎟️ {appliedCoupon.code}</span>
+                <span>−{fmt(couponDiscount)}</span>
+              </div>
+            )}
             <div style={{
               display: "flex", justifyContent: "space-between",
               padding: "0.4rem 0", fontSize: "0.88rem",

@@ -8,7 +8,6 @@ const menuItems = [
   { href: "/admin", label: "Dashboard", icon: "🏠" },
   { href: "/admin/orders", label: "Pedidos", icon: "📦" },
   { href: "/admin/products", label: "Productos", icon: "🛍️" },
-  { href: "/admin/coupons", label: "Cupones", icon: "🎟️" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

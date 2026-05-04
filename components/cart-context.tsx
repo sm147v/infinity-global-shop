@@ -12,6 +12,15 @@ export interface CartItem {
   quantity: number;
 }
 
+export interface AppliedCoupon {
+  code: string;
+  description: string | null;
+  type: "PERCENTAGE" | "FIXED" | "FREE_SHIPPING";
+  value: number;
+  discount: number;
+  freeShipping: boolean;
+}
+
 interface AddItemInput {
   id: number;
   name: string;
@@ -31,6 +40,8 @@ interface CartContextType {
   clearCart: () => void;
   subtotal: number;
   itemCount: number;
+  appliedCoupon: AppliedCoupon | null;
+  applyCoupon: (coupon: AppliedCoupon | null) => void;
 }
 
 const FREE_SHIPPING_THRESHOLD = 150000;
@@ -52,6 +63,23 @@ function libToCtx(items: LibCartItem[]): CartItem[] {
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("igs_coupon");
+    if (saved) {
+      try { setAppliedCoupon(JSON.parse(saved)); } catch {}
+    }
+  }, []);
+
+  function applyCoupon(coupon: AppliedCoupon | null) {
+    setAppliedCoupon(coupon);
+    if (coupon) {
+      localStorage.setItem("igs_coupon", JSON.stringify(coupon));
+    } else {
+      localStorage.removeItem("igs_coupon");
+    }
+  }
 
   const refresh = useCallback(() => {
     setItems(libToCtx(loadCart()));
@@ -106,6 +134,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       items, isOpen, openCart, closeCart,
       addItem, updateQty, removeItem, clearCart,
       subtotal, itemCount,
+      appliedCoupon, applyCoupon,
     }}>
       {children}
     </CartContext.Provider>
