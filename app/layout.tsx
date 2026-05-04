@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, Fraunces } from "next/font/google";
 import { CartProvider } from "@/components/cart-context";
+import { WishlistProvider } from "@/components/wishlist-context";
 import { CartDrawer } from "@/components/cart-drawer";
 import { SiteHeader } from "@/components/site-header";
 import { BottomNav } from "@/components/bottom-nav";
@@ -77,7 +78,8 @@ export default function RootLayout({
         }} />
       </head>
       <body className={`${dmSans.variable} ${fraunces.variable} antialiased`} style={{ margin: 0, background: "#F7F1E5" }}>
-        <CartProvider>
+        <WishlistProvider>
+          <CartProvider>
           <div style={{
             background: "#4A5D3A",
             color: "#F7F1E5",
@@ -106,6 +108,7 @@ export default function RootLayout({
           <WelcomePopup />
           <GoogleAnalytics />
         </CartProvider>
+        </WishlistProvider>
       </body>
     </html>
   );

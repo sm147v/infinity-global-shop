@@ -3,11 +3,13 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useCart } from "./cart-context";
+import { useWishlist } from "./wishlist-context";
 
 export function BottomNav() {
   const pathname = usePathname();
   const router = useRouter();
   const { itemCount, openCart } = useCart();
+  const { count: wishCount } = useWishlist();
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
 
@@ -97,6 +99,34 @@ export function BottomNav() {
           </div>
           <span>Buscar</span>
         </button>
+
+        <Link href="/favoritos" style={itemStyle(pathname === "/favoritos")}>
+          <div style={{ position: "relative", height: 22, display: "inline-block" }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            {wishCount > 0 && (
+              <span style={{
+                position: "absolute",
+                top: -6,
+                right: -8,
+                background: "#C97B5C",
+                color: "white",
+                fontSize: "0.6rem",
+                fontWeight: 700,
+                minWidth: 16,
+                height: 16,
+                padding: "0 4px",
+                borderRadius: 100,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                lineHeight: 1,
+              }}>{wishCount}</span>
+            )}
+          </div>
+          <span>Favoritos</span>
+        </Link>
 
         <button onClick={openCart} style={itemStyle(false)}>
           <div style={{ position: "relative", height: 22, display: "inline-block" }}>

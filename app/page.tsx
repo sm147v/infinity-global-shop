@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { HomeProductCard } from "@/components/home-product-card";
 import { ResponsiveGrid } from "@/components/responsive-grid";
 import { CouponBanner } from "@/components/coupon-banner";
+import { NewsletterForm } from "@/components/newsletter-form";
 
 export const dynamic = "force-dynamic";
 
@@ -207,6 +208,12 @@ export default async function Home() {
               </div>
             </div>
 
+            <div style={{ marginTop: "1.5rem" }}>
+              <NewsletterForm />
+            </div>
+          </div>
+
+          <div className="footer-other-cols">
             <div>
               <p style={{ fontSize: "0.78rem", color: "#C9A96E", textTransform: "uppercase", letterSpacing: "0.15em", margin: "0 0 0.85rem", fontWeight: 600 }}>Tienda</p>
               <Link href="/products" style={footerLinkStyle}>Todos los productos</Link>
@@ -235,10 +242,18 @@ export default async function Home() {
             grid-template-columns: 1fr;
             gap: 2rem;
           }
+          .footer-other-cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+          }
           @media (min-width: 768px) {
             .footer-grid {
-              grid-template-columns: 2fr 1fr 1fr;
+              grid-template-columns: 1.4fr 1fr;
               gap: 3rem;
+            }
+            .footer-other-cols {
+              grid-template-columns: 1fr 1fr;
             }
           }
         `}</style>

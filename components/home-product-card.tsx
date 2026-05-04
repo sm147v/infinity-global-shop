@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCart } from "./cart-context";
+import { WishlistButton } from "./wishlist-button";
 
 interface Product {
   id: number;
@@ -35,12 +36,50 @@ export function HomeProductCard({ product }: { product: Product }) {
       display: "flex",
       flexDirection: "column",
     }}>
+      <div style={{ position: "relative", marginBottom: "0.6rem" }}>
+        {product.stock > 0 && product.stock <= 5 && (
+          <span style={{
+            position: "absolute",
+            top: 8, left: 8,
+            background: "#C9533D",
+            color: "white",
+            fontSize: "0.62rem",
+            fontWeight: 700,
+            padding: "0.25rem 0.55rem",
+            borderRadius: 100,
+            zIndex: 2,
+            textTransform: "uppercase",
+            letterSpacing: "0.05em",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+          }}>
+            ¡Solo {product.stock}!
+          </span>
+        )}
+        {product.stock === 0 && (
+          <span style={{
+            position: "absolute",
+            top: 8, left: 8,
+            background: "#4A4F45",
+            color: "white",
+            fontSize: "0.62rem",
+            fontWeight: 700,
+            padding: "0.25rem 0.55rem",
+            borderRadius: 100,
+            zIndex: 2,
+            textTransform: "uppercase",
+            letterSpacing: "0.05em",
+          }}>
+            Agotado
+          </span>
+        )}
+        <div style={{ position: "absolute", top: 6, right: 6, zIndex: 2 }}>
+          <WishlistButton productId={product.id} size={32} />
+        </div>
       <Link href={"/products/" + product.id} style={{ textDecoration: "none", color: "inherit" }}>
         <div style={{
           width: "100%",
           aspectRatio: "1",
           borderRadius: 12,
-          marginBottom: "0.6rem",
           overflow: "hidden",
           background: "linear-gradient(135deg, #EDE3CD 0%, #A8B584 100%)",
           cursor: "pointer",
@@ -84,6 +123,7 @@ export function HomeProductCard({ product }: { product: Product }) {
           {fmt(product.price)}
         </div>
       </Link>
+      </div>
 
       <div style={{ marginTop: "auto" }}>
         {qty === 0 ? (
