@@ -145,7 +145,7 @@ export function CartDrawer() {
                 flexShrink: 0, overflow: "hidden",
                 background: "linear-gradient(135deg,#EDE3CD,#A8B584)",
               }}>
-                {item.image && <img src={item.image} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+                {item.image && <img src={item.image} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }}  loading="lazy" />}
               </div>
               <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.3rem", gap: "0.5rem" }}>
@@ -161,7 +161,7 @@ export function CartDrawer() {
                       background: "rgba(201,83,61,0.08)",
                       border: "1px solid rgba(201,83,61,0.2)",
                       color: "#C9533D", cursor: "pointer",
-                      width: 28, height: 28, borderRadius: "50%",
+                      width: 36, height: 36, borderRadius: "50%",
                       display: "flex", alignItems: "center", justifyContent: "center",
                       flexShrink: 0,
                     }}
@@ -178,7 +178,7 @@ export function CartDrawer() {
                     <button
                       onClick={() => updateQty(item.id, -1)}
                       style={{
-                        width: 26, height: 26, borderRadius: "50%",
+                        width: 36, height: 36, borderRadius: "50%",
                         border: "none", background: "#FDFAF3", color: "#4A5D3A",
                         fontSize: "1rem", fontWeight: 600, cursor: "pointer",
                         display: "flex", alignItems: "center", justifyContent: "center",
@@ -192,7 +192,7 @@ export function CartDrawer() {
                       onClick={() => updateQty(item.id, 1)}
                       disabled={item.quantity >= item.stock}
                       style={{
-                        width: 26, height: 26, borderRadius: "50%",
+                        width: 36, height: 36, borderRadius: "50%",
                         border: "none", background: "#FDFAF3", color: "#4A5D3A",
                         fontSize: "1rem", fontWeight: 600,
                         cursor: item.quantity >= item.stock ? "not-allowed" : "pointer",

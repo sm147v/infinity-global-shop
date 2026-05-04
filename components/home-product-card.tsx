@@ -55,7 +55,7 @@ export function HomeProductCard({ product }: { product: Product }) {
                 objectFit: "cover",
                 objectPosition: "center",
               }}
-            />
+             loading="lazy" />
           )}
         </div>
 

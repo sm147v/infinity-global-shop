@@ -458,3 +458,44 @@ body {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
+
+
+/* ━━━ OPTIMIZACIONES MÓVILES ━━━ */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, a {
+  -webkit-touch-callout: none;
+}
+
+input, textarea, select {
+  font-size: 16px !important; /* Previene zoom en iOS al hacer focus */
+}
+
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+  /* Evitar scroll horizontal accidental */
+  html, body {
+    max-width: 100%;
+  }
+}
+
+/* Mejor smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Anti-flash al cargar */
+html, body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Touch ripple effect */
+button:active, a:active {
+  opacity: 0.85;
+  transition: opacity 0.1s;
+}

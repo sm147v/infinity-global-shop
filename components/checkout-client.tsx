@@ -175,7 +175,7 @@ export function CheckoutClient() {
               overflow: "hidden",
               background: "linear-gradient(135deg, #EDE3CD, #A8B584)",
             }}>
-              {item.image && <img src={item.image} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+              {item.image && <img src={item.image} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }}  loading="lazy" />}
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.4rem" }}>
@@ -186,7 +186,7 @@ export function CheckoutClient() {
                   background: "rgba(201,83,61,0.08)",
                   border: "1px solid rgba(201,83,61,0.2)",
                   color: "#C9533D",
-                  width: 28, height: 28,
+                  width: 36, height: 36,
                   borderRadius: "50%",
                   cursor: "pointer",
                   fontSize: "0.78rem",
@@ -335,7 +335,7 @@ const inputStyle: React.CSSProperties = {
 };
 
 const qtyBtnStyle: React.CSSProperties = {
-  width: 26, height: 26,
+  width: 36, height: 36,
   borderRadius: "50%",
   border: "none",
   background: "#FDFAF3",

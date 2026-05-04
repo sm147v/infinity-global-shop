@@ -1,6 +1,13 @@
 import { Suspense } from "react";
 import { CheckoutClient } from "@/components/checkout-client";
 
+export const metadata = {
+  title: "Finaliza tu compra",
+  description: "Pago seguro con Wompi · Visa, Mastercard, PSE, Nequi",
+};
+
+
+
 export default function CheckoutPage() {
   return (
     <section className="space-y-5">

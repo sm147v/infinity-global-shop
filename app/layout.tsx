@@ -18,6 +18,14 @@ const fraunces = Fraunces({
   subsets: ["latin"],
 });
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: "#4A5D3A",
+};
+
 export const metadata: Metadata = {
   title: "Infinity Global Shop · Productos importados de USA en Medellín",
   description: "Vitaminas, productos de belleza y cuidado capilar importados de Estados Unidos. Envío gratis +$150.000. Entrega en 24h en Medellín.",

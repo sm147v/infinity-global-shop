@@ -105,7 +105,7 @@ export function HeaderCart() {
                         src={item.image}
                         alt={item.name}
                         className="cart-preview-thumb"
-                      />
+                       loading="lazy" />
                     ) : (
                       <div className="cart-preview-thumb cart-preview-thumb-empty" aria-hidden />
                     )}

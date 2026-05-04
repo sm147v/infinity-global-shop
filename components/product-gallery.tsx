@@ -71,7 +71,7 @@ export function ProductGallery({ images, productName }: Props) {
               transformOrigin: zoomPos.x + "% " + zoomPos.y + "%",
               transition: "transform 0.3s ease",
             }}
-          />
+           loading="lazy" />
         ) : (
           <div style={{
             width: "100%",
@@ -114,7 +114,7 @@ export function ProductGallery({ images, productName }: Props) {
                 src={thumbImage(img)}
                 alt={"Vista " + (i + 1)}
                 style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
-              />
+               loading="lazy" />
             </button>
           ))}
         </div>
