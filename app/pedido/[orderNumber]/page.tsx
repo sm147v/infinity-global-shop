@@ -125,12 +125,12 @@ export default async function OrderTrackingPage({
           {order.items.map((item) => (
             <div key={item.id} style={{ display: "flex", justifyContent: "space-between", padding: "0.6rem 0", borderBottom: "1px solid #EDE3CD", fontSize: "0.9rem" }}>
               <span style={{ color: "#4A4F45" }}>{item.quantity}× {item.product?.name || "Producto"}</span>
-              <span style={{ color: "#4A5D3A", fontWeight: 600 }}>{fmt(item.subtotal)}</span>
+              <span style={{ color: "#4A5D3A", fontWeight: 600 }}>{fmt(Number(item.subtotal))}</span>
             </div>
           ))}
           <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "0.85rem", marginTop: "0.4rem" }}>
             <strong style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.1rem", color: "#4A5D3A" }}>Total</strong>
-            <strong style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.2rem", color: "#4A5D3A", fontWeight: 600 }}>{fmt(order.total)}</strong>
+            <strong style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.2rem", color: "#4A5D3A", fontWeight: 600 }}>{fmt(Number(order.total))}</strong>
           </div>
         </div>
 

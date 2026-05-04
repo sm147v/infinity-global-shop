@@ -10,10 +10,13 @@ export function CartDrawer() {
   const { items, isOpen, closeCart, updateQty, removeItem, subtotal, itemCount, appliedCoupon, applyCoupon } = useCart();
 
   const remaining = SHIPPING.FREE_THRESHOLD - subtotal;
-  const isFree = subtotal >= SHIPPING.FREE_THRESHOLD;
+  const baseFreeShipping = subtotal >= SHIPPING.FREE_THRESHOLD;
+  const couponFreeShipping = appliedCoupon ? appliedCoupon.freeShipping : false;
+  const isFree = baseFreeShipping || couponFreeShipping;
   const progress = Math.min((subtotal / SHIPPING.FREE_THRESHOLD) * 100, 100);
   const shipping = isFree ? 0 : SHIPPING.COST;
-  const total = subtotal + shipping;
+  const couponDiscount = (appliedCoupon && !appliedCoupon.freeShipping) ? appliedCoupon.discount : 0;
+  const total = Math.max(0, subtotal + shipping - couponDiscount);
 
   let shippingMsg: React.ReactNode;
   if (subtotal === 0) {

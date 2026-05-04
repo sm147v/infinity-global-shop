@@ -4,12 +4,14 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { CartItem, loadCart, saveCart } from "@/lib/cart";
+import { useCart } from "./cart-context";
 import { CouponInput } from "@/components/coupon-input";
 
 const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
 
 export function CheckoutClient() {
   const searchParams = useSearchParams();
+  const { appliedCoupon, applyCoupon } = useCart();
   const [items, setItems] = useState<CartItem[]>([]);
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
@@ -17,8 +19,7 @@ export function CheckoutClient() {
   const [customerAddress, setCustomerAddress] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
-
+  
   useEffect(() => {
     setItems(loadCart());
   }, []);
@@ -221,7 +222,7 @@ export function CheckoutClient() {
         {items.length > 0 && (
           <div style={{ paddingTop: "1rem" }}>
             <div style={{ marginBottom: "0.85rem" }}>
-              <CouponInput subtotal={subtotal} appliedCoupon={appliedCoupon} onApply={setAppliedCoupon} />
+              <CouponInput subtotal={subtotal} appliedCoupon={appliedCoupon} onApply={applyCoupon} />
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", padding: "0.4rem 0", fontSize: "0.88rem", color: "#4A4F45" }}>
               <span>Subtotal</span>
