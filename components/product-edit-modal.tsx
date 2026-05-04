@@ -59,7 +59,7 @@ export function ProductEditModal({ product, isOpen, onClose, onSaved }: Props) {
     setSaving(true);
     const token = localStorage.getItem("adminToken") || "";
     const url = isEditing ? "/api/admin/products/" + product?.id : "/api/admin/products";
-    const method = isEditing ? "PATCH" : "POST";
+    const method = isEditing ? "PUT" : "POST";
 
     try {
       const res = await fetch(url, {
