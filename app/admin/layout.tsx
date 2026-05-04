@@ -32,12 +32,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   async function login() {
     if (!token) return;
     setError("");
-    const res = await fetch("/api/admin/verify", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token }),
-    });
-    if (res.ok) {
+    
+    // Llamar ambos endpoints: verify (legacy) y session (cookie httpOnly)
+    const [verifyRes, sessionRes] = await Promise.all([
+      fetch("/api/admin/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      }),
+      fetch("/api/admin/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      }),
+    ]);
+    
+    if (verifyRes.ok && sessionRes.ok) {
       localStorage.setItem("adminToken", token);
       setAuthed(true);
     } else {
@@ -45,8 +55,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   }
 
-  function logout() {
+  async function logout() {
     localStorage.removeItem("adminToken");
+    await fetch("/api/admin/session", { method: "DELETE" }).catch(() => {});
     setAuthed(false);
     setToken("");
     router.push("/");

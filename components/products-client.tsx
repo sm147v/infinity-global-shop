@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { HomeProductCard } from "./home-product-card";
 import { ResponsiveGrid } from "./responsive-grid";
+import { useSearchParams } from "next/navigation";
 
 interface Product {
   id: number;
@@ -27,6 +28,14 @@ const CATEGORY_EMOJI: Record<string, string> = {
 export function ProductsClient({ products, categories }: { products: Product[]; categories: string[] }) {
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
   const [search, setSearch] = useState("");
+  const searchParams = useSearchParams();
+  
+  useEffect(() => {
+    const q = searchParams?.get("q");
+    if (q) setSearch(q);
+    const cat = searchParams?.get("category");
+    if (cat) setActiveCategory(cat);
+  }, [searchParams]);
 
   const filtered = useMemo(() => {
     let list = products;

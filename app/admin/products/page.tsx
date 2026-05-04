@@ -12,6 +12,7 @@ export default function AdminProductsPage() {
   const [filterCategory, setFilterCategory] = useState("ALL");
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [showModal, setShowModal] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(12);
 
   async function loadProducts() {
     const token = localStorage.getItem("adminToken") || "";
@@ -52,6 +53,8 @@ export default function AdminProductsPage() {
     const matchCat = filterCategory === "ALL" || p.category === filterCategory;
     return matchSearch && matchCat;
   });
+  const visible = filtered.slice(0, visibleCount);
+  const hasMore = filtered.length > visible.length;
 
   if (loading) {
     return (
@@ -96,7 +99,7 @@ export default function AdminProductsPage() {
           type="text"
           placeholder="🔍 Buscar producto..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => { setSearch(e.target.value); setVisibleCount(12); }}
           style={{
             flex: 1,
             minWidth: 200,
@@ -135,7 +138,7 @@ export default function AdminProductsPage() {
       </p>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1.25rem" }}>
-        {filtered.map(p => (
+        {visible.map(p => (
           <div key={p.id} style={{
             background: "#FDFAF3",
             borderRadius: 18,
@@ -216,6 +219,24 @@ export default function AdminProductsPage() {
           </div>
         ))}
       </div>
+
+      {hasMore && (
+        <div style={{ textAlign: "center", marginTop: "2rem" }}>
+          <button onClick={() => setVisibleCount(c => c + 12)} style={{
+            background: "#4A5D3A",
+            color: "#F7F1E5",
+            border: "none",
+            padding: "1rem 2rem",
+            borderRadius: 100,
+            fontSize: "0.92rem",
+            fontWeight: 500,
+            cursor: "pointer",
+            fontFamily: "inherit",
+          }}>
+            Cargar más productos ({filtered.length - visible.length} restantes)
+          </button>
+        </div>
+      )}
 
       <ProductEditModal
         product={editingProduct}
