@@ -1,0 +1,21 @@
+{
+  "name": "Infinity Global Shop",
+  "short_name": "Infinity",
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png?v=1",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png?v=1",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#fbf2e3",
+  "background_color": "#fbf2e3",
+  "display": "standalone"
+}

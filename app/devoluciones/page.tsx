@@ -109,7 +109,7 @@ export default function DevolucionesPage() {
           <p style={{ color: "#4A4F45", marginBottom: "0.85rem", fontSize: "0.95rem" }}>
             ¿Necesitas hacer una devolución?
           </p>
-          <a href="https://wa.me/573054223600?text=Hola,%20quiero%20solicitar%20una%20devolucion%20o%20cambio" style={{
+          <a href="https://wa.me/573054223600?text=Hola%21%20Vi%20su%20tienda%20Infinity%20Global%20Shop%20y%20me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n%20sobre%20sus%20productos,%20quiero%20solicitar%20una%20devolucion%20o%20cambio" style={{
             display: "inline-flex",
             alignItems: "center",
             gap: "0.5rem",
