@@ -66,9 +66,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem("igs_coupon");
-    if (saved) {
-      try { setAppliedCoupon(JSON.parse(saved)); } catch {}
+    try {
+      const saved = localStorage.getItem("igs_coupon");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Validar estructura mínima
+        if (parsed && typeof parsed === "object" && parsed.code && parsed.type) {
+          setAppliedCoupon(parsed);
+        } else {
+          localStorage.removeItem("igs_coupon");
+        }
+      }
+    } catch {
+      localStorage.removeItem("igs_coupon");
     }
   }, []);
 

@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/site-header";
 import { BottomNav } from "@/components/bottom-nav";
 import { WhatsAppFloating } from "@/components/whatsapp-floating";
 import { WelcomePopup } from "@/components/welcome-popup";
+import { GoogleAnalytics } from "@/components/google-analytics";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -95,6 +96,7 @@ export default function RootLayout({
           <CartDrawer />
           <WhatsAppFloating />
           <WelcomePopup />
+          <GoogleAnalytics />
         </CartProvider>
       </body>
     </html>
