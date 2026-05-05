@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useCart } from "./cart-context";
 import { useWishlist } from "./wishlist-context";
+import { SearchModal } from "./search-modal";
 
 export function BottomNav() {
   const pathname = usePathname();
