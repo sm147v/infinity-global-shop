@@ -52,8 +52,10 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "Store",
+            "@type": "Organization",
             "name": "Infinity Global Shop",
+            "logo": "https://www.infinityglobalshop.com/logo.png",
+            "image": "https://www.infinityglobalshop.com/og-image.png",
             "description": "Tienda online de productos importados de USA: vitaminas, belleza, cuidado capilar. Envío 24h en Medellín.",
             "url": "https://www.infinityglobalshop.com",
             "telephone": "+573054223600",

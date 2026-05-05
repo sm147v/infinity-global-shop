@@ -38,6 +38,12 @@ export function BottomNav() {
     setQuery("");
   }
 
+  function goToCategory(cat: string) {
+    router.push("/products?category=" + encodeURIComponent(cat));
+    setSearchOpen(false);
+    setQuery("");
+  }
+
   const itemStyle = (active: boolean): React.CSSProperties => ({
     flex: 1,
     display: "flex",
@@ -233,7 +239,7 @@ export function BottomNav() {
               </p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
                 {["Vitaminas", "Belleza", "Cabello", "Salud", "Hogar"].map(cat => (
-                  <button key={cat} onClick={() => doSearch(cat)} style={{
+                  <button key={cat} onClick={() => goToCategory(cat)} style={{
                     background: "#EDE3CD",
                     border: "none",
                     color: "#4A5D3A",
