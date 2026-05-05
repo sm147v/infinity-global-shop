@@ -32,12 +32,24 @@ export const metadata: Metadata = {
   description: "Vitaminas, productos de belleza y cuidado capilar importados de Estados Unidos. Envío gratis +$150.000. Entrega en 24h en Medellín.",
   keywords: ["vitaminas USA Medellín", "productos importados Colombia", "Nature's Bounty Colombia", "vitaminas originales", "belleza Medellín"],
   openGraph: {
-    title: "Infinity Global Shop",
-    description: "Productos importados de USA en 24 horas en Medellín",
+    title: "Infinity Global Shop | Tienda oficial",
+    description: "Productos importados de Estados Unidos: vitaminas, belleza, cuidado personal y más. Envío gratis +$150.000 · Entrega 24h en Medellín.",
     url: "https://www.infinityglobalshop.com",
     siteName: "Infinity Global Shop",
     locale: "es_CO",
     type: "website",
+    images: [{
+      url: "https://www.infinityglobalshop.com/og-image.png",
+      width: 1200,
+      height: 630,
+      alt: "Infinity Global Shop · Tienda oficial",
+    }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Infinity Global Shop | Tienda oficial",
+    description: "Productos importados de USA · Entrega 24h en Medellín",
+    images: ["https://www.infinityglobalshop.com/og-image.png"],
   },
 };
 
