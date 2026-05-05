@@ -36,10 +36,15 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   if (isNaN(id)) return NextResponse.json({ error: "ID inválido" }, { status: 400 });
 
   try {
+    // Borrar OrderItems asociados primero (foreign key)
+    await prisma.orderItem.deleteMany({ where: { productId: id } });
+    // Borrar Reviews asociadas
+    await prisma.review.deleteMany({ where: { productId: id } }).catch(() => {});
+    // Ahora borrar el producto
     await prisma.product.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error eliminando producto:", error);
     return NextResponse.json({ error: "Error al eliminar producto" }, { status: 500 });
   }
 }

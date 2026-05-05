@@ -28,6 +28,7 @@ const CATEGORY_EMOJI: Record<string, string> = {
 export function ProductsClient({ products, categories }: { products: Product[]; categories: string[] }) {
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
   const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<"newest" | "price_asc" | "price_desc" | "name">("newest");
   const searchParams = useSearchParams();
   
   useEffect(() => {
@@ -38,16 +39,19 @@ export function ProductsClient({ products, categories }: { products: Product[]; 
   }, [searchParams]);
 
   const filtered = useMemo(() => {
-    let list = products;
+    let list = [...products];
     if (activeCategory !== "ALL") {
       list = list.filter(p => p.category === activeCategory);
     }
     if (search.trim()) {
       const q = search.toLowerCase();
-      list = list.filter(p => p.name.toLowerCase().includes(q));
+      list = list.filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
     }
+    if (sortBy === "price_asc") list.sort((a, b) => a.price - b.price);
+    else if (sortBy === "price_desc") list.sort((a, b) => b.price - a.price);
+    else if (sortBy === "name") list.sort((a, b) => a.name.localeCompare(b.name));
     return list;
-  }, [products, activeCategory, search]);
+  }, [products, activeCategory, search, sortBy]);
 
   return (
     <div style={{ background: "#F7F1E5", fontFamily: "var(--font-dm-sans), Inter, sans-serif", paddingBottom: "3rem" }}>
@@ -107,6 +111,35 @@ export function ProductsClient({ products, categories }: { products: Product[]; 
               color: "#4A5D3A",
             }}
           />
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.75rem", marginBottom: "0.75rem", flexWrap: "wrap" }}>
+          <p style={{ fontSize: "0.85rem", color: "#4A4F45", margin: 0 }}>
+            <strong style={{ color: "#4A5D3A", fontFamily: "var(--font-fraunces), Georgia, serif" }}>{filtered.length}</strong> producto{filtered.length !== 1 ? "s" : ""}
+          </p>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span style={{ fontSize: "0.78rem", color: "#4A4F45" }}>Ordenar:</span>
+            <select
+              value={sortBy}
+              onChange={e => setSortBy(e.target.value as any)}
+              style={{
+                padding: "0.5rem 0.85rem",
+                borderRadius: 100,
+                border: "1px solid #EDE3CD",
+                background: "#FDFAF3",
+                fontSize: "0.82rem",
+                outline: "none",
+                fontFamily: "inherit",
+                color: "#4A5D3A",
+                cursor: "pointer",
+              }}
+            >
+              <option value="newest">Más recientes</option>
+              <option value="price_asc">Precio: menor a mayor</option>
+              <option value="price_desc">Precio: mayor a menor</option>
+              <option value="name">Nombre A-Z</option>
+            </select>
+          </div>
         </div>
 
         <div style={{ display: "flex", gap: "0.5rem", overflowX: "auto", paddingBottom: "0.5rem" }}>
