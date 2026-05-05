@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
+import { cloudinaryLoader } from "@/lib/image";
 import { CartItem, loadCart, saveCart } from "@/lib/cart";
 import { useCart } from "./cart-context";
 import { CouponInput } from "@/components/coupon-input";
@@ -174,8 +176,9 @@ export function CheckoutClient() {
               flexShrink: 0,
               overflow: "hidden",
               background: "linear-gradient(135deg, #EDE3CD, #A8B584)",
+              position: "relative",
             }}>
-              {item.image && <img src={item.image} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }}  loading="lazy" />}
+              {item.image && <Image src={item.image} alt={item.name} fill sizes="70px" style={{ objectFit: "cover" }} loader={cloudinaryLoader} />}
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.4rem" }}>

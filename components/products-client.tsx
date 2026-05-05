@@ -1,18 +1,10 @@
 "use client";
 
 import { useState, useEffect, useMemo, startTransition } from "react";
+import { Product } from "@/lib/types";
 import { HomeProductCard } from "./home-product-card";
 import { ResponsiveGrid } from "./responsive-grid";
 import { useSearchParams } from "next/navigation";
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string | null;
-  stock: number;
-  category: string;
-}
 
 const CATEGORY_EMOJI: Record<string, string> = {
   "Vitaminas": "💊",
@@ -47,7 +39,7 @@ export function ProductsClient({ products, categories }: { products: Product[]; 
     }
     if (search.trim()) {
       const q = search.toLowerCase();
-      list = list.filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
+      list = list.filter(p => p.name.toLowerCase().includes(q) || (p.category?.toLowerCase() ?? "").includes(q));
     }
     if (sortBy === "price_asc") list.sort((a, b) => a.price - b.price);
     else if (sortBy === "price_desc") list.sort((a, b) => b.price - a.price);

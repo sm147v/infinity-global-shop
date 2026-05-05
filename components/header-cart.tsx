@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useMemo, useRef, useState, startTransition } from "react";
 import { CartItem, clearCart, loadCart, subscribeToCartUpdates } from "@/lib/cart";
+import { cloudinaryLoader } from "@/lib/image";
 
 export function HeaderCart() {
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -100,12 +102,17 @@ export function HeaderCart() {
                 <article key={item.productId} className="cart-preview-item">
                   <div className="cart-preview-main">
                     {item.image ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="cart-preview-thumb"
-                       loading="lazy" />
+                      <div style={{ position: "relative", width: "100%", height: "100%" }}>
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          fill
+                          sizes="100px"
+                          style={{ objectFit: "cover" }}
+                          className="cart-preview-thumb"
+                          loader={cloudinaryLoader}
+                        />
+                      </div>
                     ) : (
                       <div className="cart-preview-thumb cart-preview-thumb-empty" aria-hidden />
                     )}

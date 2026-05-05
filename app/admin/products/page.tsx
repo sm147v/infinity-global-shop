@@ -2,8 +2,7 @@
 import { useEffect, useState } from "react";
 import { AdminImageUpload } from "@/components/admin-image-upload";
 import { ProductEditModal } from "@/components/product-edit-modal";
-
-interface Product { id: number; name: string; price: number; stock: number; category: string; image?: string; images?: string[]; }
+import { Product } from "@/lib/types";
 
 const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
 
@@ -50,7 +49,7 @@ export default function AdminProductsPage() {
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { loadProducts(); }, []);
 
-  const categories = Array.from(new Set(products.map(p => p.category))).sort();
+  const categories = Array.from(new Set(products.map(p => p.category).filter(Boolean))).sort() as string[];
   const filtered = products.filter(p => {
     const matchSearch = !search.trim() || p.name.toLowerCase().includes(search.toLowerCase());
     const matchCat = filterCategory === "ALL" || p.category === filterCategory;

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { Order, OrderItem } from "@/lib/types";
 
 const STATUS_LABELS: Record<string, { label: string; emoji: string; color: string }> = {
   PENDING:   { label: "Pendiente",  emoji: "📋", color: "#C9A96E" },
@@ -10,9 +11,6 @@ const STATUS_LABELS: Record<string, { label: string; emoji: string; color: strin
   DELIVERED: { label: "Entregado",  emoji: "🌿", color: "#4A5D3A" },
   CANCELLED: { label: "Cancelado",  emoji: "❌", color: "#C9533D" },
 };
-
-interface OrderItem { id: number; quantity: number; subtotal: number; product?: { name: string }; }
-interface Order { id: number; orderNumber?: string; status: string; customerName: string; customerPhone: string; customerEmail?: string; customerAddress: string; total: number; createdAt: string; items: OrderItem[]; }
 
 const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
 
@@ -156,8 +154,8 @@ export default function AdminOrdersPage() {
                 <div style={{ background: "#F7F1E5", borderRadius: 12, padding: "0.85rem", marginBottom: "0.85rem" }}>
                   {(order.items || []).map((item: OrderItem) => (
                     <div key={item.id} style={{ display: "flex", justifyContent: "space-between", fontSize: "0.82rem", padding: "0.2rem 0" }}>
-                      <span style={{ color: "#4A4F45" }}>{item.quantity}× {item.product?.name || "—"}</span>
-                      <span style={{ color: "#4A5D3A", fontWeight: 600 }}>{fmt(Number(item.subtotal))}</span>
+                      <span style={{ color: "#4A4F45" }}>{item.quantity}× {item.name}</span>
+                      <span style={{ color: "#4A5D3A", fontWeight: 600 }}>{fmt(item.quantity * item.price)}</span>
                     </div>
                   ))}
                   <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "0.5rem", marginTop: "0.4rem", borderTop: "1px solid #EDE3CD" }}>

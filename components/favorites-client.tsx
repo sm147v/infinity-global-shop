@@ -1,18 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { Product } from "@/lib/types";
 import { useWishlist } from "./wishlist-context";
 import { HomeProductCard } from "./home-product-card";
 import { ResponsiveGrid } from "./responsive-grid";
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string | null;
-  stock: number;
-  category: string;
-}
 
 export function FavoritesClient({ allProducts }: { allProducts: Product[] }) {
   const { items, count } = useWishlist();

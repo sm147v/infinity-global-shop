@@ -4,11 +4,11 @@ import { useState } from "react";
 
 interface Props {
   productId: number;
-  _productName: string;
-  _onSubmitted?: () => void;
+  productName?: string;
+  onSubmitted?: () => void;
 }
 
-export function ReviewForm({ productId, _productName, onSubmitted }: Props) {
+export function ReviewForm({ productId, onSubmitted }: Props) {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [name, setName] = useState("");
@@ -45,6 +45,7 @@ export function ReviewForm({ productId, _productName, onSubmitted }: Props) {
       const data = await res.json();
       if (res.ok) {
         setSuccess(true);
+        onSubmitted?.();
       } else {
         setError(data.error || "Error al enviar");
       }

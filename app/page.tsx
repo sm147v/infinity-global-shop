@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { HomeProductCard } from "@/components/home-product-card";
 import { ResponsiveGrid } from "@/components/responsive-grid";
 import { CouponBanner } from "@/components/coupon-banner";
-import { NewsletterForm } from "@/components/newsletter-form";
 import { CategoriesSection } from "@/components/categories-section";
 import { FeaturesSection } from "@/components/features-section";
 

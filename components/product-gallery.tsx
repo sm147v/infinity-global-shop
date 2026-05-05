@@ -1,28 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
+import { cloudinaryLoader } from "@/lib/image";
 
 interface Props {
   images: string[];
   productName: string;
-}
-
-// Cloudinary auto-crop a cuadrado y optimización
-function optimizeImage(url: string): string {
-  if (!url) return "";
-  if (url.includes("cloudinary.com")) {
-    // Insertar transformaciones de Cloudinary: cuadrado 800x800 con fit y auto-quality
-    return url.replace("/upload/", "/upload/w_800,h_800,c_pad,b_auto:predominant,f_auto,q_auto/");
-  }
-  return url;
-}
-
-function thumbImage(url: string): string {
-  if (!url) return "";
-  if (url.includes("cloudinary.com")) {
-    return url.replace("/upload/", "/upload/w_200,h_200,c_pad,b_auto:predominant,f_auto,q_auto/");
-  }
-  return url;
 }
 
 export function ProductGallery({ images, productName }: Props) {
@@ -59,19 +43,20 @@ export function ProductGallery({ images, productName }: Props) {
         }}
       >
         {mainImage ? (
-          <img
-            src={optimizeImage(mainImage)}
+          <Image
+            src={mainImage}
             alt={productName}
+            fill
+            sizes="(max-width: 640px) 100vw, 600px"
             style={{
-              width: "100%",
-              height: "100%",
               objectFit: "cover",
               objectPosition: "center",
               transform: zoomActive ? "scale(1.8)" : "scale(1)",
               transformOrigin: zoomPos.x + "% " + zoomPos.y + "%",
               transition: "transform 0.3s ease",
             }}
-           loading="lazy" />
+            loader={cloudinaryLoader}
+          />
         ) : (
           <div style={{
             width: "100%",
@@ -110,11 +95,14 @@ export function ProductGallery({ images, productName }: Props) {
                 transition: "all 0.2s",
               }}
             >
-              <img
-                src={thumbImage(img)}
+              <Image
+                src={img}
                 alt={"Vista " + (i + 1)}
-                style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
-               loading="lazy" />
+                fill
+                sizes="70px"
+                style={{ objectFit: "cover", objectPosition: "center" }}
+                loader={cloudinaryLoader}
+              />
             </button>
           ))}
         </div>
@@ -122,5 +110,3 @@ export function ProductGallery({ images, productName }: Props) {
     </div>
   );
 }
-
-export { optimizeImage, thumbImage };

@@ -1,15 +1,16 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useState } from "react";
 
 export function SiteHeader() {
 
-  const [showAdmin, setShowAdmin] = useState(false);
-  useEffect(() => {
+  const [showAdmin] = useState(() => {
+    if (typeof window === "undefined") return false;
     const hasToken = localStorage.getItem("adminToken");
     const urlAdmin = window.location.search.includes("admin");
-    setShowAdmin(!!hasToken || urlAdmin);
-  }, []);
+    return !!(hasToken || urlAdmin);
+  });
 
   return (
     <header style={{
@@ -31,7 +32,7 @@ export function SiteHeader() {
         textDecoration: "none",
         color: "#4A5D3A",
       }}>
-        <img
+        <Image
           src="/logo.png"
           alt="Infinity Global Shop"
           width={36}

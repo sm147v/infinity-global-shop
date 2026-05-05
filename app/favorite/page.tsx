@@ -18,5 +18,7 @@ export default async function FavoritosPage() {
     image: p.image,
     stock: p.stock,
     category: p.category,
+    description: p.description,
+    createdAt: p.createdAt,
   }))} />;
 }

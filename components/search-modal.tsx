@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState, startTransition } from "react";
+import { cloudinaryLoader } from "@/lib/image";
 
 interface Product {
   id: number;
@@ -21,14 +23,6 @@ interface Props {
 }
 
 const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
-
-function thumb(url: string | null): string {
-  if (!url) return "";
-  if (url.includes("cloudinary.com")) {
-    return url.replace("/upload/", "/upload/w_120,h_120,c_pad,b_auto:predominant,f_auto,q_auto/");
-  }
-  return url;
-}
 
 export function SearchModal({ onClose, doSearch, goToCategory, query, setQuery }: Props) {
   const [results, setResults] = useState<Product[]>([]);
@@ -208,9 +202,10 @@ export function SearchModal({ onClose, doSearch, goToCategory, query, setQuery }
                       overflow: "hidden",
                       flexShrink: 0,
                       background: "linear-gradient(135deg, #EDE3CD, #A8B584)",
+                      position: "relative",
                     }}>
                       {p.image && (
-                        <img src={thumb(p.image)} alt={p.name} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        <Image src={p.image} alt={p.name} fill sizes="56px" style={{ objectFit: "cover" }} loader={cloudinaryLoader} />
                       )}
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>

@@ -1,7 +1,9 @@
 "use client";
 
 import { CldUploadWidget } from "next-cloudinary";
+import Image from "next/image";
 import { useState } from "react";
+import { cloudinaryLoader } from "@/lib/image";
 
 interface Props {
   productId: number;
@@ -43,14 +45,6 @@ export function AdminImageUpload({ productId, currentImage, currentImages = [] }
     setSaving(false);
   }
 
-  function thumbnailUrl(url: string): string {
-    if (!url) return "";
-    if (url.includes("cloudinary.com")) {
-      return url.replace("/upload/", "/upload/w_200,h_200,c_fill,g_auto,f_auto,q_auto/");
-    }
-    return url;
-  }
-
   return (
     <div style={{ background: "#FDFAF3", borderRadius: 16, padding: "1rem", border: "1px solid #EDE3CD" }}>
       
@@ -62,13 +56,17 @@ export function AdminImageUpload({ productId, currentImage, currentImages = [] }
         marginBottom: "0.75rem",
         background: "linear-gradient(135deg, #EDE3CD, #A8B584)",
         border: principal ? "2px solid #4A5D3A" : "none",
+        position: "relative",
       }}>
         {principal && (
-          <img
-            src={thumbnailUrl(principal)}
+          <Image
+            src={principal}
             alt="Principal"
-            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
-           loading="lazy" />
+            fill
+            sizes="600px"
+            style={{ objectFit: "cover", objectPosition: "center" }}
+            loader={cloudinaryLoader}
+          />
         )}
       </div>
 
@@ -88,9 +86,10 @@ export function AdminImageUpload({ productId, currentImage, currentImages = [] }
                   padding: 0,
                   cursor: saving ? "wait" : "pointer",
                   background: "#FDFAF3",
+                  position: "relative",
                 }}
               >
-                <img src={thumbnailUrl(img)} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }}  loading="lazy" />
+                <Image src={img} alt="" fill sizes="50px" style={{ objectFit: "cover" }} loader={cloudinaryLoader} />
               </button>
               <button
                 onClick={() => callApi("remove", img)}
@@ -122,7 +121,8 @@ export function AdminImageUpload({ productId, currentImage, currentImages = [] }
 
       <CldUploadWidget
         uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
-        onSuccess={(result: Record<string, unknown>) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onSuccess={(result: any) => {
           if (result?.info?.secure_url) {
             callApi("add", result.info.secure_url);
           }

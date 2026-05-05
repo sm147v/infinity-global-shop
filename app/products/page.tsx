@@ -20,7 +20,8 @@ export const metadata: Metadata = {
 export default async function ProductsPage() {
   const products = await prisma.product.findMany({ orderBy: { id: "desc" } });
   const CATEGORY_ORDER = ["Vitaminas", "Belleza", "Cabello", "Salud", "Hogar", "Herramientas", "Más productos"];
-  const categories = Array.from(new Set(products.map(p => p.category))).sort((a, b) => {
+  const categories = Array.from(new Set(products.map(p => p.category).filter(Boolean))) as string[];
+  categories.sort((a, b) => {
     const ia = CATEGORY_ORDER.indexOf(a);
     const ib = CATEGORY_ORDER.indexOf(b);
     if (ia === -1 && ib === -1) return a.localeCompare(b);
@@ -38,6 +39,8 @@ export default async function ProductsPage() {
         image: p.image,
         stock: p.stock,
         category: p.category,
+        description: p.description,
+        createdAt: p.createdAt,
       }))}
       categories={categories}
     />

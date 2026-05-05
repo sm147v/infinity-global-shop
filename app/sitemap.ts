@@ -16,10 +16,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     { url: SITE, lastModified: new Date(), changeFrequency: "daily", priority: 1.0 },
     { url: SITE + "/products", lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
-    { url: SITE + "/nosotros", lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: SITE + "/envios", lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: SITE + "/devoluciones", lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: SITE + "/pedido", lastModified: new Date(), changeFrequency: "weekly", priority: 0.5 },
+    { url: SITE + "/us", lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+    { url: SITE + "/sends", lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
+    { url: SITE + "/returns", lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
+    { url: SITE + "/order", lastModified: new Date(), changeFrequency: "weekly", priority: 0.5 },
     ...productUrls,
   ];
 }

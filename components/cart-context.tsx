@@ -63,20 +63,24 @@ function libToCtx(items: LibCartItem[]): CartItem[] {
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
-  useEffect(() => {
+  
+  // Lazy init: Read localStorage during first render only
+  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(() => {
+    if (typeof window === "undefined") return null;
     try {
       const saved = localStorage.getItem("igs_coupon");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed && typeof parsed === "object" && parsed.code && parsed.type) {
-          setAppliedCoupon(parsed);
-        } else {
-          localStorage.removeItem("igs_coupon");
-        }
+      if (!saved) return null;
+      const parsed = JSON.parse(saved);
+      if (parsed && typeof parsed === "object" && parsed.code && parsed.type) {
+        return parsed;
       }
-    } catch { localStorage.removeItem("igs_coupon"); }
-  }, []);
+      localStorage.removeItem("igs_coupon");
+      return null;
+    } catch {
+      localStorage.removeItem("igs_coupon");
+      return null;
+    }
+  });
 
 
   function applyCoupon(coupon: AppliedCoupon | null) {

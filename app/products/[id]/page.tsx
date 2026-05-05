@@ -18,12 +18,12 @@ export async function generateMetadata({
   }
 
   const description = (product.description || "").substring(0, 155);
-  const title = product.name + " · " + product.category + " · Infinity Global Shop";
+  const title = product.name + (product.category ? " · " + product.category : "") + " · Infinity Global Shop";
 
   return {
     title: title,
     description: description + " · Importado de USA · Envío gratis +$150.000 en Medellín.",
-    keywords: [product.name, product.category, "vitaminas Medellín", "productos importados USA"],
+    keywords: [product.name, product.category || "", "vitaminas Medellín", "productos importados USA"].filter(Boolean),
     openGraph: {
       title: product.name,
       description: description,
@@ -89,6 +89,7 @@ export default async function ProductPage({
         images: product.images || [],
         stock: product.stock,
         category: product.category,
+        createdAt: product.createdAt,
       }}
       related={related.map(p => ({
         id: p.id,

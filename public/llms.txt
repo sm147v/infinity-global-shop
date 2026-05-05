@@ -21,10 +21,10 @@
 
 ## Páginas principales
 - Catálogo: https://www.infinityglobalshop.com/products
-- Sobre nosotros: https://www.infinityglobalshop.com/nosotros
-- Política de envíos: https://www.infinityglobalshop.com/envios
-- Política de devoluciones: https://www.infinityglobalshop.com/devoluciones
-- Rastrear pedido: https://www.infinityglobalshop.com/pedido
+- Sobre nosotros: https://www.infinityglobalshop.com/us
+- Política de envíos: https://www.infinityglobalshop.com/sends
+- Política de devoluciones: https://www.infinityglobalshop.com/returns
+- Rastrear pedido: https://www.infinityglobalshop.com/order
 
 ## Contacto
 - WhatsApp: +57 305 422 3600

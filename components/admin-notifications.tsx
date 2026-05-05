@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { usePathname } from "next/navigation";
 
 interface Notification {
@@ -15,14 +15,16 @@ interface Notification {
 export function AdminNotifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
-  const [lastOrderId, setLastOrderId] = useState<number | null>(null);
-  const [lastStockCheck, setLastStockCheck] = useState<number>(0);
   const ref = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
+  // Track state without triggering re-renders
+  const lastOrderIdRef = useRef<number | null>(null);
+  const lastStockCheckRef = useRef<number>(0);
+
   const unread = notifications.filter(n => !n.read).length;
 
-  async function fetchUpdates() {
+  const fetchUpdates = useCallback(async () => {
     const token = localStorage.getItem("adminToken") || "";
     try {
       // Nuevos pedidos
@@ -33,8 +35,8 @@ export function AdminNotifications() {
         const { orders } = await ordersRes.json();
         if (orders?.length > 0) {
           const newest = orders[0];
-          if (lastOrderId !== null && newest.id > lastOrderId) {
-            const newOrders = orders.filter((o: {id: number; customerName: string; total: number; createdAt: string}) => o.id > lastOrderId);
+          if (lastOrderIdRef.current !== null && newest.id > lastOrderIdRef.current) {
+            const newOrders = orders.filter((o: {id: number; customerName: string; total: number; createdAt: string}) => o.id > lastOrderIdRef.current!);
             setNotifications(prev => [
               ...newOrders.map((o: {id: number; customerName: string; total: number; createdAt: string}) => ({
                 id: `order-${o.id}`,
@@ -50,13 +52,13 @@ export function AdminNotifications() {
             // Vibrar/sonar si el browser lo permite
             if ("vibrate" in navigator) navigator.vibrate([200, 100, 200]);
           }
-          setLastOrderId(newest.id);
+          lastOrderIdRef.current = newest.id;
         }
       }
 
       // Stock bajo (cada 5 minutos)
       const now = Date.now();
-      if (now - lastStockCheck > 300_000) {
+      if (now - lastStockCheckRef.current > 300_000) {
         const productsRes = await fetch("/api/admin/products", {
           headers: { "x-admin-token": token },
         });
@@ -99,16 +101,16 @@ export function AdminNotifications() {
             });
           }
         }
-        setLastStockCheck(now);
+        lastStockCheckRef.current = now;
       }
     } catch {}
-  }
+  }, []);
 
   useEffect(() => {
     fetchUpdates();
     const interval = setInterval(fetchUpdates, 30_000);
     return () => clearInterval(interval);
-  }, [lastOrderId, lastStockCheck]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [fetchUpdates]);
 
   // Cerrar al click fuera
   useEffect(() => {

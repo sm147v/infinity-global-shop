@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { NewsletterForm } from "./newsletter-form";
 import { PaymentRow } from "@/components/payment-row";
@@ -47,13 +48,12 @@ export function SiteFooter() {
           {/* COL 1: Marca + redes + pagos */}
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.75rem" }}>
-              <img
+              <Image
                 src="/logo.png"
                 alt="Infinity Global Shop"
-                width={32} height={32}
-                loading="lazy"
+                width={32}
+                height={32}
                 style={{ objectFit: "contain", borderRadius: 6 }}
-                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
               />
               <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.35rem", margin: 0, fontWeight: 500 }}>
                 Infinity <em style={{ fontStyle: "italic", color: "#C9A96E", fontWeight: 300 }}>Global</em>

@@ -1,15 +1,7 @@
 "use client";
 
 import { useState, useEffect, startTransition } from "react";
-
-interface Product {
-  id?: number;
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  category: string;
-}
+import { Product } from "@/lib/types";
 
 interface Props {
   product: Product | null;
@@ -35,10 +27,10 @@ export function ProductEditModal({ product, isOpen, onClose, onSaved }: Props) {
     startTransition(() => {
       if (product) {
         setName(product.name);
-        setDescription(product.description);
+        setDescription(product.description || "");
         setPrice(String(product.price));
         setStock(String(product.stock));
-        setCategory(product.category);
+        setCategory(product.category || "General");
       } else {
         setName("");
         setDescription("");

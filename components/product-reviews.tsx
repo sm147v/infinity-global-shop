@@ -44,9 +44,10 @@ export function ProductReviews({ productId, productName }: Props) {
       .then(r => r.json())
       .then(data => {
         setRealReviews(data.reviews || []);
-        setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        // Handle error silently
+      });
   }, [productId, refresh]);
 
   // Combinar reales con hardcoded
@@ -63,10 +64,10 @@ export function ProductReviews({ productId, productName }: Props) {
   // Mostrar reseñas: primero las reales, luego las hardcoded
   const displayReviews = [
     ...realReviews.map(r => ({
-      name: r.customerName,
+      name: r.author,
       text: r.comment,
       stars: r.rating,
-      location: r.location || "Cliente verificado",
+      location: "Cliente verificado",
       isReal: true,
     })),
     ...fallback.reviews.map(r => ({ ...r, isReal: false })),

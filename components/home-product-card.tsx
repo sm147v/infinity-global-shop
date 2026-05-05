@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useCart } from "./cart-context";
 import { WishlistButton } from "./wishlist-button";
+import { cloudinaryLoader } from "@/lib/image";
 
 interface Product {
   id: number;
@@ -13,14 +15,6 @@ interface Product {
 }
 
 const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
-
-function optimizeCard(url: string | null): string {
-  if (!url) return "";
-  if (url.includes("cloudinary.com")) {
-    return url.replace("/upload/", "/upload/w_400,h_400,c_pad,b_auto:predominant,f_auto,q_auto/");
-  }
-  return url;
-}
 
 export function HomeProductCard({ product }: { product: Product }) {
   const { items, addItem, updateQty } = useCart();
@@ -83,18 +77,20 @@ export function HomeProductCard({ product }: { product: Product }) {
           overflow: "hidden",
           background: "linear-gradient(135deg, #EDE3CD 0%, #A8B584 100%)",
           cursor: "pointer",
+          position: "relative",
         }}>
           {product.image && (
-            <img
-              src={optimizeCard(product.image)}
+            <Image
+              src={product.image}
               alt={product.name}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
               style={{
-                width: "100%",
-                height: "100%",
                 objectFit: "cover",
                 objectPosition: "center",
               }}
-             loading="lazy" />
+              loader={cloudinaryLoader}
+            />
           )}
         </div>
 

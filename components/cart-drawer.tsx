@@ -3,6 +3,8 @@
 import { useCart, SHIPPING } from "./cart-context";
 import { CouponInput } from "./coupon-input";
 import Link from "next/link";
+import Image from "next/image";
+import { cloudinaryLoader } from "@/lib/image";
 
 const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
 
@@ -144,8 +146,9 @@ export function CartDrawer() {
                 width: 65, height: 65, borderRadius: 12,
                 flexShrink: 0, overflow: "hidden",
                 background: "linear-gradient(135deg,#EDE3CD,#A8B584)",
+                position: "relative",
               }}>
-                {item.image && <img src={item.image} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }}  loading="lazy" />}
+                {item.image && <Image src={item.image} alt={item.name} fill sizes="65px" style={{ objectFit: "cover" }} loader={cloudinaryLoader} />}
               </div>
               <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.3rem", gap: "0.5rem" }}>

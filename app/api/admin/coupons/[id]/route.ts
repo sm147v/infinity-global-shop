@@ -5,13 +5,24 @@ function checkAuth(req: NextRequest) {
   return req.headers.get("x-admin-token") === process.env.ADMIN_TOKEN;
 }
 
+// Type-safe coupon update data
+interface CouponUpdateData {
+  active?: boolean;
+  description?: string | null;
+  value?: number;
+  minPurchase?: number;
+  maxUses?: number | null;
+  validUntil?: Date | null;
+}
+
 // PATCH - Editar cupón
 export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   if (!checkAuth(req)) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   try {
     const { id } = await context.params;
     const body = await req.json();
-    const data: Record<string, unknown> = {};
+    const data: CouponUpdateData = {};
+    
     if (typeof body.active === "boolean") data.active = body.active;
     if (typeof body.description === "string") data.description = body.description;
     if (typeof body.value === "number") data.value = body.value;

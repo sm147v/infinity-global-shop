@@ -3,7 +3,7 @@ import { AdminNotifications } from "@/components/admin-notifications";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const menuItems = [
   { href: "/admin", label: "Dashboard", icon: "🏠" },
@@ -15,17 +15,17 @@ const menuItems = [
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [authed, setAuthed] = useState(false);
-  const [token, setToken] = useState("");
+  
+  const [authed, setAuthed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return !!localStorage.getItem("adminToken");
+  });
+  const [token, setToken] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return localStorage.getItem("adminToken") || "";
+  });
   const [error, setError] = useState("");
-  const [checking, setChecking] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("adminToken");
-    if (saved) { setAuthed(true); setToken(saved); }
-    setChecking(false);
-  }, []);
 
   async function login() {
     if (!token) return;
@@ -59,10 +59,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     setAuthed(false);
     setToken("");
     router.push("/");
-  }
-
-  if (checking) {
-    return <div style={{ minHeight: "100vh", background: "#F7F1E5", display: "flex", alignItems: "center", justifyContent: "center" }}><p style={{ color: "#4A5D3A", fontFamily: "Georgia, serif" }}>Cargando...</p></div>;
   }
 
   if (!authed) {

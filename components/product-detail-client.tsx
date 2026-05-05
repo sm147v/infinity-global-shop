@@ -1,23 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { Product } from "@/lib/types";
 import { useCart } from "./cart-context";
 import { HomeProductCard } from "./home-product-card";
 import { ResponsiveGrid } from "./responsive-grid";
 import { ProductGallery } from "./product-gallery";
 import { ProductReviews } from "./product-reviews";
 import { getProductReviews } from "@/lib/reviews";
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  image: string | null;
-  images: string[];
-  stock: number;
-  category: string;
-}
 
 interface RelatedProduct {
   id: number;

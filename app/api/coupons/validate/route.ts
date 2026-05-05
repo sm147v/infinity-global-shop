@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     if (coupon.validUntil && new Date(coupon.validUntil) < now) {
       return NextResponse.json({ valid: false, error: "Este cupón está vencido" });
     }
-    if (coupon.maxUses !== null && coupon.currentUses >= coupon.maxUses) {
+    if (coupon.maxUses !== null && (coupon.currentUses ?? 0) >= coupon.maxUses) {
       return NextResponse.json({ valid: false, error: "Este cupón ya alcanzó su límite de usos" });
     }
 
