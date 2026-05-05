@@ -23,7 +23,7 @@ export async function GET(
     }
 
     return NextResponse.json({ order });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Error al obtener pedido" }, { status: 500 });
   }
 }

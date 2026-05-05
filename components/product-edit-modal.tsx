@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 
 interface Product {
   id?: number;
@@ -32,20 +32,22 @@ export function ProductEditModal({ product, isOpen, onClose, onSaved }: Props) {
   const isEditing = !!product?.id;
 
   useEffect(() => {
-    if (product) {
-      setName(product.name);
-      setDescription(product.description);
-      setPrice(String(product.price));
-      setStock(String(product.stock));
-      setCategory(product.category);
-    } else {
-      setName("");
-      setDescription("");
-      setPrice("");
-      setStock("");
-      setCategory("General");
-    }
-    setError("");
+    startTransition(() => {
+      if (product) {
+        setName(product.name);
+        setDescription(product.description);
+        setPrice(String(product.price));
+        setStock(String(product.stock));
+        setCategory(product.category);
+      } else {
+        setName("");
+        setDescription("");
+        setPrice("");
+        setStock("");
+        setCategory("General");
+      }
+      setError("");
+    });
   }, [product, isOpen]);
 
   async function save() {

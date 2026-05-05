@@ -9,6 +9,7 @@ interface Props {
   productName: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface Review {
   id?: number;
   customerName?: string;
@@ -35,8 +36,7 @@ function renderStars(rating: number, size: number = 14) {
 }
 
 export function ProductReviews({ productId, productName }: Props) {
-  const [realReviews, setRealReviews] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [realReviews, setRealReviews] = useState<{id: number; rating: number; comment: string; author: string; createdAt: string}[]>([]);
   const [refresh, setRefresh] = useState(0);
 
   useEffect(() => {
@@ -136,7 +136,7 @@ export function ProductReviews({ productId, productName }: Props) {
               {renderStars(r.stars, 13)}
             </div>
             <p style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "0.95rem", color: "#4A5D3A", lineHeight: 1.5, margin: 0, fontStyle: "italic" }}>
-              "{r.text}"
+              &ldquo;{r.text}&rdquo;
             </p>
           </div>
         ))}

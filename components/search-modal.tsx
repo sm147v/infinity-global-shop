@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 
 interface Product {
   id: number;
@@ -36,10 +36,10 @@ export function SearchModal({ onClose, doSearch, goToCategory, query, setQuery }
 
   useEffect(() => {
     if (query.trim().length < 2) {
-      setResults([]);
+      startTransition(() => setResults([]));
       return;
     }
-    setLoading(true);
+    startTransition(() => setLoading(true));
     const timer = setTimeout(() => {
       fetch("/api/products/search?q=" + encodeURIComponent(query))
         .then(r => r.json())
@@ -163,7 +163,7 @@ export function SearchModal({ onClose, doSearch, goToCategory, query, setQuery }
             <div style={{ textAlign: "center", padding: "1.5rem 0" }}>
               <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>🔍</div>
               <p style={{ color: "#4A4F45", fontSize: "0.9rem", margin: "0 0 0.85rem" }}>
-                No encontramos resultados para "<strong>{query}</strong>"
+                No encontramos resultados para &ldquo;<strong>{query}</strong>&rdquo;
               </p>
               <button onClick={() => doSearch()} style={{
                 background: "#4A5D3A",

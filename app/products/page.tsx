@@ -19,7 +19,15 @@ export const metadata: Metadata = {
 
 export default async function ProductsPage() {
   const products = await prisma.product.findMany({ orderBy: { id: "desc" } });
-  const categories = Array.from(new Set(products.map(p => p.category))).sort();
+  const CATEGORY_ORDER = ["Vitaminas", "Belleza", "Cabello", "Salud", "Hogar", "Herramientas", "Más productos"];
+  const categories = Array.from(new Set(products.map(p => p.category))).sort((a, b) => {
+    const ia = CATEGORY_ORDER.indexOf(a);
+    const ib = CATEGORY_ORDER.indexOf(b);
+    if (ia === -1 && ib === -1) return a.localeCompare(b);
+    if (ia === -1) return 1;
+    if (ib === -1) return -1;
+    return ia - ib;
+  });
 
   return (
     <ProductsClient

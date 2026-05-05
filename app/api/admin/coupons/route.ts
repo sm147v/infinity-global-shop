@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
       },
     });
     return NextResponse.json({ success: true, coupon });
-  } catch (error: any) {
+  } catch (error: Record<string, unknown>) {
     if (error.code === "P2002") {
       return NextResponse.json({ error: "Ya existe un cupón con ese código" }, { status: 400 });
     }

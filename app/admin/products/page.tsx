@@ -3,14 +3,16 @@ import { useEffect, useState } from "react";
 import { AdminImageUpload } from "@/components/admin-image-upload";
 import { ProductEditModal } from "@/components/product-edit-modal";
 
+interface Product { id: number; name: string; price: number; stock: number; category: string; image?: string; images?: string[]; }
+
 const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
 
 export default function AdminProductsPage() {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("ALL");
-  const [editingProduct, setEditingProduct] = useState<any>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [visibleCount, setVisibleCount] = useState(12);
 
@@ -35,7 +37,7 @@ export default function AdminProductsPage() {
     else alert("Error al eliminar el producto");
   }
 
-  function openEdit(product: any) {
+  function openEdit(product: Product) {
     setEditingProduct(product);
     setShowModal(true);
   }
@@ -45,6 +47,7 @@ export default function AdminProductsPage() {
     setShowModal(true);
   }
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { loadProducts(); }, []);
 
   const categories = Array.from(new Set(products.map(p => p.category))).sort();

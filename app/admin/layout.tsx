@@ -1,8 +1,9 @@
 "use client";
+import { AdminNotifications } from "@/components/admin-notifications";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
 const menuItems = [
   { href: "/admin", label: "Dashboard", icon: "🏠" },
@@ -22,10 +23,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     const saved = localStorage.getItem("adminToken");
-    if (saved) {
-      setAuthed(true);
-      setToken(saved);
-    }
+    if (saved) { setAuthed(true); setToken(saved); }
     setChecking(false);
   }, []);
 
@@ -130,7 +128,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       <div style={{ display: "flex" }}>
         <aside className={`admin-sidebar ${mobileOpen ? "open" : ""}`}>
-          <div style={{ padding: "1.5rem 1.25rem", borderBottom: "1px solid #EDE3CD" }}>
+          <div style={{ padding: "1.25rem", borderBottom: "1px solid #EDE3CD" }}>
             <Link href="/admin" style={{ textDecoration: "none" }}>
               <h2 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.3rem", color: "#4A5D3A", fontWeight: 400, margin: 0 }}>
                 Infinity <em style={{ color: "#C97B5C" }}>Admin</em>
@@ -196,8 +194,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
         </aside>
 
-        <main style={{ flex: 1, minHeight: "100vh", overflow: "auto" }}>
-          {children}
+        <main style={{ flex: 1, minHeight: "100vh", overflow: "auto", display: "flex", flexDirection: "column" }}>
+          <header style={{
+            position: "sticky",
+            top: 0,
+            zIndex: 100,
+            background: "#FDFAF3",
+            borderBottom: "1px solid #EDE3CD",
+            padding: "0.6rem 1.5rem",
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}>
+            <AdminNotifications />
+          </header>
+          <div style={{ flex: 1 }}>
+            {children}
+          </div>
         </main>
       </div>
 

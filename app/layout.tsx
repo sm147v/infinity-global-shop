@@ -6,6 +6,7 @@ import { CartDrawer } from "@/components/cart-drawer";
 import { SiteHeader } from "@/components/site-header";
 import { BottomNav } from "@/components/bottom-nav";
 import { WhatsAppFloating } from "@/components/whatsapp-floating";
+import { SiteFooter } from "@/components/site-footer";
 import { WelcomePopup } from "@/components/welcome-popup";
 import { GoogleAnalytics } from "@/components/google-analytics";
 import "./globals.css";
@@ -113,9 +114,10 @@ export default function RootLayout({
           </div>
 
           <SiteHeader />
-          <main style={{ paddingBottom: "70px", minHeight: "100vh", background: "#F7F1E5", width: "100%" }}>
+          <main style={{ paddingBottom: "0", minHeight: "100vh", background: "#F7F1E5", width: "100%" }}>
             {children}
           </main>
+          <SiteFooter />
           <BottomNav />
           <CartDrawer />
           <WhatsAppFloating />

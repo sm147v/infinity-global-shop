@@ -14,7 +14,7 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
 const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<Record<string, unknown>>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

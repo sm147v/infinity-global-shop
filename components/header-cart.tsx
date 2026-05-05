@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, startTransition } from "react";
 import { CartItem, clearCart, loadCart, subscribeToCartUpdates } from "@/lib/cart";
 
 export function HeaderCart() {
@@ -55,7 +55,7 @@ export function HeaderCart() {
   useEffect(() => {
     const previousCount = previousCountRef.current;
     if (itemCount > previousCount) {
-      setPulseBadge(true);
+      startTransition(() => setPulseBadge(true));
       const timeout = window.setTimeout(() => setPulseBadge(false), 320);
       previousCountRef.current = itemCount;
       return () => window.clearTimeout(timeout);

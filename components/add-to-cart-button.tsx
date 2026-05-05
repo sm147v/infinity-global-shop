@@ -11,11 +11,9 @@ type Props = {
 };
 
 export function AddToCartButton({ productId, name, price, image }: Props) {
-  const [isAdded, setIsAdded] = useState(false);
+  const [isAdded, setIsAdded] = useState(() => isProductInCart(productId));
 
   useEffect(() => {
-    setIsAdded(isProductInCart(productId));
-
     return subscribeToCartUpdates(() => {
       setIsAdded(isProductInCart(productId));
     });

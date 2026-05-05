@@ -1,10 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 
+interface Coupon { id: number; code: string; description?: string; type: string; value: number; minPurchase: number; maxUses?: number; currentUses: number; validUntil?: string; active: boolean; }
+
 const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
 
 export default function AdminCouponsPage() {
-  const [coupons, setCoupons] = useState<any[]>([]);
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [code, setCode] = useState("");
@@ -74,6 +76,7 @@ export default function AdminCouponsPage() {
     load();
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { load(); }, []);
 
   if (loading) return <div style={{ padding: "3rem", textAlign: "center" }}><p style={{ color: "#4A5D3A" }}>Cargando...</p></div>;

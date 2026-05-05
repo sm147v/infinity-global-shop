@@ -1,18 +1,14 @@
 "use client";
 import Link from "next/link";
-import { useCart } from "./cart-context";
 import { useEffect, useState } from "react";
 
 export function SiteHeader() {
-  const { itemCount, openCart } = useCart();
-  const [showAdmin, setShowAdmin] = useState(false);
 
+  const [showAdmin, setShowAdmin] = useState(false);
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const hasToken = localStorage.getItem("adminToken");
-      const urlAdmin = window.location.search.includes("admin");
-      setShowAdmin(!!hasToken || urlAdmin);
-    }
+    const hasToken = localStorage.getItem("adminToken");
+    const urlAdmin = window.location.search.includes("admin");
+    setShowAdmin(!!hasToken || urlAdmin);
   }, []);
 
   return (

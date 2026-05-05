@@ -11,7 +11,7 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
   try {
     const { id } = await context.params;
     const body = await req.json();
-    const data: any = {};
+    const data: Record<string, unknown> = {};
     if (typeof body.active === "boolean") data.active = body.active;
     if (typeof body.description === "string") data.description = body.description;
     if (typeof body.value === "number") data.value = body.value;

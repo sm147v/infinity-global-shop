@@ -14,24 +14,19 @@ const WishlistContext = createContext<WishlistContextType | undefined>(undefined
 export function WishlistProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<number[]>([]);
   const [loaded, setLoaded] = useState(false);
-
   useEffect(() => {
     try {
       const saved = localStorage.getItem("igs_wishlist");
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          setItems(parsed.filter(n => typeof n === "number"));
-        }
+        if (Array.isArray(parsed)) setItems(parsed.filter(n => typeof n === "number"));
       }
     } catch {}
     setLoaded(true);
   }, []);
 
   useEffect(() => {
-    if (loaded) {
-      localStorage.setItem("igs_wishlist", JSON.stringify(items));
-    }
+    if (loaded) localStorage.setItem("igs_wishlist", JSON.stringify(items));
   }, [items, loaded]);
 
   function toggle(productId: number) {

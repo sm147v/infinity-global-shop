@@ -64,23 +64,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
-
   useEffect(() => {
     try {
       const saved = localStorage.getItem("igs_coupon");
       if (saved) {
         const parsed = JSON.parse(saved);
-        // Validar estructura mínima
         if (parsed && typeof parsed === "object" && parsed.code && parsed.type) {
           setAppliedCoupon(parsed);
         } else {
           localStorage.removeItem("igs_coupon");
         }
       }
-    } catch {
-      localStorage.removeItem("igs_coupon");
-    }
+    } catch { localStorage.removeItem("igs_coupon"); }
   }, []);
+
 
   function applyCoupon(coupon: AppliedCoupon | null) {
     setAppliedCoupon(coupon);
@@ -96,7 +93,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    refresh();
     const unsubscribe = subscribeToCartUpdates(refresh);
     return unsubscribe;
   }, [refresh]);

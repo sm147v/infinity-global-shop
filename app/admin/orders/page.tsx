@@ -11,6 +11,9 @@ const STATUS_LABELS: Record<string, { label: string; emoji: string; color: strin
   CANCELLED: { label: "Cancelado",  emoji: "❌", color: "#C9533D" },
 };
 
+interface OrderItem { id: number; quantity: number; subtotal: number; product?: { name: string }; }
+interface Order { id: number; orderNumber?: string; status: string; customerName: string; customerPhone: string; customerEmail?: string; customerAddress: string; total: number; createdAt: string; items: OrderItem[]; }
+
 const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
 
 export default function AdminOrdersPage() {
@@ -18,7 +21,7 @@ export default function AdminOrdersPage() {
   const router = useRouter();
   const filterStatus = searchParams.get("status") || "ALL";
 
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<number | null>(null);
 
@@ -34,6 +37,7 @@ export default function AdminOrdersPage() {
     setLoading(false);
   }
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { loadOrders(); }, []);
 
   async function changeStatus(orderId: number, newStatus: string) {
@@ -150,7 +154,7 @@ export default function AdminOrdersPage() {
                 </div>
 
                 <div style={{ background: "#F7F1E5", borderRadius: 12, padding: "0.85rem", marginBottom: "0.85rem" }}>
-                  {(order.items || []).map((item: any) => (
+                  {(order.items || []).map((item: OrderItem) => (
                     <div key={item.id} style={{ display: "flex", justifyContent: "space-between", fontSize: "0.82rem", padding: "0.2rem 0" }}>
                       <span style={{ color: "#4A4F45" }}>{item.quantity}× {item.product?.name || "—"}</span>
                       <span style={{ color: "#4A5D3A", fontWeight: 600 }}>{fmt(Number(item.subtotal))}</span>

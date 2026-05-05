@@ -85,7 +85,7 @@ export default function NosotrosPage() {
             Nuestra promesa
           </p>
           <p style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.3rem", color: "#4A5D3A", fontWeight: 400, lineHeight: 1.4, margin: 0, fontStyle: "italic" }}>
-            "Cuidar de ti no es solo nuestro trabajo, es nuestro propósito. Cada producto que recibes en tu puerta es nuestra forma de decirte: <span style={{ color: "#C97B5C", fontStyle: "normal", fontWeight: 600 }}>te cuidamos como nos gustaría que nos cuidaran a nosotros</span>."
+            &ldquo;Cuidar de ti no es solo nuestro trabajo, es nuestro propósito. Cada producto que recibes en tu puerta es nuestra forma de decirte: <span style={{ color: "#C97B5C", fontStyle: "normal", fontWeight: 600 }}>te cuidamos como nos gustaría que nos cuidaran a nosotros</span>.&rdquo;
           </p>
         </div>
 

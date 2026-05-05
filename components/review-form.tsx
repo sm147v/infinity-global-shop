@@ -4,11 +4,11 @@ import { useState } from "react";
 
 interface Props {
   productId: number;
-  productName: string;
-  onSubmitted?: () => void;
+  _productName: string;
+  _onSubmitted?: () => void;
 }
 
-export function ReviewForm({ productId, productName, onSubmitted }: Props) {
+export function ReviewForm({ productId, _productName, onSubmitted }: Props) {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [name, setName] = useState("");

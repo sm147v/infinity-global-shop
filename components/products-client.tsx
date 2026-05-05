@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, startTransition } from "react";
 import { HomeProductCard } from "./home-product-card";
 import { ResponsiveGrid } from "./responsive-grid";
 import { useSearchParams } from "next/navigation";
@@ -33,9 +33,11 @@ export function ProductsClient({ products, categories }: { products: Product[]; 
   
   useEffect(() => {
     const q = searchParams?.get("q");
-    if (q) setSearch(q);
-    const cat = searchParams?.get("category");
-    if (cat) setActiveCategory(cat);
+    startTransition(() => {
+      if (q) setSearch(q);
+      const cat = searchParams?.get("category");
+      if (cat) setActiveCategory(cat);
+    });
   }, [searchParams]);
 
   const filtered = useMemo(() => {
@@ -121,7 +123,7 @@ export function ProductsClient({ products, categories }: { products: Product[]; 
             <span style={{ fontSize: "0.78rem", color: "#4A4F45" }}>Ordenar:</span>
             <select
               value={sortBy}
-              onChange={e => setSortBy(e.target.value as any)}
+              onChange={e => setSortBy(e.target.value as "newest" | "price_asc" | "price_desc" | "name")}
               style={{
                 padding: "0.5rem 0.85rem",
                 borderRadius: 100,

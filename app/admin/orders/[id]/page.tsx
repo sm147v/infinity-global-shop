@@ -18,7 +18,7 @@ export default function AdminOrderPage() {
   const router = useRouter();
   const orderId = params.id as string;
 
-  const [order, setOrder] = useState<any>(null);
+  const [order, setOrder] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState("");
@@ -63,6 +63,7 @@ export default function AdminOrderPage() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadOrder();
   }, [orderId]);
 
@@ -160,7 +161,7 @@ export default function AdminOrderPage() {
 
       <div style={{ background: "#FDFAF3", borderRadius: 20, padding: "1.5rem", border: "1px solid #EDE3CD" }}>
         <p style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "2px", color: "#C97B5C", margin: "0 0 1rem", fontWeight: 600 }}>Productos</p>
-        {order.items.map((item: any) => (
+        {order.items.map((item: Record<string, unknown>) => (
           <div key={item.id} style={{ display: "flex", justifyContent: "space-between", padding: "0.6rem 0", borderBottom: "1px solid #EDE3CD" }}>
             <span style={{ fontSize: "0.9rem", color: "#4A4F45" }}>{item.quantity}× {item.product?.name || "—"}</span>
             <span style={{ fontSize: "0.9rem", color: "#4A5D3A", fontWeight: 600 }}>{fmt(Number(item.subtotal))}</span>

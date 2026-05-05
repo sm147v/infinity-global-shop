@@ -1,5 +1,5 @@
 "use client";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { saveCart } from "@/lib/cart";
@@ -7,12 +7,10 @@ import { saveCart } from "@/lib/cart";
 function GraciasContent() {
   const searchParams = useSearchParams();
   const orderNumber = searchParams.get("orderNumber") || "";
-  const [confirmed, setConfirmed] = useState(false);
 
   useEffect(() => {
     saveCart([]);
     window.dispatchEvent(new Event("igs-cart-updated"));
-    setConfirmed(true);
   }, []);
 
   return (

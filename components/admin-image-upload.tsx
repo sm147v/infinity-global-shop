@@ -122,7 +122,7 @@ export function AdminImageUpload({ productId, currentImage, currentImages = [] }
 
       <CldUploadWidget
         uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
-        onSuccess={(result: any) => {
+        onSuccess={(result: Record<string, unknown>) => {
           if (result?.info?.secure_url) {
             callApi("add", result.info.secure_url);
           }
