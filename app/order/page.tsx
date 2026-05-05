@@ -13,7 +13,7 @@ export default function MiPedidoPage() {
       setError("Ingresa tu número de pedido");
       return;
     }
-    router.push(`/pedido/${trimmed}`);
+    router.push(`/order/${trimmed}`);
   }
 
   return (

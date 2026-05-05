@@ -84,7 +84,7 @@ function GraciasContent() {
 
         <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", justifyContent: "center" }}>
           {orderNumber && (
-            <Link href={"/pedido/" + orderNumber} style={{
+            <Link href={"/order/" + orderNumber} style={{
               padding: "1rem 1.75rem",
               background: "#4A5D3A",
               color: "#F7F1E5",

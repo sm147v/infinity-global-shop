@@ -47,7 +47,7 @@ export default async function OrderTrackingPage({
       <div style={{ maxWidth: 720, margin: "0 auto" }}>
 
         <div style={{ marginBottom: "1.5rem" }}>
-          <Link href="/pedido" style={{ fontSize: "0.85rem", color: "#4A4F45", textDecoration: "none" }}>
+          <Link href="/order" style={{ fontSize: "0.85rem", color: "#4A4F45", textDecoration: "none" }}>
             ← Buscar otro pedido
           </Link>
         </div>

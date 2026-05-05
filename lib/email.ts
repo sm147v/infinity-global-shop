@@ -96,7 +96,7 @@ export async function sendOrderConfirmationToCustomer(data: OrderEmailData) {
             </div>
 
             <div style="text-align:center;margin-bottom:24px;">
-              <a href="${APP_URL}/pedido/${data.orderNumber}" style="display:inline-block;background:#4A5D3A;color:#F7F1E5;text-decoration:none;padding:14px 28px;border-radius:100px;font-size:15px;font-weight:500;">
+              <a href="${APP_URL}/order/${data.orderNumber}" style="display:inline-block;background:#4A5D3A;color:#F7F1E5;text-decoration:none;padding:14px 28px;border-radius:100px;font-size:15px;font-weight:500;">
                 Ver estado de mi pedido →
               </a>
             </div>

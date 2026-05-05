@@ -50,7 +50,7 @@ export function SiteHeader() {
       </Link>
 
       <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-        <Link href="/pedido" style={{
+        <Link href="/order" style={{
           fontSize: "0.78rem",
           color: "#4A4F45",
           textDecoration: "none",
