@@ -47,3 +47,9 @@ next-env.d.ts
 *.db
 *.db-journal
 .env*.local
+fix-*.ts
+list-products.ts
+igs-generate-slugs.*
+fix-seo-missing.ts
+check-products.mjs
+aplicar-seo-completoV.sh
