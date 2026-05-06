@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { validateAdminToken, getAdminTokenFromHeaders } from "@/lib/admin-auth";
 
 function checkAuth(req: NextRequest) {
-  return req.headers.get("x-admin-token") === process.env.ADMIN_TOKEN;
+  const token = getAdminTokenFromHeaders(req);
+  return validateAdminToken(token);
 }
 
 // Type-safe coupon update data

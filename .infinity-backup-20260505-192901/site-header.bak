@@ -1,55 +1,51 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import { useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
 import { Bell } from "lucide-react";
 
 /**
  * SiteHeader
  *
- * Usa useSyncExternalStore para evitar:
- *   1. Hydration mismatch (server vs client)
- *   2. setState dentro de useEffect (warning de React/Next 16)
+ * IMPORTANTE — Fix de hydration:
+ *   El estado `mounted` evita el error de "server HTML didn't match client".
+ *   En el primer render (server + cliente) showAdmin = false SIEMPRE.
+ *   Después del montaje en el cliente, leemos sessionStorage/URL y actualizamos.
  *
- * Activar admin:  /?admin=infinity-2026
- * Cerrar admin:   /?admin=logout
+ * Activar modo admin:
+ *   /?admin=infinity-2026  → guarda token, muestra campana
+ *   /?admin=logout         → cierra sesión admin
+ *
+ * El PIN solo OCULTA el botón. La protección real de /admin debe ir
+ * en una capa de auth server-side (middleware, API routes, etc).
  */
 const ADMIN_PIN = "infinity-2026";
 
-// Subscribe noop — sessionStorage no emite eventos en la misma pestaña
-const subscribe = () => () => {};
-
-// Snapshot del cliente: lee URL y sessionStorage
-const getClientSnapshot = (): boolean => {
-  if (typeof window === "undefined") return false;
-
-  const params = new URLSearchParams(window.location.search);
-  const pin = params.get("admin");
-
-  if (pin === "logout") {
-    sessionStorage.removeItem("ig_admin");
-    return false;
-  }
-
-  if (pin === ADMIN_PIN) {
-    sessionStorage.setItem("ig_admin", "1");
-    return true;
-  }
-
-  return sessionStorage.getItem("ig_admin") === "1";
-};
-
-// Snapshot del servidor: siempre false (no hay window)
-const getServerSnapshot = (): boolean => false;
-
 export function SiteHeader() {
-  // Server: false. Cliente: true si admin. Sin hydration mismatch.
-  const showAdmin = useSyncExternalStore(
-    subscribe,
-    getClientSnapshot,
-    getServerSnapshot
-  );
+  const [mounted, setMounted] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
+
+  useEffect(() => {
+    // Marcar como montado (cliente) — evita hydration mismatch
+    setMounted(true);
+
+    const params = new URLSearchParams(window.location.search);
+    const pin = params.get("admin");
+
+    if (pin === "logout") {
+      sessionStorage.removeItem("ig_admin");
+      setShowAdmin(false);
+      return;
+    }
+
+    if (pin === ADMIN_PIN) {
+      sessionStorage.setItem("ig_admin", "1");
+      setShowAdmin(true);
+      return;
+    }
+
+    setShowAdmin(sessionStorage.getItem("ig_admin") === "1");
+  }, []);
 
   return (
     <header
@@ -77,12 +73,11 @@ export function SiteHeader() {
           color: "#4A5D3A",
         }}
       >
-        <Image
+        <img
           src="/logo.png"
           alt="Infinity Global Shop"
           width={36}
           height={36}
-          priority
           style={{ objectFit: "contain", display: "block" }}
         />
         <span
@@ -102,7 +97,7 @@ export function SiteHeader() {
 
       <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
         <Link
-          href="/order"
+          href="/pedido"
           style={{
             fontSize: "0.78rem",
             color: "#4A4F45",
@@ -115,7 +110,8 @@ export function SiteHeader() {
           Mi pedido
         </Link>
 
-        {showAdmin && (
+        {/* Solo se renderiza después del montaje en el cliente */}
+        {mounted && showAdmin && (
           <Link
             href="/admin"
             title="Panel de administración"

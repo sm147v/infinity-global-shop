@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { validateAdminToken, getAdminTokenFromHeaders } from "@/lib/admin-auth";
 
 function checkAuth(req: NextRequest) {
-  const token = req.headers.get("x-admin-token");
-  return token === process.env.ADMIN_TOKEN;
+  const token = getAdminTokenFromHeaders(req);
+  return validateAdminToken(token);
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

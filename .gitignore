@@ -46,3 +46,4 @@ next-env.d.ts
 # local sqlite artifacts
 *.db
 *.db-journal
+.env*.local

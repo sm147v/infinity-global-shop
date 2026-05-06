@@ -63,25 +63,8 @@ function libToCtx(items: LibCartItem[]): CartItem[] {
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  
-  // Lazy init: Read localStorage during first render only
-  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(() => {
-    if (typeof window === "undefined") return null;
-    try {
-      const saved = localStorage.getItem("igs_coupon");
-      if (!saved) return null;
-      const parsed = JSON.parse(saved);
-      if (parsed && typeof parsed === "object" && parsed.code && parsed.type) {
-        return parsed;
-      }
-      localStorage.removeItem("igs_coupon");
-      return null;
-    } catch {
-      localStorage.removeItem("igs_coupon");
-      return null;
-    }
-  });
-
+  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   function applyCoupon(coupon: AppliedCoupon | null) {
     setAppliedCoupon(coupon);
@@ -96,10 +79,32 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems(libToCtx(loadCart()));
   }, []);
 
+  // Load from localStorage and initialize cart after client hydration
   useEffect(() => {
+    try {
+      const saved = localStorage.getItem("igs_coupon");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === "object" && parsed.code && parsed.type) {
+          setAppliedCoupon(parsed);
+        } else {
+          localStorage.removeItem("igs_coupon");
+        }
+      }
+    } catch {
+      localStorage.removeItem("igs_coupon");
+    }
+
+    // Load cart from localStorage
+    refresh();
+    setIsHydrated(true);
+  }, [refresh]);
+
+  useEffect(() => {
+    if (!isHydrated) return;
     const unsubscribe = subscribeToCartUpdates(refresh);
     return unsubscribe;
-  }, [refresh]);
+  }, [refresh, isHydrated]);
 
   const openCart = () => setIsOpen(true);
   const closeCart = () => setIsOpen(false);

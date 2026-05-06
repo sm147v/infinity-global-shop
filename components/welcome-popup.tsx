@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 export function WelcomePopup() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
   const [copied, setCopied] = useState(false);
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -13,8 +14,10 @@ export function WelcomePopup() {
     const seen = localStorage.getItem("welcome_popup_seen");
     if (!seen) {
       const timer = setTimeout(() => setIsOpen(true), 3000);
+      setIsHydrated(true);
       return () => clearTimeout(timer);
     }
+    setIsHydrated(true);
   }, []);
 
   function close() {
@@ -36,7 +39,8 @@ export function WelcomePopup() {
     setTimeout(() => close(), 2000);
   }
 
-  if (!isOpen) return null;
+  // No renderizar hasta después de la hidratación para evitar mismatch
+  if (!isHydrated || !isOpen) return null;
 
   return (
     <div onClick={close} style={{

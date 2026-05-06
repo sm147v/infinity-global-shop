@@ -12,23 +12,32 @@ interface WishlistContextType {
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
 export function WishlistProvider({ children }: { children: ReactNode }) {
-  // Lazy init: Read localStorage during first render only
-  const [items, setItems] = useState<number[]>(() => {
-    if (typeof window === "undefined") return [];
+  // Initialize as empty - server and client must match during SSR
+  const [items, setItems] = useState<number[]>([]);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Load from localStorage after client hydration
+  useEffect(() => {
     try {
       const saved = localStorage.getItem("igs_wishlist");
-      if (!saved) return [];
-      const parsed = JSON.parse(saved);
-      return Array.isArray(parsed) ? parsed.filter(n => typeof n === "number") : [];
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          setItems(parsed.filter(n => typeof n === "number"));
+        }
+      }
     } catch {
-      return [];
+      // Ignore localStorage errors
     }
-  });
+    setIsHydrated(true);
+  }, []);
 
-  // Write to localStorage whenever items change
+  // Write to localStorage whenever items change (only after hydration)
   useEffect(() => {
-    localStorage.setItem("igs_wishlist", JSON.stringify(items));
-  }, [items]);
+    if (isHydrated) {
+      localStorage.setItem("igs_wishlist", JSON.stringify(items));
+    }
+  }, [items, isHydrated]);
 
   function toggle(productId: number) {
     setItems(prev =>

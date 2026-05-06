@@ -3,7 +3,7 @@ import { AdminNotifications } from "@/components/admin-notifications";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const menuItems = [
   { href: "/admin", label: "Dashboard", icon: "🏠" },
@@ -16,14 +16,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const router = useRouter();
   
-  const [authed, setAuthed] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return !!localStorage.getItem("adminToken");
-  });
-  const [token, setToken] = useState(() => {
-    if (typeof window === "undefined") return "";
-    return localStorage.getItem("adminToken") || "";
-  });
+  const [authed, setAuthed] = useState(false);
+  const [token, setToken] = useState("");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("adminToken");
+    if (saved) {
+      setToken(saved);
+      setAuthed(true);
+    }
+    setMounted(true);
+  }, []);
   const [error, setError] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -60,6 +64,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     setToken("");
     router.push("/");
   }
+
+  if (!mounted) return null;
 
   if (!authed) {
     return (

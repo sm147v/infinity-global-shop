@@ -1,3 +1,265 @@
+#!/bin/bash
+# ============================================================
+# Infinity Global Shop — Fix de errores de build
+# ============================================================
+# Arregla los 4 problemas reportados:
+#
+#   1. ERROR ESLint en site-header.tsx
+#      → "Calling setState synchronously within an effect"
+#      → Reemplaza el patrón con useSyncExternalStore (recomendado
+#        oficialmente por React/Next 16 para evitar hydration sin
+#        cascading renders).
+#
+#   2. ERROR TypeScript con app/favorite/page.js
+#      → Cache obsoleta de Next.js. Se borra .next/
+#
+#   3. WARNINGS de <img> → <Image>
+#      → Migra los <img> de site-header y site-footer a next/image
+#
+#   4. Vulnerabilidades de Next.js
+#      → Sugiere comando de audit fix (no lo corre automáticamente
+#        porque puede romper deps; tú decides).
+#
+# USO:
+#   cd ~/Desktop/infinity-global-shop
+#   bash infinity-fix-build.sh
+# ============================================================
+
+set -eo pipefail
+
+GREEN='\033[0;32m'; BLUE='\033[0;34m'; YELLOW='\033[1;33m'; RED='\033[0;31m'; BOLD='\033[1m'; NC='\033[0m'
+log()   { echo -e "${GREEN}✓${NC} $1"; }
+info()  { echo -e "${BLUE}ℹ${NC}  $1"; }
+warn()  { echo -e "${YELLOW}⚠${NC}  $1"; }
+err()   { echo -e "${RED}✗${NC} $1" >&2; }
+title() { echo -e "\n${BOLD}${BLUE}━━━ $1 ━━━${NC}\n"; }
+
+BACKUP_DIR=""
+HEADER_FILE=""
+FOOTER_FILE=""
+ROLLBACK=false
+
+rollback() {
+  if [ "$ROLLBACK" = true ] && [ -n "$BACKUP_DIR" ] && [ -d "$BACKUP_DIR" ]; then
+    err "Algo falló. Restaurando..."
+    [ -f "$BACKUP_DIR/site-header.bak" ] && [ -n "$HEADER_FILE" ] && cp "$BACKUP_DIR/site-header.bak" "$HEADER_FILE"
+    [ -f "$BACKUP_DIR/site-footer.bak" ] && [ -n "$FOOTER_FILE" ] && cp "$BACKUP_DIR/site-footer.bak" "$FOOTER_FILE"
+    err "Rollback listo. Backup en: $BACKUP_DIR"
+  fi
+}
+trap rollback ERR
+
+# ============================================================
+# 1) DETECTAR ARCHIVOS
+# ============================================================
+title "Detectando archivos"
+
+[ ! -f "package.json" ] && { err "No hay package.json. cd a tu proyecto."; exit 1; }
+log "package.json OK"
+
+if [ -d "src/components" ]; then BASE_DIR="src"
+elif [ -d "components" ]; then BASE_DIR="."
+else err "No encontré components/"; exit 1; fi
+COMPONENTS_DIR="$BASE_DIR/components"
+log "Componentes: $COMPONENTS_DIR/"
+
+for c in "$COMPONENTS_DIR/site-header.tsx" "$COMPONENTS_DIR/site-header.jsx"; do
+  [ -f "$c" ] && HEADER_FILE="$c" && break
+done
+[ -z "$HEADER_FILE" ] && { err "No encontré site-header"; exit 1; }
+log "Header: $HEADER_FILE"
+
+for c in "$COMPONENTS_DIR/site-footer.tsx" "$COMPONENTS_DIR/site-footer.jsx"; do
+  [ -f "$c" ] && FOOTER_FILE="$c" && break
+done
+[ -z "$FOOTER_FILE" ] && { err "No encontré site-footer"; exit 1; }
+log "Footer: $FOOTER_FILE"
+
+# ============================================================
+# 2) BACKUP
+# ============================================================
+title "Backup"
+
+BACKUP_DIR=".infinity-backup-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BACKUP_DIR"
+cp "$HEADER_FILE" "$BACKUP_DIR/site-header.bak"
+cp "$FOOTER_FILE" "$BACKUP_DIR/site-footer.bak"
+log "Backup en $BACKUP_DIR/"
+ROLLBACK=true
+
+# ============================================================
+# 3) BORRAR CACHE DE NEXT (.next/) — arregla el error de favorite/page.js
+# ============================================================
+title "Limpiando cache de Next.js"
+
+if [ -d ".next" ]; then
+  rm -rf .next
+  log "Carpeta .next/ eliminada"
+else
+  info ".next/ no existía"
+fi
+
+# También borrar tsconfig cache si existe
+[ -f "tsconfig.tsbuildinfo" ] && rm -f tsconfig.tsbuildinfo && log "tsconfig.tsbuildinfo eliminado"
+
+# ============================================================
+# 4) HEADER — usa useSyncExternalStore (sin setState en useEffect)
+# ============================================================
+title "Reescribiendo Header (sin setState en useEffect)"
+
+cat > "$HEADER_FILE" << 'HEADER_EOF'
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { useSyncExternalStore } from "react";
+import { Bell } from "lucide-react";
+
+/**
+ * SiteHeader
+ *
+ * Usa useSyncExternalStore para evitar:
+ *   1. Hydration mismatch (server vs client)
+ *   2. setState dentro de useEffect (warning de React/Next 16)
+ *
+ * Activar admin:  /?admin=infinity-2026
+ * Cerrar admin:   /?admin=logout
+ */
+const ADMIN_PIN = "infinity-2026";
+
+// Subscribe noop — sessionStorage no emite eventos en la misma pestaña
+const subscribe = () => () => {};
+
+// Snapshot del cliente: lee URL y sessionStorage
+const getClientSnapshot = (): boolean => {
+  if (typeof window === "undefined") return false;
+
+  const params = new URLSearchParams(window.location.search);
+  const pin = params.get("admin");
+
+  if (pin === "logout") {
+    sessionStorage.removeItem("ig_admin");
+    return false;
+  }
+
+  if (pin === ADMIN_PIN) {
+    sessionStorage.setItem("ig_admin", "1");
+    return true;
+  }
+
+  return sessionStorage.getItem("ig_admin") === "1";
+};
+
+// Snapshot del servidor: siempre false (no hay window)
+const getServerSnapshot = (): boolean => false;
+
+export function SiteHeader() {
+  // Server: false. Cliente: true si admin. Sin hydration mismatch.
+  const showAdmin = useSyncExternalStore(
+    subscribe,
+    getClientSnapshot,
+    getServerSnapshot
+  );
+
+  return (
+    <header
+      style={{
+        padding: "0.65rem 1.25rem",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        background: "rgba(247, 241, 229, 0.95)",
+        backdropFilter: "blur(10px)",
+        WebkitBackdropFilter: "blur(10px)",
+        position: "sticky",
+        top: 36,
+        zIndex: 99,
+        borderBottom: "1px solid rgba(74, 93, 58, 0.08)",
+      }}
+    >
+      <Link
+        href="/"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          textDecoration: "none",
+          color: "#4A5D3A",
+        }}
+      >
+        <Image
+          src="/logo.png"
+          alt="Infinity Global Shop"
+          width={36}
+          height={36}
+          priority
+          style={{ objectFit: "contain", display: "block" }}
+        />
+        <span
+          style={{
+            fontFamily: "var(--font-fraunces), Georgia, serif",
+            fontSize: "1.15rem",
+            fontWeight: 500,
+            letterSpacing: "-0.02em",
+          }}
+        >
+          Infinity{" "}
+          <em style={{ fontStyle: "italic", fontWeight: 300, color: "#C97B5C" }}>
+            Global
+          </em>
+        </span>
+      </Link>
+
+      <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+        <Link
+          href="/pedido"
+          style={{
+            fontSize: "0.78rem",
+            color: "#4A4F45",
+            textDecoration: "none",
+            padding: "0.5rem 0.85rem",
+            borderRadius: 100,
+            fontWeight: 500,
+          }}
+        >
+          Mi pedido
+        </Link>
+
+        {showAdmin && (
+          <Link
+            href="/admin"
+            title="Panel de administración"
+            aria-label="Admin"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              color: "#C97B5C",
+              background: "rgba(201, 123, 92, 0.08)",
+              border: "1px solid rgba(201, 123, 92, 0.2)",
+              textDecoration: "none",
+              transition: "all 0.2s ease",
+            }}
+          >
+            <Bell size={16} strokeWidth={2} />
+          </Link>
+        )}
+      </div>
+    </header>
+  );
+}
+HEADER_EOF
+log "site-header reescrito (useSyncExternalStore + next/image)"
+
+# ============================================================
+# 5) FOOTER — migrar <img> a <Image>
+# ============================================================
+title "Migrando <img> a <Image> en Footer"
+
+cat > "$FOOTER_FILE" << 'FOOTER_EOF'
 "use client";
 
 import Link from "next/link";
@@ -179,7 +441,7 @@ export function SiteFooter() {
             <Link href="/nosotros" style={footerLinkStyle}>Sobre nosotros</Link>
             <Link href="/envios" style={footerLinkStyle}>Política de envíos</Link>
             <Link href="/devoluciones" style={footerLinkStyle}>Cambios y devoluciones</Link>
-            <Link href="/order" style={footerLinkStyle}>Rastrear pedido</Link>
+            <Link href="/pedido" style={footerLinkStyle}>Rastrear pedido</Link>
             <a href="https://wa.me/573054223600" target="_blank" rel="noreferrer" style={footerLinkStyle}>Atención al cliente</a>
           </div>
 
@@ -226,3 +488,43 @@ export function SiteFooter() {
     </footer>
   );
 }
+FOOTER_EOF
+log "site-footer reescrito (next/image, sin warnings)"
+
+ROLLBACK=false
+
+# ============================================================
+# RESUMEN
+# ============================================================
+echo -e "\n${GREEN}═══════════════════════════════════════════${NC}"
+echo -e "${GREEN}${BOLD}✨ Listo${NC}"
+echo -e "${GREEN}═══════════════════════════════════════════${NC}\n"
+
+echo -e "${BOLD}Lo que arreglé:${NC}"
+echo -e "  ${GREEN}✓${NC} ESLint error: setState in useEffect → useSyncExternalStore"
+echo -e "  ${GREEN}✓${NC} TypeScript error: cache .next/ borrada"
+echo -e "  ${GREEN}✓${NC} Warnings <img>: migrados a next/image"
+echo -e "  ${GREEN}✓${NC} Logo Bancolombia oficial mantenido"
+echo -e "  ${GREEN}✓${NC} Sin pagos duplicados"
+echo -e ""
+echo -e "${BOLD}Backup:${NC} $BACKUP_DIR/"
+echo -e ""
+echo -e "${BOLD}Verifica:${NC}"
+echo -e "  ${YELLOW}npx eslint . --max-warnings=0${NC}   # debe pasar limpio"
+echo -e "  ${YELLOW}npm run build${NC}                    # debe compilar sin errores"
+echo -e "  ${YELLOW}npm run dev${NC}                      # arranca local"
+echo -e ""
+echo -e "${BOLD}Sobre vulnerabilidades de Next:${NC}"
+echo -e "  Next 16.1.7 tiene 2 vulnerabilidades (1 high, 1 moderate)."
+echo -e "  Para arreglarlas (instala 16.2.4):"
+echo -e "  ${YELLOW}npm audit fix --force${NC}"
+echo -e "  ${YELLOW}npm install${NC}"
+echo -e "  Hazlo en otro momento — puede romper otras cosas."
+echo -e ""
+echo -e "${BOLD}Activar admin:${NC}"
+echo -e "  ${YELLOW}https://www.infinityglobalshop.com/?admin=infinity-2026${NC}"
+echo -e ""
+echo -e "${BOLD}Si todo OK:${NC}"
+echo -e "  ${YELLOW}git add . && git commit -m \"fix: build errors + footer + header admin\" && git push${NC}"
+echo -e ""
+echo -e "${GREEN}🌿${NC}\n"

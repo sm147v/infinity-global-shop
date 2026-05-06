@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { validateAdminToken, getAdminTokenFromHeaders } from "@/lib/admin-auth";
 import { whatsappLink, orderReceivedMessage } from "@/lib/whatsapp";
 
 const VALID_STATUSES = ["PENDING", "PAID", "PREPARING", "SHIPPED", "DELIVERED", "CANCELLED"];
@@ -9,8 +10,8 @@ export async function PATCH(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const adminToken = req.headers.get("x-admin-token");
-    if (adminToken !== process.env.ADMIN_TOKEN) {
+    const adminToken = getAdminTokenFromHeaders(req);
+    if (!validateAdminToken(adminToken)) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { validateAdminToken, getAdminTokenFromHeaders } from "@/lib/admin-auth";
 
 export async function GET(req: NextRequest) {
-  const token = req.headers.get("x-admin-token");
-  if (token !== process.env.ADMIN_TOKEN) {
+  const token = getAdminTokenFromHeaders(req);
+  if (!validateAdminToken(token)) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 

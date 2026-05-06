@@ -1,15 +1,271 @@
+#!/bin/bash
+# ============================================================
+# Infinity Global Shop — Fix Final
+# ============================================================
+# Arregla TODO de un tirón:
+#
+#   1. ERROR DE HYDRATION en SiteHeader
+#      → useEffect + estado `mounted` para que server y cliente
+#        rendericen lo mismo en el primer paint.
+#
+#   2. FOOTER con pagos duplicados
+#      → borra <PaymentRow /> mal anidada, deja UNA sola fila
+#        con cajas blancas uniformes.
+#
+#   3. BANCOLOMBIA logo OFICIAL
+#      → cuadrado amarillo (#FDDA24) + B rombo azul (#00205B)
+#        + wordmark "Bancolombia".
+#
+#   4. CAMPANA ADMIN protegida por PIN
+#      → /?admin=infinity-2026 activa, /?admin=logout cierra.
+#
+# USO:
+#   cd ~/ruta/a/tu/proyecto
+#   bash infinity-fix-final.sh
+# ============================================================
+
+set -eo pipefail
+
+GREEN='\033[0;32m'; BLUE='\033[0;34m'; YELLOW='\033[1;33m'; RED='\033[0;31m'; BOLD='\033[1m'; NC='\033[0m'
+log()   { echo -e "${GREEN}✓${NC} $1"; }
+info()  { echo -e "${BLUE}ℹ${NC}  $1"; }
+warn()  { echo -e "${YELLOW}⚠${NC}  $1"; }
+err()   { echo -e "${RED}✗${NC} $1" >&2; }
+title() { echo -e "\n${BOLD}${BLUE}━━━ $1 ━━━${NC}\n"; }
+
+BACKUP_DIR=""
+FOOTER_FILE=""
+HEADER_FILE=""
+ROLLBACK=false
+
+rollback() {
+  if [ "$ROLLBACK" = true ] && [ -n "$BACKUP_DIR" ] && [ -d "$BACKUP_DIR" ]; then
+    err "Algo falló. Restaurando..."
+    [ -f "$BACKUP_DIR/site-footer.bak" ] && [ -n "$FOOTER_FILE" ] && cp "$BACKUP_DIR/site-footer.bak" "$FOOTER_FILE"
+    [ -f "$BACKUP_DIR/site-header.bak" ] && [ -n "$HEADER_FILE" ] && cp "$BACKUP_DIR/site-header.bak" "$HEADER_FILE"
+    err "Rollback completo. Backup en: $BACKUP_DIR"
+  fi
+}
+trap rollback ERR
+
+# ============================================================
+# 1) DETECTAR ARCHIVOS
+# ============================================================
+title "Detectando archivos"
+
+[ ! -f "package.json" ] && { err "No hay package.json. cd a la raíz del proyecto."; exit 1; }
+log "package.json OK"
+
+if [ -d "src/components" ]; then BASE_DIR="src"
+elif [ -d "components" ]; then BASE_DIR="."
+else err "No encontré components/"; exit 1; fi
+COMPONENTS_DIR="$BASE_DIR/components"
+log "Componentes: $COMPONENTS_DIR/"
+
+for c in "$COMPONENTS_DIR/site-footer.tsx" "$COMPONENTS_DIR/site-footer.jsx"; do
+  [ -f "$c" ] && FOOTER_FILE="$c" && break
+done
+[ -z "$FOOTER_FILE" ] && { err "No encontré site-footer"; exit 1; }
+log "Footer: $FOOTER_FILE"
+
+for c in "$COMPONENTS_DIR/site-header.tsx" "$COMPONENTS_DIR/site-header.jsx"; do
+  [ -f "$c" ] && HEADER_FILE="$c" && break
+done
+[ -z "$HEADER_FILE" ] && { err "No encontré site-header"; exit 1; }
+log "Header: $HEADER_FILE"
+
+# PaymentRow viejo (por si existe, se borra)
+PAYMENT_ROW_FILE=""
+for c in "$COMPONENTS_DIR/payment-row.tsx" "$COMPONENTS_DIR/payment-row.jsx"; do
+  [ -f "$c" ] && PAYMENT_ROW_FILE="$c" && break
+done
+
+# ============================================================
+# 2) BACKUP
+# ============================================================
+title "Backup"
+
+BACKUP_DIR=".infinity-backup-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BACKUP_DIR"
+cp "$FOOTER_FILE" "$BACKUP_DIR/site-footer.bak"
+cp "$HEADER_FILE" "$BACKUP_DIR/site-header.bak"
+[ -n "$PAYMENT_ROW_FILE" ] && cp "$PAYMENT_ROW_FILE" "$BACKUP_DIR/payment-row.bak"
+log "Backup en $BACKUP_DIR/"
+ROLLBACK=true
+
+# ============================================================
+# 3) BORRAR PaymentRow viejo
+# ============================================================
+title "Limpiando PaymentRow duplicado"
+if [ -n "$PAYMENT_ROW_FILE" ]; then
+  rm -f "$PAYMENT_ROW_FILE"
+  log "Eliminado: $PAYMENT_ROW_FILE"
+else
+  info "No había PaymentRow que borrar"
+fi
+
+# ============================================================
+# 4) HEADER — con fix de hydration
+# ============================================================
+title "Reescribiendo Header (con fix de hydration)"
+
+cat > "$HEADER_FILE" << 'HEADER_EOF'
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Bell } from "lucide-react";
+
+/**
+ * SiteHeader
+ *
+ * IMPORTANTE — Fix de hydration:
+ *   El estado `mounted` evita el error de "server HTML didn't match client".
+ *   En el primer render (server + cliente) showAdmin = false SIEMPRE.
+ *   Después del montaje en el cliente, leemos sessionStorage/URL y actualizamos.
+ *
+ * Activar modo admin:
+ *   /?admin=infinity-2026  → guarda token, muestra campana
+ *   /?admin=logout         → cierra sesión admin
+ *
+ * El PIN solo OCULTA el botón. La protección real de /admin debe ir
+ * en una capa de auth server-side (middleware, API routes, etc).
+ */
+const ADMIN_PIN = "infinity-2026";
+
+export function SiteHeader() {
+  const [mounted, setMounted] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
+
+  useEffect(() => {
+    // Marcar como montado (cliente) — evita hydration mismatch
+    setMounted(true);
+
+    const params = new URLSearchParams(window.location.search);
+    const pin = params.get("admin");
+
+    if (pin === "logout") {
+      sessionStorage.removeItem("ig_admin");
+      setShowAdmin(false);
+      return;
+    }
+
+    if (pin === ADMIN_PIN) {
+      sessionStorage.setItem("ig_admin", "1");
+      setShowAdmin(true);
+      return;
+    }
+
+    setShowAdmin(sessionStorage.getItem("ig_admin") === "1");
+  }, []);
+
+  return (
+    <header
+      style={{
+        padding: "0.65rem 1.25rem",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        background: "rgba(247, 241, 229, 0.95)",
+        backdropFilter: "blur(10px)",
+        WebkitBackdropFilter: "blur(10px)",
+        position: "sticky",
+        top: 36,
+        zIndex: 99,
+        borderBottom: "1px solid rgba(74, 93, 58, 0.08)",
+      }}
+    >
+      <Link
+        href="/"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          textDecoration: "none",
+          color: "#4A5D3A",
+        }}
+      >
+        <img
+          src="/logo.png"
+          alt="Infinity Global Shop"
+          width={36}
+          height={36}
+          style={{ objectFit: "contain", display: "block" }}
+        />
+        <span
+          style={{
+            fontFamily: "var(--font-fraunces), Georgia, serif",
+            fontSize: "1.15rem",
+            fontWeight: 500,
+            letterSpacing: "-0.02em",
+          }}
+        >
+          Infinity{" "}
+          <em style={{ fontStyle: "italic", fontWeight: 300, color: "#C97B5C" }}>
+            Global
+          </em>
+        </span>
+      </Link>
+
+      <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+        <Link
+          href="/pedido"
+          style={{
+            fontSize: "0.78rem",
+            color: "#4A4F45",
+            textDecoration: "none",
+            padding: "0.5rem 0.85rem",
+            borderRadius: 100,
+            fontWeight: 500,
+          }}
+        >
+          Mi pedido
+        </Link>
+
+        {/* Solo se renderiza después del montaje en el cliente */}
+        {mounted && showAdmin && (
+          <Link
+            href="/admin"
+            title="Panel de administración"
+            aria-label="Admin"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              color: "#C97B5C",
+              background: "rgba(201, 123, 92, 0.08)",
+              border: "1px solid rgba(201, 123, 92, 0.2)",
+              textDecoration: "none",
+              transition: "all 0.2s ease",
+            }}
+          >
+            <Bell size={16} strokeWidth={2} />
+          </Link>
+        )}
+      </div>
+    </header>
+  );
+}
+HEADER_EOF
+log "site-header reescrito (sin hydration mismatch)"
+
+# ============================================================
+# 5) FOOTER — sin duplicados, Bancolombia oficial
+# ============================================================
+title "Reescribiendo Footer"
+
+cat > "$FOOTER_FILE" << 'FOOTER_EOF'
+"use client";
+
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NewsletterForm } from "./newsletter-form";
 
 export function SiteFooter() {
   const pathname = usePathname();
-  const [logoFailed, setLogoFailed] = useState(false);
-
   if (pathname?.startsWith("/admin")) return null;
 
   const footerLinkStyle: React.CSSProperties = {
@@ -35,6 +291,7 @@ export function SiteFooter() {
     gap: "0.4rem",
   };
 
+  // Caja uniforme blanca para cada medio de pago
   const payBox: React.CSSProperties = {
     background: "#fff",
     borderRadius: 6,
@@ -60,17 +317,17 @@ export function SiteFooter() {
           {/* COL 1 */}
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.75rem" }}>
-              {!logoFailed && (
-                <Image
-                  src="/logo.png"
-                  alt="Infinity Global Shop"
-                  width={32}
-                  height={32}
-                  loading="lazy"
-                  style={{ objectFit: "contain", borderRadius: 6 }}
-                  onError={() => setLogoFailed(true)}
-                />
-              )}
+              <img
+                src="/logo.png"
+                alt="Infinity Global Shop"
+                width={32}
+                height={32}
+                loading="lazy"
+                style={{ objectFit: "contain", borderRadius: 6 }}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = "none";
+                }}
+              />
               <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.35rem", margin: 0, fontWeight: 500 }}>
                 Infinity{" "}
                 <em style={{ fontStyle: "italic", color: "#C9A96E", fontWeight: 300 }}>Global</em>
@@ -124,6 +381,7 @@ export function SiteFooter() {
                 Pagos seguros
               </p>
               <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap", alignItems: "center" }}>
+                {/* Visa */}
                 <div style={payBox} title="Visa">
                   <svg width="34" height="11" viewBox="0 0 750 250" xmlns="http://www.w3.org/2000/svg">
                     <path d="M278.2 200.7L311.8 51h52.6l-33.6 149.7h-52.6zM524.3 55.1c-10.4-3.9-26.7-8.1-47-8.1-51.8 0-88.3 26-88.5 63.3-.3 27.5 26 42.9 45.8 52 20.3 9.3 27.1 15.3 27 23.6-.1 12.7-16.2 18.5-31.2 18.5-20.8 0-31.9-2.9-49-9.9l-6.7-3-7.3 42.7c12.2 5.3 34.6 9.9 57.9 10.1 54.7 0 90.2-25.5 90.7-65 .2-21.7-13.6-38.1-43.5-51.7-18.1-8.8-29.2-14.7-29.1-23.6 0-7.9 9.4-16.3 29.7-16.3 16.9-.3 29.2 3.4 38.7 7.3l4.6 2.2 7-41.1zM657.6 51h-40.5c-12.5 0-21.9 3.4-27.4 15.8L513.5 200.7h54.7l10.9-28.5h66.8l6.3 28.5h48.2L657.6 51zm-64.1 89.3c4.3-11 20.8-53.3 20.8-53.3-.3.5 4.3-11 6.9-18.2l3.5 16.4 12 55.1h-43.2zM230.7 51l-51.3 102-5.5-26.6c-9.5-30.6-39.2-63.8-72.4-80.4l47 150.6 55.5-.1 82.5-145.5h-55.8z" fill="#1A1F71"/>
@@ -131,6 +389,7 @@ export function SiteFooter() {
                   </svg>
                 </div>
 
+                {/* Mastercard */}
                 <div style={payBox} title="Mastercard">
                   <svg width="28" height="18" viewBox="0 0 48 30">
                     <circle cx="18" cy="15" r="13" fill="#EB001B"/>
@@ -139,14 +398,17 @@ export function SiteFooter() {
                   </svg>
                 </div>
 
+                {/* PSE */}
                 <div style={payBox} title="PSE">
                   <span style={{ fontSize: "0.65rem", fontWeight: 800, color: "#0F5BA7", fontFamily: "Arial Black, sans-serif", letterSpacing: "0.5px" }}>PSE</span>
                 </div>
 
+                {/* Nequi */}
                 <div style={{ ...payBox, background: "#DA0080" }} title="Nequi">
                   <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#fff", fontFamily: "'Helvetica Neue', Arial, sans-serif", letterSpacing: "-0.5px" }}>nequi</span>
                 </div>
 
+                {/* Bancolombia — logo OFICIAL */}
                 <div style={{ ...payBox, padding: 0, overflow: "hidden" }} title="Bancolombia">
                   <svg width="98" height="26" viewBox="0 0 130 30" xmlns="http://www.w3.org/2000/svg">
                     <rect x="0" y="0" width="30" height="30" fill="#FDDA24"/>
@@ -156,6 +418,7 @@ export function SiteFooter() {
                   </svg>
                 </div>
 
+                {/* Wompi */}
                 <div style={payBox} title="Wompi">
                   <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#3C46FF", fontFamily: "'Helvetica Neue', Arial, sans-serif", letterSpacing: "-0.3px" }}>wompi</span>
                 </div>
@@ -179,7 +442,7 @@ export function SiteFooter() {
             <Link href="/nosotros" style={footerLinkStyle}>Sobre nosotros</Link>
             <Link href="/envios" style={footerLinkStyle}>Política de envíos</Link>
             <Link href="/devoluciones" style={footerLinkStyle}>Cambios y devoluciones</Link>
-            <Link href="/order" style={footerLinkStyle}>Rastrear pedido</Link>
+            <Link href="/pedido" style={footerLinkStyle}>Rastrear pedido</Link>
             <a href="https://wa.me/573054223600" target="_blank" rel="noreferrer" style={footerLinkStyle}>Atención al cliente</a>
           </div>
 
@@ -189,6 +452,7 @@ export function SiteFooter() {
           </div>
         </div>
 
+        {/* BOTTOM BAR — solo copyright */}
         <div
           style={{
             marginTop: "2.5rem",
@@ -226,3 +490,35 @@ export function SiteFooter() {
     </footer>
   );
 }
+FOOTER_EOF
+log "site-footer reescrito (1 fila de pagos, Bancolombia oficial)"
+
+ROLLBACK=false
+
+# ============================================================
+# RESUMEN
+# ============================================================
+echo -e "\n${GREEN}═══════════════════════════════════════════${NC}"
+echo -e "${GREEN}${BOLD}✨ Listo${NC}"
+echo -e "${GREEN}═══════════════════════════════════════════${NC}\n"
+
+echo -e "${BOLD}Lo que arreglé:${NC}"
+echo -e "  ${GREEN}✓${NC} Error de hydration → patrón mounted+useEffect"
+echo -e "  ${GREEN}✓${NC} Footer sin pagos duplicados (1 fila, cajas blancas)"
+echo -e "  ${GREEN}✓${NC} Logo Bancolombia oficial"
+echo -e "  ${GREEN}✓${NC} Wompi agregado a la fila de pagos"
+echo -e "  ${GREEN}✓${NC} Campana admin con icono Lucide, junto a 'Mi pedido'"
+echo -e "  ${GREEN}✓${NC} PIN secreto en URL (más seguro que localStorage)"
+echo -e ""
+echo -e "${BOLD}Cómo activar admin:${NC}"
+echo -e "  ${YELLOW}https://www.infinityglobalshop.com/?admin=infinity-2026${NC}"
+echo -e "  Cerrar: ${YELLOW}/?admin=logout${NC}"
+echo -e ""
+echo -e "  ${YELLOW}⚠${NC}  Cambia el PIN en site-header (línea ADMIN_PIN)"
+echo -e ""
+echo -e "${BOLD}Backup:${NC} $BACKUP_DIR/"
+echo -e ""
+echo -e "${BOLD}Verifica:${NC} ${YELLOW}npm run dev${NC}"
+echo -e "${BOLD}Si OK:${NC}    ${YELLOW}git add . && git commit -m \"fix: hydration + footer + admin\" && git push${NC}"
+echo -e ""
+echo -e "${GREEN}🌿${NC}\n"

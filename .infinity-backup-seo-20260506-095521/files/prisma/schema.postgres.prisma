@@ -20,11 +20,7 @@ model Product {
   category        String?     @default("General")
   longDescription String?
   features        String[]    @default([])
-  slug            String?     @unique
-  brand           String?
-  sku             String?     @unique
-  gtin            String?
-    items           OrderItem[]
+  items           OrderItem[]
   Review          Review[]
 }
 

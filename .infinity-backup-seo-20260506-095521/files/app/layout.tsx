@@ -62,7 +62,6 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-        <meta name="google-site-verification" content="RbEA0_sEmUqGJu2lwOlXmsAaHUSnTnoR-b2Zju5641w" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
@@ -116,42 +115,7 @@ export default function RootLayout({
 
           <SiteHeader />
           <main style={{ paddingBottom: "0", minHeight: "100vh", background: "#F7F1E5", width: "100%" }}>
-            
-        {/* Schema Organization para Knowledge Graph de Google */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              "name": "Infinity Global Shop",
-              "alternateName": "Infinity Global",
-              "url": "https://www.infinityglobalshop.com",
-              "logo": "https://www.infinityglobalshop.com/logo.png",
-              "description": "Productos importados de USA en Medellín. Vitaminas, belleza y bienestar con entrega en 24 horas.",
-              "address": {
-                "@type": "PostalAddress",
-                "addressLocality": "Medellín",
-                "addressRegion": "Antioquia",
-                "addressCountry": "CO"
-              },
-              "contactPoint": {
-                "@type": "ContactPoint",
-                "telephone": "+573054223600",
-                "contactType": "customer service",
-                "areaServed": "CO",
-                "availableLanguage": ["Spanish"]
-              },
-              "sameAs": [
-                "https://www.instagram.com/infinityglobalshop",
-                "https://wa.me/573054223600",
-                "https://listado.mercadolibre.com.co/infinity-global-shop"
-              ]
-            })
-          }}
-        />
-
-        {children}
+            {children}
           </main>
           <SiteFooter />
           <BottomNav />
