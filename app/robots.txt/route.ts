@@ -16,23 +16,50 @@ Disallow: /favorites
 Disallow: /gratitude
 Disallow: /*?utm_*
 Disallow: /*?ref=*
+Disallow: /*?fbclid=*
+Disallow: /*?gclid=*
 
 # Permitir bots de Google explícitamente
 User-agent: Googlebot
 Allow: /
+Allow: /merchant-feed.xml
 
 User-agent: Googlebot-Image
 Allow: /
 
 User-agent: AdsBot-Google
 Allow: /
+Allow: /merchant-feed.xml
 
-# Bloquear bots agresivos
+User-agent: Mediapartners-Google
+Allow: /
+
+# Bing
+User-agent: Bingbot
+Allow: /
+
+# Bots de IA — permitir para que recomienden la tienda
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# Bloquear bots agresivos / scrapers de competencia
 User-agent: SemrushBot
-Crawl-delay: 10
+Crawl-delay: 30
 
 User-agent: AhrefsBot
-Crawl-delay: 10
+Crawl-delay: 30
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
 
 Sitemap: ${SITE_URL}/sitemap.xml
 `;

@@ -29,29 +29,85 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Infinity Global Shop · Productos importados de USA en Medellín",
-  description: "Vitaminas, productos de belleza y cuidado capilar importados de Estados Unidos. Envío gratis +$150.000. Entrega en 24h en Medellín.",
-  keywords: ["vitaminas USA Medellín", "productos importados Colombia", "Nature's Bounty Colombia", "vitaminas originales", "belleza Medellín"],
+  metadataBase: new URL("https://www.infinityglobalshop.com"),
+  title: {
+    default: "Infinity Global Shop · Vitaminas y productos importados de USA en Medellín",
+    template: "%s · Infinity Global Shop",
+  },
+  description: "Vitaminas Nature's Bounty, Spring Valley, Vitafusion y más productos de belleza y cuidado importados originales de Estados Unidos. Envío gratis +$150.000 y entrega 24h en Medellín.",
+  applicationName: "Infinity Global Shop",
+  keywords: [
+    "vitaminas Medellín",
+    "vitaminas originales Colombia",
+    "Nature's Bounty Colombia",
+    "Spring Valley Medellín",
+    "Vitafusion Colombia",
+    "biotina Medellín",
+    "melatonina Colombia",
+    "productos importados USA",
+    "tienda online Medellín",
+    "comprar vitaminas online Colombia",
+    "suplementos USA Medellín",
+    "productos de belleza importados",
+  ],
+  authors: [{ name: "Infinity Global Shop" }],
+  creator: "Infinity Global Shop",
+  publisher: "Infinity Global Shop",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: "/",
+    languages: {
+      "es-CO": "/",
+    },
+  },
   openGraph: {
-    title: "Infinity Global Shop | Tienda oficial",
-    description: "Productos importados de Estados Unidos: vitaminas, belleza, cuidado personal y más. Envío gratis +$150.000 · Entrega 24h en Medellín.",
+    title: "Infinity Global Shop · Vitaminas y productos USA en Medellín",
+    description: "Vitaminas, belleza y cuidado importados originales de USA. Envío gratis +$150.000 · Entrega 24h en Medellín.",
     url: "https://www.infinityglobalshop.com",
     siteName: "Infinity Global Shop",
     locale: "es_CO",
     type: "website",
     images: [{
-      url: "https://www.infinityglobalshop.com/og-image.png",
+      url: "/og-image.png",
       width: 1200,
       height: 630,
-      alt: "Infinity Global Shop · Tienda oficial",
+      alt: "Infinity Global Shop · Tienda oficial de productos importados de USA en Medellín",
     }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Infinity Global Shop | Tienda oficial",
-    description: "Productos importados de USA · Entrega 24h en Medellín",
-    images: ["https://www.infinityglobalshop.com/og-image.png"],
+    title: "Infinity Global Shop · Productos USA en Medellín",
+    description: "Vitaminas, belleza y cuidado importados de USA. Envío 24h en Medellín.",
+    images: ["/og-image.png"],
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/site.webmanifest",
+  verification: {
+    google: "RbEA0_sEmUqGJu2lwOlXmsAaHUSnTnoR-b2Zju5641w",
+  },
+  category: "shopping",
 };
 
 export default function RootLayout({
@@ -60,36 +116,80 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="es-CO">
       <head>
-        <meta name="google-site-verification" content="RbEA0_sEmUqGJu2lwOlXmsAaHUSnTnoR-b2Zju5641w" />
+        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "Organization",
+            "@type": "OnlineStore",
+            "@id": "https://www.infinityglobalshop.com/#organization",
             "name": "Infinity Global Shop",
+            "alternateName": "Infinity Global",
             "logo": "https://www.infinityglobalshop.com/logo.png",
             "image": "https://www.infinityglobalshop.com/og-image.png",
-            "description": "Tienda online de productos importados de USA: vitaminas, belleza, cuidado capilar. Envío 24h en Medellín.",
+            "description": "Tienda online de productos importados originales de USA: vitaminas Nature's Bounty, Spring Valley, Vitafusion, belleza y cuidado capilar. Envío 24h en Medellín.",
             "url": "https://www.infinityglobalshop.com",
             "telephone": "+573054223600",
+            "email": "hola@infinityglobalshop.com",
+            "priceRange": "$$",
+            "currenciesAccepted": "COP",
+            "paymentAccepted": ["Visa", "Mastercard", "American Express", "PSE", "Nequi", "Bancolombia", "Daviplata"],
+            "openingHoursSpecification": [{
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+              "opens": "09:00",
+              "closes": "19:00"
+            }],
             "address": {
               "@type": "PostalAddress",
               "addressLocality": "Medellín",
               "addressRegion": "Antioquia",
               "addressCountry": "CO"
             },
-            "areaServed": {
-              "@type": "AdministrativeArea",
-              "name": "Medellín, Antioquia"
-            },
-            "currenciesAccepted": "COP",
-            "paymentAccepted": "Visa, Mastercard, PSE, Nequi, Bancolombia",
-            "openingHours": "Mo-Su 09:00-19:00",
+            "areaServed": [
+              { "@type": "City", "name": "Medellín" },
+              { "@type": "AdministrativeArea", "name": "Antioquia" }
+            ],
+            "contactPoint": [{
+              "@type": "ContactPoint",
+              "telephone": "+573054223600",
+              "contactType": "customer service",
+              "areaServed": "CO",
+              "availableLanguage": ["Spanish"]
+            }],
             "sameAs": [
               "https://www.instagram.com/infinityglobalshop",
-              "https://wa.me/573054223600"
-            ]
+              "https://wa.me/573054223600",
+              "https://listado.mercadolibre.com.co/infinity-global-shop"
+            ],
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://www.infinityglobalshop.com/products?q={search_term_string}"
+              },
+              "query-input": "required name=search_term_string"
+            }
+          })
+        }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "@id": "https://www.infinityglobalshop.com/#website",
+            "url": "https://www.infinityglobalshop.com",
+            "name": "Infinity Global Shop",
+            "description": "Productos importados originales de USA con entrega 24h en Medellín",
+            "publisher": { "@id": "https://www.infinityglobalshop.com/#organization" },
+            "inLanguage": "es-CO",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://www.infinityglobalshop.com/products?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
           })
         }} />
       </head>
@@ -116,42 +216,7 @@ export default function RootLayout({
 
           <SiteHeader />
           <main style={{ paddingBottom: "0", minHeight: "100vh", background: "#F7F1E5", width: "100%" }}>
-            
-        {/* Schema Organization para Knowledge Graph de Google */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              "name": "Infinity Global Shop",
-              "alternateName": "Infinity Global",
-              "url": "https://www.infinityglobalshop.com",
-              "logo": "https://www.infinityglobalshop.com/logo.png",
-              "description": "Productos importados de USA en Medellín. Vitaminas, belleza y bienestar con entrega en 24 horas.",
-              "address": {
-                "@type": "PostalAddress",
-                "addressLocality": "Medellín",
-                "addressRegion": "Antioquia",
-                "addressCountry": "CO"
-              },
-              "contactPoint": {
-                "@type": "ContactPoint",
-                "telephone": "+573054223600",
-                "contactType": "customer service",
-                "areaServed": "CO",
-                "availableLanguage": ["Spanish"]
-              },
-              "sameAs": [
-                "https://www.instagram.com/infinityglobalshop",
-                "https://wa.me/573054223600",
-                "https://listado.mercadolibre.com.co/infinity-global-shop"
-              ]
-            })
-          }}
-        />
-
-        {children}
+            {children}
           </main>
           <SiteFooter />
           <BottomNav />

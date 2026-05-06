@@ -6,12 +6,15 @@ import { CouponBanner } from "@/components/coupon-banner";
 import { CategoriesSection } from "@/components/categories-section";
 import { FeaturesSection } from "@/components/features-section";
 
-export const dynamic = "force-dynamic";
+// ISR: regenera la home cada 10 minutos en background.
+// Mejora drásticamente Core Web Vitals (no pega DB en cada visita).
+export const revalidate = 600;
 
 export default async function Home() {
   const featured = await prisma.product.findMany({
     take: 8,
     orderBy: { id: "asc" },
+    where: { stock: { gt: 0 } },
   });
 
   return (
@@ -102,7 +105,7 @@ export default async function Home() {
         </div>
         <ResponsiveGrid>
           {featured.map(p => (
-            <HomeProductCard key={p.id} product={{ id: p.id, name: p.name, price: Number(p.price), image: p.image, stock: p.stock }} />
+            <HomeProductCard key={p.id} product={{ id: p.id, name: p.name, price: Number(p.price), image: p.image, stock: p.stock, slug: p.slug }} />
           ))}
         </ResponsiveGrid>
         <div style={{ textAlign: "center", marginTop: "2rem" }}>
@@ -133,7 +136,7 @@ export default async function Home() {
             <p style={{ color: "#4A4F45", fontSize: "0.9rem", margin: "1rem 0 1.5rem", maxWidth: "560px", marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }}>
               Sé parte de nuestra historia. Cada cliente cuenta. Cada experiencia se vuelve la base de la siguiente.
             </p>
-            <Link href="/nosotros" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.85rem 1.5rem", background: "#4A5D3A", color: "#F7F1E5", borderRadius: 100, textDecoration: "none", fontSize: "0.88rem", fontWeight: 500 }}>
+            <Link href="/us" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.85rem 1.5rem", background: "#4A5D3A", color: "#F7F1E5", borderRadius: 100, textDecoration: "none", fontSize: "0.88rem", fontWeight: 500 }}>
               Conoce nuestra historia →
             </Link>
           </div>

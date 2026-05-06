@@ -4,7 +4,17 @@ import { prisma } from "@/lib/prisma";
 import { ProductDetailClient } from "@/components/product-detail-client";
 import { slugify, isLegacyId } from "@/lib/slug";
 
-export const dynamic = "force-dynamic";
+// ISR: regenera cada producto cada 10 min en background.
+// Esto pre-genera HTML estático en Vercel = TTFB < 100ms y Core Web Vitals altos.
+export const revalidate = 600;
+
+// Pre-genera estáticamente todos los slugs en build time.
+export async function generateStaticParams() {
+  const products = await prisma.product.findMany({ select: { slug: true, name: true } });
+  return products
+    .map((p) => ({ id: p.slug || slugify(p.name) }))
+    .filter((p) => p.id);
+}
 
 const SITE_URL = "https://www.infinityglobalshop.com";
 

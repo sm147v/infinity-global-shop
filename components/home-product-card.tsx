@@ -12,6 +12,7 @@ interface Product {
   price: number;
   image: string | null;
   stock: number;
+  slug?: string | null;
 }
 
 const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
@@ -69,7 +70,7 @@ export function HomeProductCard({ product }: { product: Product }) {
         <div style={{ position: "absolute", top: 6, right: 6, zIndex: 2 }}>
           <WishlistButton productId={product.id} size={32} />
         </div>
-      <Link href={"/products/" + product.id} style={{ textDecoration: "none", color: "inherit" }}>
+      <Link href={"/products/" + (product.slug || product.id)} style={{ textDecoration: "none", color: "inherit" }} prefetch={false}>
         <div style={{
           width: "100%",
           aspectRatio: "1",
