@@ -1,11 +1,10 @@
 export const dynamic = "force-static";
-
 const SITE_URL = "https://www.infinityglobalshop.com";
-
 export async function GET() {
   const content = `# Infinity Global Shop · robots.txt
 User-agent: *
 Allow: /
+Allow: /api/google-feed
 Disallow: /admin
 Disallow: /admin/*
 Disallow: /api/
@@ -19,9 +18,9 @@ Disallow: /*?ref=*
 Disallow: /*?fbclid=*
 Disallow: /*?gclid=*
 
-# Permitir bots de Google explícitamente
 User-agent: Googlebot
 Allow: /
+Allow: /api/google-feed
 Allow: /merchant-feed.xml
 
 User-agent: Googlebot-Image
@@ -29,16 +28,15 @@ Allow: /
 
 User-agent: AdsBot-Google
 Allow: /
+Allow: /api/google-feed
 Allow: /merchant-feed.xml
 
 User-agent: Mediapartners-Google
 Allow: /
 
-# Bing
 User-agent: Bingbot
 Allow: /
 
-# Bots de IA — permitir para que recomienden la tienda
 User-agent: GPTBot
 Allow: /
 
@@ -48,7 +46,6 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
-# Bloquear bots agresivos / scrapers de competencia
 User-agent: SemrushBot
 Crawl-delay: 30
 
@@ -63,7 +60,6 @@ Disallow: /
 
 Sitemap: ${SITE_URL}/sitemap.xml
 `;
-
   return new Response(content, {
     headers: { "Content-Type": "text/plain; charset=utf-8" },
   });
