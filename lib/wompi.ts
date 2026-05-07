@@ -4,9 +4,10 @@ import { ApiError } from "@/lib/errors";
 type BuildCheckoutInput = {
   amountInCents: number;
   reference: string;
+  orderNumber?: string;
 };
 
-export function buildWompiCheckoutUrl({ amountInCents, reference }: BuildCheckoutInput): string {
+export function buildWompiCheckoutUrl({ amountInCents, reference, orderNumber }: BuildCheckoutInput): string {
   const publicKey = process.env.WOMPI_PUBLIC_KEY;
   const integrityKey = process.env.WOMPI_INTEGRITY_KEY;
   const appUrl = process.env.APP_URL ?? "http://localhost:3000";
@@ -16,7 +17,7 @@ export function buildWompiCheckoutUrl({ amountInCents, reference }: BuildCheckou
   }
 
   const currency = "COP";
-  const redirectUrl = `${appUrl}/checkout`;
+  const redirectUrl = orderNumber ? `${appUrl}/gratitude?orderNumber=${orderNumber}` : `${appUrl}/checkout`;
   const raw = `${reference}${amountInCents}${currency}${integrityKey}`;
   const signature = crypto.createHash("sha256").update(raw).digest("hex");
 

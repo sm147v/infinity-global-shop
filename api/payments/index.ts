@@ -12,7 +12,7 @@ export async function createPaymentFromPayload(payload: unknown) {
   const { orderId } = parsed.data;
   const order = await prisma.order.findUnique({
     where: { id: orderId },
-    select: { id: true, total: true, paymentStatus: true },
+    select: { id: true, total: true, paymentStatus: true, orderNumber: true },
   });
 
   if (!order) {
@@ -41,7 +41,7 @@ export async function createPaymentFromPayload(payload: unknown) {
     });
     paymentUrl = `${appUrl}/checkout?${params.toString()}`;
   } else {
-    paymentUrl = buildWompiCheckoutUrl({ amountInCents, reference });
+    paymentUrl = buildWompiCheckoutUrl({ amountInCents, reference, orderNumber: order.orderNumber ?? undefined });
   }
 
   await prisma.order.update({
