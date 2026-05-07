@@ -274,6 +274,9 @@ export default async function ProductPage({
           stock: product.stock,
           category: product.category,
           createdAt: product.createdAt,
+          longDescription: product.longDescription,
+          features: product.features || [],
+          brand: product.brand,
         }}
         related={related.map((p) => ({
           id: p.id,

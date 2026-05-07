@@ -68,6 +68,9 @@ export interface Product {
   image: string | null;
   images?: string[];
   category: string | null;
+  longDescription?: string | null;
+  features?: string[];
+  brand?: string | null;
   createdAt: Date | string;
 }
 

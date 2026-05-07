@@ -74,7 +74,7 @@ export function ProductReviews({ productId, productName }: Props) {
   ].slice(0, 6);
 
   // Distribución
-  const distribution = { 5: 78, 4: 18, 3: 3, 2: 1, 1: 0 };
+  const distribution = realReviews.length > 0 ? realReviews.reduce((acc, r) => { acc[r.rating as keyof typeof acc] = (acc[r.rating as keyof typeof acc] || 0) + 1; return acc; }, { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 } as Record<number, number>) : { 5: 78, 4: 18, 3: 3, 2: 1, 1: 0 };
 
   return (
     <section id="reviews" style={{ marginTop: "4rem", scrollMarginTop: "2rem" }}>

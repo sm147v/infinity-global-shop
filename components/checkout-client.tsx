@@ -46,7 +46,7 @@ export function CheckoutClient() {
         });
         saveCart([]);
         window.dispatchEvent(new Event("igs-cart-updated"));
-        window.location.href = "/gracias?orderNumber=" + orderNumber;
+        window.location.href = "/gratitude?orderNumber=" + orderNumber;
       } catch {
         setError("No se pudo confirmar el pago.");
       }
