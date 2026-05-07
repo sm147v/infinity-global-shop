@@ -26,12 +26,21 @@ function readWishlist(): number[] {
 }
 
 export function WishlistProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<number[]>(() => readWishlist());
+  const [items, setItems] = useState<number[]>([]);
+  const [hydrated, setHydrated] = useState(false);
 
-  // Persist whenever items change
+  // Load from localStorage after hydration
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setItems(readWishlist());
+    setHydrated(true);
+  }, []);
+
+  // Persist whenever items change (after hydration)
+  useEffect(() => {
+    if (!hydrated) return;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-  }, [items]);
+  }, [items, hydrated]);
 
   const toggle = useCallback((productId: number) => {
     setItems(prev =>
