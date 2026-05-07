@@ -141,6 +141,32 @@ export function ProductDetailClient({ product, related }: { product: Product; re
               </details>
             )}
 
+
+            {/* Badge originalidad */}
+            <div style={{ background: "linear-gradient(135deg, rgba(74,93,58,0.06), rgba(201,169,110,0.08))", border: "1px solid #EDE3CD", borderRadius: 14, padding: "0.85rem 1rem", marginBottom: "1.5rem", display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
+              <span style={{ fontSize: "1.4rem", flexShrink: 0 }}>🛡️</span>
+              <div>
+                <p style={{ fontSize: "0.8rem", fontWeight: 700, color: "#4A5D3A", margin: "0 0 0.25rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                  100% Original · Importado de USA
+                </p>
+                <p style={{ fontSize: "0.78rem", color: "#4A4F45", margin: 0, lineHeight: 1.5 }}>
+                  Todos nuestros productos son comprados directamente en tiendas y cadenas oficiales de Estados Unidos. Llegan sellados, con fecha de vencimiento vigente y sin intermediarios.
+                </p>
+              </div>
+            </div>
+
+            {/* Badge originalidad */}
+            <div style={{ background: "linear-gradient(135deg, rgba(74,93,58,0.06), rgba(201,169,110,0.08))", border: "1px solid #EDE3CD", borderRadius: 14, padding: "0.85rem 1rem", marginBottom: "1.5rem", display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
+              <span style={{ fontSize: "1.4rem", flexShrink: 0 }}>🛡️</span>
+              <div>
+                <p style={{ fontSize: "0.8rem", fontWeight: 700, color: "#4A5D3A", margin: "0 0 0.25rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                  100% Original · Importado de USA
+                </p>
+                <p style={{ fontSize: "0.78rem", color: "#4A4F45", margin: 0, lineHeight: 1.5 }}>
+                  Todos nuestros productos son comprados directamente en tiendas y cadenas oficiales de Estados Unidos. Llegan sellados, con fecha de vencimiento vigente y sin intermediarios.
+                </p>
+              </div>
+            </div>
             <div style={{ background: "#FDFAF3", border: "1px solid #EDE3CD", borderRadius: 16, padding: "1rem", marginBottom: "1.5rem" }}>
               {[
                 { icon: "🚚", text: "Envío gratis en pedidos +$150.000" },

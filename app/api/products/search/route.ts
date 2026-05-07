@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
       },
       take: 8,
       orderBy: { id: "desc" },
-      select: { id: true, name: true, price: true, image: true, category: true, stock: true },
+      select: { id: true, name: true, price: true, image: true, category: true, stock: true, slug: true },
     });
 
     return NextResponse.json({ products });

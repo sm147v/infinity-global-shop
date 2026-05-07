@@ -12,6 +12,7 @@ interface Product {
   image: string | null;
   category: string;
   stock: number;
+  slug?: string | null;
 }
 
 interface Props {
@@ -181,7 +182,7 @@ export function SearchModal({ onClose, doSearch, goToCategory, query, setQuery }
                 {results.map(p => (
                   <Link
                     key={p.id}
-                    href={"/products/" + p.id}
+                    href={"/products/" + (p.slug || p.id)}
                     onClick={onClose}
                     style={{
                       display: "flex",
