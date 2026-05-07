@@ -26,22 +26,12 @@ function readWishlist(): number[] {
 }
 
 export function WishlistProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<number[]>([]);
-  const [hydrated, setHydrated] = useState(false);
+  const [items, setItems] = useState<number[]>(() => readWishlist());
 
-  // Load once on mount — empty array means no cascading
+  // Persist whenever items change
   useEffect(() => {
-    setItems(readWishlist());
-    setHydrated(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Persist whenever items change (only after hydration)
-  useEffect(() => {
-    if (hydrated) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-    }
-  }, [items, hydrated]);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+  }, [items]);
 
   const toggle = useCallback((productId: number) => {
     setItems(prev =>

@@ -60,11 +60,29 @@ function libToCtx(items: LibCartItem[]): CartItem[] {
   }));
 }
 
+function loadInitialCoupon(): AppliedCoupon | null {
+  try {
+    if (typeof window === "undefined") return null;
+    const saved = localStorage.getItem("igs_coupon");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed && typeof parsed === "object" && parsed.code && parsed.type) {
+        return parsed;
+      }
+      localStorage.removeItem("igs_coupon");
+    }
+  } catch {
+    localStorage.removeItem("igs_coupon");
+  }
+  return null;
+}
+function loadInitialCart(): CartItem[] {
+  return libToCtx(loadCart());
+}
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(() => loadInitialCart());
   const [isOpen, setIsOpen] = useState(false);
-  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(() => loadInitialCoupon());
 
   function applyCoupon(coupon: AppliedCoupon | null) {
     setAppliedCoupon(coupon);
@@ -79,33 +97,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems(libToCtx(loadCart()));
   }, []);
 
-  // Load coupon + cart on mount
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("igs_coupon");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed && typeof parsed === "object" && parsed.code && parsed.type) {
-          // eslint-disable-next-line react-hooks/set-state-in-effect
-          setAppliedCoupon(parsed);
-        } else {
-          localStorage.removeItem("igs_coupon");
-        }
-      }
-    } catch {
-      localStorage.removeItem("igs_coupon");
-    }
-    refresh();
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsHydrated(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (!isHydrated) return;
     const unsubscribe = subscribeToCartUpdates(refresh);
     return unsubscribe;
-  }, [refresh, isHydrated]);
+  }, [refresh]);
 
   const openCart = () => setIsOpen(true);
   const closeCart = () => setIsOpen(false);
