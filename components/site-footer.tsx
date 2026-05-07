@@ -51,7 +51,7 @@ export function SiteFooter() {
       style={{
         background: "#2A2E26",
         color: "#F7F1E5",
-        padding: "3rem 1.5rem 6rem",
+        padding: "3rem 1.5rem 6rem", overflowX: "hidden",
         fontFamily: "var(--font-dm-sans), Inter, sans-serif",
       }}
     >
