@@ -8,7 +8,7 @@ import { validateEnvironment } from "@/lib/env-validation";
 // Run validation on module load
 try {
   validateEnvironment();
-} catch (error) {
+} catch {
   console.error("Fatal: Application cannot start due to environment validation failure");
   process.exit(1);
 }

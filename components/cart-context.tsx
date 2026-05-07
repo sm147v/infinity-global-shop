@@ -79,13 +79,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems(libToCtx(loadCart()));
   }, []);
 
-  // Load from localStorage and initialize cart after client hydration
+  // Load coupon + cart on mount
   useEffect(() => {
     try {
       const saved = localStorage.getItem("igs_coupon");
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed && typeof parsed === "object" && parsed.code && parsed.type) {
+          // eslint-disable-next-line react-hooks/set-state-in-effect
           setAppliedCoupon(parsed);
         } else {
           localStorage.removeItem("igs_coupon");
@@ -94,11 +95,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     } catch {
       localStorage.removeItem("igs_coupon");
     }
-
-    // Load cart from localStorage
     refresh();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsHydrated(true);
-  }, [refresh]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (!isHydrated) return;

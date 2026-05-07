@@ -1,27 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
+
+const STORAGE_KEY = "welcome_popup_seen";
+
+const subscribe = () => () => {};
+const getSnapshot = () => {
+  if (typeof window === "undefined") return true;
+  return localStorage.getItem(STORAGE_KEY) === "1";
+};
+const getServerSnapshot = () => true;
 
 export function WelcomePopup() {
+  const alreadySeen = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const [isOpen, setIsOpen] = useState(false);
-  const [isHydrated, setIsHydrated] = useState(false);
   const [copied, setCopied] = useState(false);
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    // Solo mostrar una vez por usuario
-    const seen = localStorage.getItem("welcome_popup_seen");
-    if (!seen) {
+    if (!alreadySeen) {
       const timer = setTimeout(() => setIsOpen(true), 3000);
-      setIsHydrated(true);
       return () => clearTimeout(timer);
     }
-    setIsHydrated(true);
-  }, []);
+  }, [alreadySeen]);
 
   function close() {
-    localStorage.setItem("welcome_popup_seen", "1");
+    localStorage.setItem(STORAGE_KEY, "1");
     setIsOpen(false);
   }
 
@@ -31,16 +36,28 @@ export function WelcomePopup() {
     setTimeout(() => setCopied(false), 2500);
   }
 
-  function submitEmail() {
+  async function submitEmail() {
     if (!email.includes("@")) return;
-    // Aquí podrías guardar el email en una lista si quisieras
-    localStorage.setItem("subscriber_email", email);
-    setSubmitted(true);
-    setTimeout(() => close(), 2000);
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        localStorage.setItem("subscriber_email", email);
+        setSubmitted(true);
+        setTimeout(() => close(), 2000);
+      }
+    } catch {
+      // Fallback: guardar local
+      localStorage.setItem("subscriber_email", email);
+      setSubmitted(true);
+      setTimeout(() => close(), 2000);
+    }
   }
 
-  // No renderizar hasta después de la hidratación para evitar mismatch
-  if (!isHydrated || !isOpen) return null;
+  if (!isOpen) return null;
 
   return (
     <div onClick={close} style={{
@@ -66,36 +83,22 @@ export function WelcomePopup() {
         fontFamily: "var(--font-dm-sans), Inter, sans-serif",
       }}>
         <button onClick={close} aria-label="Cerrar" style={{
-          position: "absolute",
-          top: 12, right: 12,
-          width: 36, height: 36,
-          borderRadius: "50%",
-          background: "rgba(247, 241, 229, 0.9)",
-          border: "none",
-          cursor: "pointer",
-          fontSize: "1rem",
-          color: "#4A5D3A",
-          zIndex: 2,
-          backdropFilter: "blur(4px)",
+          position: "absolute", top: 12, right: 12, width: 36, height: 36, borderRadius: "50%",
+          background: "rgba(247, 241, 229, 0.9)", border: "none", cursor: "pointer", fontSize: "1rem",
+          color: "#4A5D3A", zIndex: 2, backdropFilter: "blur(4px)",
         }}>✕</button>
 
         <div style={{
           background: "linear-gradient(135deg, #C97B5C 0%, #A85E42 100%)",
-          padding: "2.5rem 1.5rem 1.5rem",
-          color: "#F7F1E5",
-          textAlign: "center",
-          position: "relative",
+          padding: "2.5rem 1.5rem 1.5rem", color: "#F7F1E5", textAlign: "center",
         }}>
           <div style={{ fontSize: "3rem", marginBottom: "0.5rem" }}>🎁</div>
           <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.2em", margin: "0 0 0.5rem", opacity: 0.9, fontWeight: 600 }}>
             Bienvenida a Infinity
           </p>
           <h2 style={{
-            fontFamily: "var(--font-fraunces), Georgia, serif",
-            fontSize: "1.8rem",
-            fontWeight: 400,
-            margin: "0 0 0.5rem",
-            lineHeight: 1.1,
+            fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.8rem",
+            fontWeight: 400, margin: "0 0 0.5rem", lineHeight: 1.1,
           }}>
             10% de <em style={{ color: "#FDFAF3", fontStyle: "italic" }}>descuento</em><br />
             en tu primera compra
@@ -108,69 +111,32 @@ export function WelcomePopup() {
               <p style={{ color: "#4A4F45", fontSize: "0.92rem", textAlign: "center", margin: "0 0 1.25rem", lineHeight: 1.5 }}>
                 Usa este código en tu próximo pedido y aprovecha el descuento especial de bienvenida.
               </p>
-
               <button onClick={copyCode} style={{
-                width: "100%",
-                background: "#4A5D3A",
-                color: "#F7F1E5",
-                border: "2px dashed #C9A96E",
-                padding: "1rem",
-                borderRadius: 14,
-                fontSize: "1.3rem",
-                fontWeight: 700,
-                cursor: "pointer",
-                fontFamily: "monospace",
-                letterSpacing: "0.1em",
-                marginBottom: "1rem",
-                position: "relative",
+                width: "100%", background: "#4A5D3A", color: "#F7F1E5",
+                border: "2px dashed #C9A96E", padding: "1rem", borderRadius: 14,
+                fontSize: "1.3rem", fontWeight: 700, cursor: "pointer",
+                fontFamily: "monospace", letterSpacing: "0.1em", marginBottom: "1rem",
               }}>
                 {copied ? "✓ ¡Código copiado!" : "BIENVENIDA10 📋"}
               </button>
-
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", margin: "1rem 0", color: "#4A4F45" }}>
                 <div style={{ flex: 1, height: 1, background: "#EDE3CD" }} />
                 <span style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.1em" }}>O</span>
                 <div style={{ flex: 1, height: 1, background: "#EDE3CD" }} />
               </div>
-
               <p style={{ fontSize: "0.85rem", color: "#4A4F45", textAlign: "center", margin: "0 0 0.75rem" }}>
                 Recíbelo por email para no perderlo:
               </p>
-
               <div style={{ display: "flex", gap: "0.5rem" }}>
-                <input
-                  type="email"
-                  placeholder="tu@email.com"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  style={{
-                    flex: 1,
-                    padding: "0.85rem 1rem",
-                    borderRadius: 100,
-                    border: "1px solid #EDE3CD",
-                    background: "#F7F1E5",
-                    fontSize: "0.9rem",
-                    outline: "none",
-                    fontFamily: "inherit",
-                    color: "#4A5D3A",
-                  }}
-                />
+                <input type="email" placeholder="tu@email.com" value={email} onChange={e => setEmail(e.target.value)}
+                  style={{ flex: 1, padding: "0.85rem 1rem", borderRadius: 100, border: "1px solid #EDE3CD",
+                    background: "#F7F1E5", fontSize: "0.9rem", outline: "none", fontFamily: "inherit", color: "#4A5D3A" }} />
                 <button onClick={submitEmail} style={{
-                  background: "#C97B5C",
-                  color: "white",
-                  border: "none",
-                  padding: "0 1.25rem",
-                  borderRadius: 100,
-                  fontSize: "0.85rem",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  fontFamily: "inherit",
-                  whiteSpace: "nowrap",
-                }}>
-                  Recibir
-                </button>
+                  background: "#C97B5C", color: "white", border: "none", padding: "0 1.25rem",
+                  borderRadius: 100, fontSize: "0.85rem", fontWeight: 600, cursor: "pointer",
+                  fontFamily: "inherit", whiteSpace: "nowrap",
+                }}>Recibir</button>
               </div>
-
               <p style={{ fontSize: "0.7rem", color: "#4A4F45", textAlign: "center", margin: "1rem 0 0", opacity: 0.7 }}>
                 Compra mínima $80.000 · Vence en 90 días · Aplican términos
               </p>
@@ -189,14 +155,8 @@ export function WelcomePopup() {
         </div>
 
         <style>{`
-          @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-          @keyframes slideUp {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-          }
+          @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+          @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         `}</style>
       </div>
     </div>

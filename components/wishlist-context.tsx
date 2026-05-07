@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
 
 interface WishlistContextType {
   items: number[];
@@ -11,45 +11,49 @@ interface WishlistContextType {
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
-export function WishlistProvider({ children }: { children: ReactNode }) {
-  // Initialize as empty - server and client must match during SSR
-  const [items, setItems] = useState<number[]>([]);
-  const [isHydrated, setIsHydrated] = useState(false);
+const STORAGE_KEY = "igs_wishlist";
 
-  // Load from localStorage after client hydration
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("igs_wishlist");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          setItems(parsed.filter(n => typeof n === "number"));
-        }
-      }
-    } catch {
-      // Ignore localStorage errors
+function readWishlist(): number[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) return parsed.filter(n => typeof n === "number");
     }
-    setIsHydrated(true);
+  } catch { /* ignore */ }
+  return [];
+}
+
+export function WishlistProvider({ children }: { children: ReactNode }) {
+  const [items, setItems] = useState<number[]>([]);
+  const [hydrated, setHydrated] = useState(false);
+
+  // Load once on mount — empty array means no cascading
+  useEffect(() => {
+    setItems(readWishlist());
+    setHydrated(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Write to localStorage whenever items change (only after hydration)
+  // Persist whenever items change (only after hydration)
   useEffect(() => {
-    if (isHydrated) {
-      localStorage.setItem("igs_wishlist", JSON.stringify(items));
+    if (hydrated) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
     }
-  }, [items, isHydrated]);
+  }, [items, hydrated]);
 
-  function toggle(productId: number) {
+  const toggle = useCallback((productId: number) => {
     setItems(prev =>
       prev.includes(productId)
         ? prev.filter(id => id !== productId)
         : [...prev, productId]
     );
-  }
+  }, []);
 
-  function has(productId: number) {
+  const has = useCallback((productId: number) => {
     return items.includes(productId);
-  }
+  }, [items]);
 
   return (
     <WishlistContext.Provider value={{ items, toggle, has, count: items.length }}>

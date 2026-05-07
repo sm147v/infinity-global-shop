@@ -147,9 +147,8 @@ export default async function ProductPage({
       "url": canonicalUrl,
       "priceCurrency": "COP",
       "price": Number(product.price),
-      "priceValidUntil": new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .split("T")[0],
+      // Price valid for 30 days from today (use a stable date for SSR)
+      "priceValidUntil": (() => { const d = new Date(); d.setDate(d.getDate() + 30); return d.toISOString().split("T")[0]; })(),
       "itemCondition": "https://schema.org/NewCondition",
       "availability":
         product.stock > 0

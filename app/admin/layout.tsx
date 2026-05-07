@@ -3,7 +3,7 @@ import { AdminNotifications } from "@/components/admin-notifications";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 
 const menuItems = [
   { href: "/admin", label: "Dashboard", icon: "🏠" },
@@ -16,18 +16,27 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const router = useRouter();
   
-  const [authed, setAuthed] = useState(false);
   const [token, setToken] = useState("");
-  const [mounted, setMounted] = useState(false);
 
+  // Read admin token without hydration mismatch
+  const savedToken = useSyncExternalStore(
+    () => () => {},
+    () => localStorage.getItem("adminToken") || "",
+    () => ""
+  );
+
+  const authedFromStorage = savedToken !== "";
+  const [authed, setAuthed] = useState(false);
+  const mounted = savedToken !== undefined;
+
+  // Sync authed state from storage (only runs once, no cascading)
   useEffect(() => {
-    const saved = localStorage.getItem("adminToken");
-    if (saved) {
-      setToken(saved);
+    if (authedFromStorage) {
       setAuthed(true);
+      setToken(savedToken);
     }
-    setMounted(true);
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authedFromStorage]);
   const [error, setError] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
 

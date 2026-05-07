@@ -23,8 +23,8 @@ const fraunces = Fraunces({
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 5,
-  userScalable: true,
+  maximumScale: 1,
+  userScalable: false,
   themeColor: "#4A5D3A",
 };
 
@@ -193,7 +193,7 @@ export default function RootLayout({
           })
         }} />
       </head>
-      <body className={`${dmSans.variable} ${fraunces.variable} antialiased`} style={{ margin: 0, background: "#F7F1E5" }}>
+      <body className={`${dmSans.variable} ${fraunces.variable} antialiased`} style={{ margin: 0, background: "#F7F1E5", overflowX: "hidden", maxWidth: "100vw" }}>
         <WishlistProvider>
           <CartProvider>
           <div style={{
@@ -215,7 +215,7 @@ export default function RootLayout({
           </div>
 
           <SiteHeader />
-          <main style={{ paddingBottom: "0", minHeight: "100vh", background: "#F7F1E5", width: "100%" }}>
+          <main style={{ paddingBottom: "0", minHeight: "100vh", background: "#F7F1E5", width: "100%", overflowX: "hidden" }}>
             {children}
           </main>
           <SiteFooter />
