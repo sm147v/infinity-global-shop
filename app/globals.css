@@ -499,3 +499,43 @@ button:active, a:active {
   opacity: 0.85;
   transition: opacity 0.1s;
 }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 640px) {
+  footer h3 {
+    font-size: 1.1rem !important;
+  }
+  footer p {
+    font-size: 0.8rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  footer form,
+  footer .newsletter-row {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+  footer input[type="email"] {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  footer button[type="button"] {
+    width: 100% !important;
+    border-radius: 100px !important;
+  }
+  footer .social-row {
+    flex-wrap: wrap !important;
+    gap: 0.4rem !important;
+  }
+}

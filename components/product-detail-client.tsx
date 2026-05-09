@@ -172,7 +172,6 @@ export function ProductDetailClient({ product, related }: { product: Product; re
                 { icon: "🚚", text: "Envío gratis en pedidos +$150.000" },
                 { icon: "⚡", text: "Recibe en 24 horas en Medellín" },
                 { icon: "🔒", text: "Pago seguro con Wompi" },
-                { icon: "✨", text: "100% original e importado de USA" },
                 { icon: "💬", text: "Soporte directo por WhatsApp" },
               ].map(b => (
                 <div key={b.text} style={{ display: "flex", alignItems: "center", gap: "0.65rem", padding: "0.4rem 0", fontSize: "0.85rem", color: "#4A5D3A" }}>
