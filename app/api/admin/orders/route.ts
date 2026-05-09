@@ -14,5 +14,13 @@ export async function GET(req: NextRequest) {
     },
   });
 
-  return NextResponse.json({ orders });
+  const serialized = orders.map(order => ({
+    ...order,
+    total: Number(order.total),
+    items: order.items.map(item => ({
+      ...item,
+      price: Number(item.price),
+    })),
+  }));
+  return NextResponse.json({ orders: serialized });
 }
