@@ -53,3 +53,7 @@ igs-generate-slugs.*
 fix-seo-missing.ts
 check-products.mjs
 aplicar-seo-completoV.sh
+*.bak
+*.backup
+admin-layout-clean.tsx
+fix-final-mundial.sh
