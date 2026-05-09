@@ -24,8 +24,10 @@ export async function GET(req: NextRequest) {
     total: Number(order.total),
     items: order.items.map(item => ({
       ...item,
-      price: Number(item.price),
-      name: item.product?.name ?? item.name ?? "Producto",
+      price: Number(item.unitPrice),
+      name: item.product?.name ?? "Producto",
+      unitPrice: Number(item.unitPrice),
+      subtotal: Number(item.subtotal),
     })),
   }));
 
