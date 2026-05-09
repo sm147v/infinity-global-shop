@@ -155,7 +155,7 @@ export default function AdminOrdersPage() {
                   {(order.items || []).map((item: OrderItem) => (
                     <div key={item.id} style={{ display: "flex", justifyContent: "space-between", fontSize: "0.82rem", padding: "0.2rem 0" }}>
                       <span style={{ color: "#4A4F45" }}>{item.quantity}× {item.name}</span>
-                      <span style={{ color: "#4A5D3A", fontWeight: 600 }}>{fmt(item.quantity * item.price)}</span>
+                      <span style={{ color: "#4A5D3A", fontWeight: 600 }}>{fmt(item.quantity * Number(item.price))}</span>
                     </div>
                   ))}
                   <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "0.5rem", marginTop: "0.4rem", borderTop: "1px solid #EDE3CD" }}>
