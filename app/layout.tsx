@@ -116,7 +116,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es-CO">
+    <html lang="es-CO" data-scroll-behavior="smooth">
       <head>
         <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
@@ -210,7 +210,7 @@ export default function RootLayout({
           }}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
               <span style={{ width: 6, height: 6, background: "#C9A96E", borderRadius: "50%", display: "inline-block" }} />
-              Envío gratis a partir de $150.000 · Solo en Medellín
+              Envíos a toda Colombia · Mismo día en Medellín · Gratis +$150.000
             </span>
           </div>
 
