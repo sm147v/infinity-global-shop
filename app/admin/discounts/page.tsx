@@ -64,6 +64,7 @@ export default function DiscountsPage() {
   }, [token]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     Promise.all([fetchProducts(), fetchRules()]).finally(() => setLoading(false));
   }, [fetchProducts, fetchRules]);
 

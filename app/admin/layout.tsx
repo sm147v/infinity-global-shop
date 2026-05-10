@@ -19,15 +19,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [mounted, setMounted] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const isLoginPage = pathname === "/admin/login";
+
   useEffect(() => {
-    const saved = localStorage.getItem("adminToken");
-    if (saved) {
+    const token = localStorage.getItem("adminToken");
+    if (token) {
       setAuthed(true);
-    } else {
+    } else if (!isLoginPage) {
       router.replace("/admin/login");
     }
     setMounted(true);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [router, isLoginPage]);
 
   async function logout() {
     localStorage.removeItem("adminToken");
@@ -35,7 +37,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     router.push("/admin/login");
   }
 
-  if (!mounted || !authed) return null;
+  if (!mounted) return null;
+  if (isLoginPage) return <>{children}</>;
+  if (!authed) return null;
 
   return (
     <div style={{ minHeight: "100vh", background: "#F7F1E5", fontFamily: "var(--font-dm-sans), Inter, sans-serif" }}>

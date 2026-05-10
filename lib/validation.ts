@@ -42,6 +42,7 @@ export const createOrderSchema = z.object({
     )
     .min(1)
     .max(50),
+  couponCode: z.string().trim().toUpperCase().min(2).max(40).optional().nullable(),
 });
 
 export const createPaymentSchema = z.object({

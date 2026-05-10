@@ -14,7 +14,7 @@ const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
 export function CheckoutClient() {
   const searchParams = useSearchParams();
   const { appliedCoupon, applyCoupon } = useCart();
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(() => loadCart());
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
@@ -22,9 +22,7 @@ export function CheckoutClient() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   
-  useEffect(() => {
-    setItems(loadCart());
-  }, []);
+  // items se inicializa desde loadCart() directamente en useState (ver arriba)
 
   // Cuando regresa de Wompi real
   useEffect(() => {
@@ -138,6 +136,7 @@ export function CheckoutClient() {
             productId: item.productId,
             quantity: item.quantity,
           })),
+          couponCode: appliedCoupon?.code || null,
         }),
       });
 

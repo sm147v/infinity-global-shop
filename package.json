@@ -14,12 +14,13 @@
     "prisma:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@cloudinary-util/url-loader": "^6.2.0",
     "@next/bundle-analyzer": "^16.2.4",
     "@prisma/client": "^6.19.2",
     "@upstash/ratelimit": "2.0.8",
     "@upstash/redis": "1.37.0",
     "lucide-react": "^1.14.0",
-    "next": "^16.2.4",
+    "next": "^16.2.6",
     "next-cloudinary": "^6.17.5",
     "prisma": "^6.19.2",
     "react": "19.2.3",

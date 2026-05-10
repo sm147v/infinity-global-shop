@@ -5,13 +5,8 @@ import { createOrderSchema } from "@/lib/validation";
 import { generateOrderNumber } from "@/lib/order-number";
 import { sendOrderConfirmationToCustomer, sendNewOrderNotificationToAdmin } from "@/lib/email";
 
-type RawOrderBody = {
-  customerName: string;
-  customerEmail?: string;
-  customerPhone: string;
-  customerAddress: string;
-  items: Array<{ productId: number; quantity: number }>;
-};
+const SHIPPING_COST = 8000;
+const FREE_SHIPPING_THRESHOLD = 150000;
 
 export async function createOrderFromPayload(payload: unknown) {
   const parsed = createOrderSchema.safeParse(payload);
@@ -19,7 +14,7 @@ export async function createOrderFromPayload(payload: unknown) {
     throw new ApiError(parsed.error.issues[0]?.message ?? "Invalid order payload", 400);
   }
 
-  const data: RawOrderBody = parsed.data;
+  const data = parsed.data;
   const productIds = [...new Set(data.items.map((item) => item.productId))];
 
   const products = await prisma.product.findMany({
@@ -28,18 +23,16 @@ export async function createOrderFromPayload(payload: unknown) {
   });
 
   if (products.length !== productIds.length) {
-    throw new ApiError("Some products do not exist", 400);
+    throw new ApiError("Algunos productos no existen", 400);
   }
 
   const map = new Map(products.map((product) => [product.id, product]));
 
   const orderItems = data.items.map((item) => {
     const product = map.get(item.productId);
-    if (!product) {
-      throw new ApiError("Product not found", 400);
-    }
+    if (!product) throw new ApiError("Producto no encontrado", 400);
     if (product.stock < item.quantity) {
-      throw new ApiError(`Not enough stock for ${product.name}`, 409);
+      throw new ApiError(`Sin stock suficiente para ${product.name}`, 409);
     }
     const unitPrice = Number(product.price);
     return {
@@ -51,24 +44,61 @@ export async function createOrderFromPayload(payload: unknown) {
     };
   });
 
-  const total = orderItems.reduce((sum, item) => sum + item.subtotal, 0);
+  const subtotal = orderItems.reduce((sum, item) => sum + item.subtotal, 0);
+
+  // VALIDACIÓN SERVER-SIDE DEL CUPÓN
+  let couponDiscount = 0;
+  let couponFreeShipping = false;
+  let appliedCouponCode: string | null = null;
+
+  if (data.couponCode) {
+    const couponCode = String(data.couponCode).toUpperCase().trim();
+    const coupon = await prisma.coupon.findUnique({ where: { code: couponCode } });
+
+    if (coupon && coupon.active) {
+      const now = new Date();
+      const isExpired = coupon.validUntil && new Date(coupon.validUntil) < now;
+      const isUsedUp = coupon.maxUses !== null && (coupon.currentUses ?? 0) >= coupon.maxUses;
+      const minPurchase = Number(coupon.minPurchase) || 0;
+      const meetsMin = subtotal >= minPurchase;
+
+      if (!isExpired && !isUsedUp && meetsMin) {
+        if (coupon.type === "PERCENTAGE") {
+          couponDiscount = Math.round(subtotal * (Number(coupon.value) / 100));
+        } else if (coupon.type === "FIXED") {
+          couponDiscount = Math.min(Number(coupon.value), subtotal);
+        } else if (coupon.type === "FREE_SHIPPING") {
+          couponFreeShipping = true;
+        }
+        appliedCouponCode = couponCode;
+      }
+    }
+  }
+
+  const baseFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
+  const shipping = (baseFreeShipping || couponFreeShipping) ? 0 : SHIPPING_COST;
+  const total = Math.max(0, subtotal + shipping - couponDiscount);
+
   const orderNumber = await generateOrderNumber();
 
   const order = await prisma.$transaction(async (tx) => {
     for (const item of orderItems) {
       const stockUpdate = await tx.product.updateMany({
-        where: {
-          id: item.productId,
-          stock: { gte: item.quantity },
-        },
-        data: {
-          stock: { decrement: item.quantity },
-        },
+        where: { id: item.productId, stock: { gte: item.quantity } },
+        data: { stock: { decrement: item.quantity } },
       });
       if (stockUpdate.count !== 1) {
-        throw new ApiError("Stock changed, please refresh and try again", 409);
+        throw new ApiError("El stock cambió, recarga e intenta de nuevo", 409);
       }
     }
+
+    if (appliedCouponCode) {
+      await tx.coupon.update({
+        where: { code: appliedCouponCode },
+        data: { currentUses: { increment: 1 } },
+      }).catch(() => {});
+    }
+
     return tx.order.create({
       data: {
         orderNumber,
@@ -89,7 +119,6 @@ export async function createOrderFromPayload(payload: unknown) {
     });
   });
 
-  console.log("📧 Enviando emails para pedido", orderNumber, "email cliente:", data.customerEmail);
   try {
     const emailData = {
       orderNumber,
@@ -116,6 +145,10 @@ export async function createOrderFromPayload(payload: unknown) {
   return {
     orderId: order.id,
     orderNumber,
+    subtotal,
+    shipping,
+    discount: couponDiscount,
+    couponCode: appliedCouponCode,
     total: Number(order.total),
   };
 }
@@ -126,9 +159,7 @@ export async function listOrders() {
     include: {
       items: {
         include: {
-          product: {
-            select: { id: true, name: true },
-          },
+          product: { select: { id: true, name: true } },
         },
       },
     },

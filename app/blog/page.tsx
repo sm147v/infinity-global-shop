@@ -9,6 +9,15 @@ export const metadata: Metadata = {
 
 export const posts = [
   {
+    slug: "devrom-en-colombia",
+    title: "Devrom en Colombia: la guía completa para encontrarlo original",
+    excerpt: "Si buscas Devrom y descubriste que nadie lo tiene en Colombia, este artículo es para ti. Te explicamos qué es, para quién funciona, cómo se toma y dónde comprarlo original con entrega 24h en Medellín.",
+    category: "Salud",
+    readTime: "8 min",
+    date: "2026-05-09",
+    emoji: "🌿",
+  },
+  {
     slug: "biotina-para-cabello-dosis-beneficios",
     title: "Biotina para el cabello: dosis, beneficios y cuál comprar en Colombia",
     excerpt: "La biotina es el suplemento #1 para el crecimiento del cabello. Te explicamos qué dosis necesitas, cuándo ver resultados y cuál es la mejor opción disponible en Medellín.",

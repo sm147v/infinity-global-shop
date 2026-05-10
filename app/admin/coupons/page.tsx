@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 interface Coupon { id: number; code: string; description?: string; type: string; value: number; minPurchase: number; maxUses?: number; currentUses: number; validUntil?: string; active: boolean; }
 
@@ -21,14 +21,14 @@ export default function AdminCouponsPage() {
 
   function getToken() { return localStorage.getItem("adminToken") || ""; }
 
-  async function load() {
+  const load = useCallback(async () => {
     const res = await fetch("/api/admin/coupons", { headers: { "x-admin-token": getToken() } });
     if (res.ok) {
       const data = await res.json();
       setCoupons(data.coupons || []);
     }
     setLoading(false);
-  }
+  }, []);
 
   async function create() {
     setError("");
@@ -76,8 +76,8 @@ export default function AdminCouponsPage() {
     load();
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { load(); }, []);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { load(); }, [load]);
 
   if (loading) return <div style={{ padding: "3rem", textAlign: "center" }}><p style={{ color: "#4A5D3A" }}>Cargando...</p></div>;
 

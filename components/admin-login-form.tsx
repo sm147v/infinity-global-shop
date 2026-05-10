@@ -26,6 +26,7 @@ export function AdminLoginForm() {
         throw new Error(data.error ?? "No se pudo iniciar sesion");
       }
 
+      localStorage.setItem("adminToken", token);
       router.push("/admin");
       router.refresh();
     } catch (err) {

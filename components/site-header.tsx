@@ -102,6 +102,19 @@ export function SiteHeader() {
 
       <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
         <Link
+          href="/blog"
+          style={{
+            fontSize: "0.78rem",
+            color: "#4A4F45",
+            textDecoration: "none",
+            padding: "0.5rem 0.85rem",
+            borderRadius: 100,
+            fontWeight: 500,
+          }}
+        >
+          Blog
+        </Link>
+        <Link
           href="/order"
           style={{
             fontSize: "0.78rem",
