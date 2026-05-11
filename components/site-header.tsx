@@ -115,7 +115,7 @@ export function SiteHeader() {
           Blog
         </Link>
         <Link
-          href="/order"
+          href="/pedido"
           style={{
             fontSize: "0.78rem",
             color: "#4A4F45",

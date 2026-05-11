@@ -39,9 +39,9 @@ export async function GET() {
     { url: "/products?category=Salud", priority: "0.8", changefreq: "weekly" },
     { url: "/products?category=Hogar", priority: "0.7", changefreq: "weekly" },
     { url: "/products?category=Herramientas", priority: "0.7", changefreq: "weekly" },
-    { url: "/us", priority: "0.6", changefreq: "monthly" },
-    { url: "/sends", priority: "0.5", changefreq: "monthly" },
-    { url: "/returns", priority: "0.5", changefreq: "monthly" },
+    { url: "/nosotros", priority: "0.6", changefreq: "monthly" },
+    { url: "/envios", priority: "0.5", changefreq: "monthly" },
+    { url: "/devoluciones", priority: "0.5", changefreq: "monthly" },
   ];
 
   const staticUrls = staticPages

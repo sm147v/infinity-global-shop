@@ -164,10 +164,10 @@ export function SiteFooter() {
           {/* COL 3 */}
           <div>
             <p style={{ fontSize: "0.68rem", color: "#C9A96E", textTransform: "uppercase", letterSpacing: "0.15em", margin: "0 0 1rem", fontWeight: 600 }}>Información</p>
-            <Link href="/us" style={footerLinkStyle}>Sobre nosotros</Link>
-            <Link href="/sends" style={footerLinkStyle}>Política de envíos</Link>
-            <Link href="/returns" style={footerLinkStyle}>Cambios y devoluciones</Link>
-            <Link href="/order" style={footerLinkStyle}>Rastrear pedido</Link>
+            <Link href="/nosotros" style={footerLinkStyle}>Sobre nosotros</Link>
+            <Link href="/envios" style={footerLinkStyle}>Política de envíos</Link>
+            <Link href="/devoluciones" style={footerLinkStyle}>Cambios y devoluciones</Link>
+            <Link href="/pedido" style={footerLinkStyle}>Rastrear pedido</Link>
             <a href="https://wa.me/573054223600" target="_blank" rel="noreferrer" style={footerLinkStyle}>Atención al cliente</a>
           </div>
 
