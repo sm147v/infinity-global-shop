@@ -26,21 +26,21 @@ export function BottomNav() {
   if (pathname?.startsWith("/admin")) return null;
 
   const isHome = pathname === "/";
-  const isProducts = pathname === "/products";
+  const isProducts = pathname === "/productos";
 
   function doSearch(q?: string) {
     const term = (q ?? query).trim();
     if (term) {
-      router.push("/products?q=" + encodeURIComponent(term));
+      router.push("/productos?q=" + encodeURIComponent(term));
     } else {
-      router.push("/products");
+      router.push("/productos");
     }
     setSearchOpen(false);
     setQuery("");
   }
 
   function goToCategory(cat: string) {
-    router.push("/products?category=" + encodeURIComponent(cat));
+    router.push("/productos?category=" + encodeURIComponent(cat));
     setSearchOpen(false);
     setQuery("");
   }
@@ -85,7 +85,7 @@ export function BottomNav() {
           <span>Inicio</span>
         </Link>
 
-        <Link href="/products" style={itemStyle(isProducts)}>
+        <Link href="/productos" style={itemStyle(isProducts)}>
           <div style={{ position: "relative", height: 22 }}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
               <rect x="3" y="3" width="7" height="7"/>

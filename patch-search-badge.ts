@@ -3,8 +3,8 @@ import { readFileSync, writeFileSync } from 'fs';
 // Fix 1: search modal - usar slug
 let search = readFileSync('components/search-modal.tsx', 'utf8');
 search = search.replace(
-  `href={"/products/" + p.id}`,
-  `href={"/products/" + (p.slug || p.id)}`
+  `href={"/productos/" + p.id}`,
+  `href={"/productos/" + (p.slug || p.id)}`
 );
 // Agregar slug al tipo Product
 search = search.replace(

@@ -92,7 +92,7 @@ export function HeaderCart() {
           {items.length === 0 ? (
             <div className="soft-panel p-3">
               <p className="text-sm muted">Aun no agregas productos.</p>
-              <Link className="btn mt-3 w-full" href="/products" onClick={() => setIsOpen(false)}>
+              <Link className="btn mt-3 w-full" href="/productos" onClick={() => setIsOpen(false)}>
                 Ver productos
               </Link>
             </div>
@@ -147,10 +147,10 @@ export function HeaderCart() {
                 Vaciar carrito
               </button>
               <div className="mt-2 grid grid-cols-2 gap-2">
-                <Link className="btn w-full" href="/products" onClick={() => setIsOpen(false)}>
+                <Link className="btn w-full" href="/productos" onClick={() => setIsOpen(false)}>
                   Seguir comprando
                 </Link>
-                <Link className="btn btn-primary w-full" href="/checkout" onClick={() => setIsOpen(false)}>
+                <Link className="btn btn-primary w-full" href="/pago" onClick={() => setIsOpen(false)}>
                   Ir a pagar
                 </Link>
               </div>

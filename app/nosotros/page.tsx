@@ -93,7 +93,7 @@ export default function NosotrosPage() {
           <p style={{ color: "#4A4F45", marginBottom: "1rem", fontSize: "0.95rem" }}>
             ¿Lista para descubrir nuestros productos?
           </p>
-          <Link href="/products" style={{
+          <Link href="/productos" style={{
             display: "inline-flex",
             alignItems: "center",
             gap: "0.5rem",

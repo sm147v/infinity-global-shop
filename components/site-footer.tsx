@@ -154,11 +154,11 @@ export function SiteFooter() {
           {/* COL 2 */}
           <div>
             <p style={{ fontSize: "0.68rem", color: "#C9A96E", textTransform: "uppercase", letterSpacing: "0.15em", margin: "0 0 1rem", fontWeight: 600 }}>Tienda</p>
-            <Link href="/products" style={footerLinkStyle}>Todos los productos</Link>
-            <Link href="/products?category=Vitaminas" style={footerLinkStyle}>Vitaminas</Link>
-            <Link href="/products?category=Belleza" style={footerLinkStyle}>Belleza</Link>
-            <Link href="/products?category=Cabello" style={footerLinkStyle}>Cabello</Link>
-            <Link href="/products?category=Salud" style={footerLinkStyle}>Salud</Link>
+            <Link href="/productos" style={footerLinkStyle}>Todos los productos</Link>
+            <Link href="/productos?category=Vitaminas" style={footerLinkStyle}>Vitaminas</Link>
+            <Link href="/productos?category=Belleza" style={footerLinkStyle}>Belleza</Link>
+            <Link href="/productos?category=Cabello" style={footerLinkStyle}>Cabello</Link>
+            <Link href="/productos?category=Salud" style={footerLinkStyle}>Salud</Link>
           </div>
 
           {/* COL 3 */}

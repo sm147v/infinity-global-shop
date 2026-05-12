@@ -251,7 +251,7 @@ export function CartDrawer() {
               <span>{fmt(total)}</span>
             </div>
 
-            <Link href="/checkout" onClick={closeCart} style={{
+            <Link href="/pago" onClick={closeCart} style={{
               display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem",
               width: "100%", background: "#4A5D3A", color: "#F7F1E5",
               padding: "1rem", borderRadius: 100,

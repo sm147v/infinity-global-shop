@@ -35,7 +35,7 @@ export async function GET() {
   const items = products
     .map((p) => {
       const slug = p.slug || slugify(p.name);
-      const url = `${SITE_URL}/products/${slug}`;
+      const url = `${SITE_URL}/productos/${slug}`;
       const desc = (p.description || p.name).substring(0, 5000);
       const brand = p.brand || "Infinity Global Shop";
       const sku = p.sku || `IGS-${p.id}`;

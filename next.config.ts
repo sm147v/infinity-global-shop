@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
       { source: "/order", destination: "/pedido", permanent: true },
       { source: "/order/:path*", destination: "/pedido/:path*", permanent: true },
       { source: "/favorites", destination: "/favoritos", permanent: true },
+      { source: "/productos", destination: "/productos", permanent: true },
+      { source: "/productos/:path*", destination: "/productos/:path*", permanent: true },
+      { source: "/pago", destination: "/pago", permanent: true },
     ];
   },
 };

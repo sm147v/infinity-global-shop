@@ -59,7 +59,7 @@ export function ProductDetailClient({ product, related }: { product: Product; re
         <nav style={{ fontSize: "0.78rem", color: "#4A4F45", marginBottom: "1rem" }}>
           <Link href="/" style={{ color: "#4A4F45", textDecoration: "none" }}>Inicio</Link>
           <span style={{ margin: "0 0.5rem", opacity: 0.5 }}>›</span>
-          <Link href="/products" style={{ color: "#4A4F45", textDecoration: "none" }}>Productos</Link>
+          <Link href="/productos" style={{ color: "#4A4F45", textDecoration: "none" }}>Productos</Link>
           {product.category && (
             <>
               <span style={{ margin: "0 0.5rem", opacity: 0.5 }}>›</span>

@@ -61,7 +61,7 @@ export async function GET() {
   const items = products
     .map((p) => {
       const slug = p.slug || slugify(p.name);
-      const productUrl = `${SITE_URL}/products/${slug}`;
+      const productUrl = `${SITE_URL}/productos/${slug}`;
       const price = Number(p.price).toFixed(2);
       const availability = p.stock > 0 ? "in_stock" : "out_of_stock";
       const brand = p.brand || BRAND_DEFAULT;

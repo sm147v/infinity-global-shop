@@ -7,7 +7,7 @@ export const revalidate = 300;
 export const metadata: Metadata = {
   title: "Catálogo · Vitaminas, belleza y cuidado importados de USA en Medellín",
   description: "Más de 60 productos importados originales de Estados Unidos: vitaminas Nature's Bounty, Spring Valley, Vitafusion, melatonina, biotina, omega 3, productos de belleza y cuidado capilar. Envío gratis +$150.000 y entrega 24h en Medellín.",
-  alternates: { canonical: "/products" },
+  alternates: { canonical: "/productos" },
   openGraph: {
     title: "Catálogo · Infinity Global Shop",
     description: "+60 productos importados de USA con entrega 24h en Medellín.",
@@ -51,7 +51,7 @@ export default async function ProductsPage() {
       "itemListElement": products.slice(0, 30).map((p, i) => ({
         "@type": "ListItem",
         "position": i + 1,
-        "url": `https://www.infinityglobalshop.com/products/${p.slug || p.id}`,
+        "url": `https://www.infinityglobalshop.com/productos/${p.slug || p.id}`,
         "name": p.name,
       })),
     },

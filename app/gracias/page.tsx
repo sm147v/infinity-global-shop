@@ -99,7 +99,7 @@ function GraciasContent() {
               Ver estado de mi pedido →
             </Link>
           )}
-          <Link href="/products" style={{
+          <Link href="/productos" style={{
             padding: "1rem 1.75rem",
             background: "transparent",
             color: "#4A5D3A",

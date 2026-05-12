@@ -32,13 +32,13 @@ export async function GET() {
 
   const staticPages = [
     { url: "", priority: "1.0", changefreq: "daily" },
-    { url: "/products", priority: "0.9", changefreq: "daily" },
-    { url: "/products?category=Vitaminas", priority: "0.85", changefreq: "weekly" },
-    { url: "/products?category=Belleza", priority: "0.85", changefreq: "weekly" },
-    { url: "/products?category=Cabello", priority: "0.85", changefreq: "weekly" },
-    { url: "/products?category=Salud", priority: "0.8", changefreq: "weekly" },
-    { url: "/products?category=Hogar", priority: "0.7", changefreq: "weekly" },
-    { url: "/products?category=Herramientas", priority: "0.7", changefreq: "weekly" },
+    { url: "/productos", priority: "0.9", changefreq: "daily" },
+    { url: "/productos?category=Vitaminas", priority: "0.85", changefreq: "weekly" },
+    { url: "/productos?category=Belleza", priority: "0.85", changefreq: "weekly" },
+    { url: "/productos?category=Cabello", priority: "0.85", changefreq: "weekly" },
+    { url: "/productos?category=Salud", priority: "0.8", changefreq: "weekly" },
+    { url: "/productos?category=Hogar", priority: "0.7", changefreq: "weekly" },
+    { url: "/productos?category=Herramientas", priority: "0.7", changefreq: "weekly" },
     { url: "/nosotros", priority: "0.6", changefreq: "monthly" },
     { url: "/envios", priority: "0.5", changefreq: "monthly" },
     { url: "/devoluciones", priority: "0.5", changefreq: "monthly" },
@@ -59,7 +59,7 @@ export async function GET() {
     .map((p) => {
       const slug = p.slug || slugify(p.name);
       const lastmod = p.updatedAt.toISOString().split("T")[0];
-      const url = `${SITE_URL}/products/${slug}`;
+      const url = `${SITE_URL}/productos/${slug}`;
 
       const imageList = [p.image, ...(p.images || [])]
         .filter((img): img is string => Boolean(img && img.startsWith("http")))

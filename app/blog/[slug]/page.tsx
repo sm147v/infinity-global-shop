@@ -352,7 +352,7 @@ const POSTS_CONTENT: Record<
         </ul>
         <div style={{ textAlign: "center", margin: "2rem 0" }}>
           <Link
-            href="/products/devrom-desodorante-interno-200mg-100-tabletas-masticables-anti-olor"
+            href="/productos/devrom-desodorante-interno-200mg-100-tabletas-masticables-anti-olor"
             style={ctaButtonStyle}
           >
             Ver Devrom en la tienda →
@@ -405,7 +405,7 @@ const POSTS_CONTENT: Record<
               💬 Escribir por WhatsApp
             </a>
             <Link
-              href="/products/devrom-desodorante-interno-200mg-100-tabletas-masticables-anti-olor"
+              href="/productos/devrom-desodorante-interno-200mg-100-tabletas-masticables-anti-olor"
               style={ctaButtonStyle}
             >
               🛒 Comprar Devrom

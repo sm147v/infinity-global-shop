@@ -32,7 +32,7 @@ export function FavoritesClient({ allProducts }: { allProducts: Product[] }) {
             <p style={{ color: "#4A4F45", margin: "0 0 1.5rem", fontSize: "0.92rem", lineHeight: 1.5 }}>
               Toca el corazón en cualquier producto para guardarlo aquí.
             </p>
-            <Link href="/products" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.95rem 1.75rem", background: "#4A5D3A", color: "#F7F1E5", borderRadius: 100, textDecoration: "none", fontSize: "0.9rem", fontWeight: 500 }}>
+            <Link href="/productos" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.95rem 1.75rem", background: "#4A5D3A", color: "#F7F1E5", borderRadius: 100, textDecoration: "none", fontSize: "0.9rem", fontWeight: 500 }}>
               Explorar productos →
             </Link>
           </div>

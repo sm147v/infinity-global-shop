@@ -186,7 +186,7 @@ export function CheckoutClient() {
         {items.length === 0 && (
           <div style={{ background: "#F7F1E5", padding: "1.5rem", borderRadius: 12, textAlign: "center" }}>
             <p style={{ color: "#4A4F45", marginBottom: "1rem" }}>No hay productos en carrito.</p>
-            <Link href="/products" style={{
+            <Link href="/productos" style={{
               display: "inline-block",
               padding: "0.75rem 1.5rem",
               background: "#4A5D3A",

@@ -34,7 +34,7 @@ async function findProduct(idOrSlug: string) {
     const canonicalSlug = product.slug || slugify(product.name);
     return {
       product,
-      redirectTo: `/products/${canonicalSlug}`,
+      redirectTo: `/productos/${canonicalSlug}`,
     };
   }
 
@@ -61,7 +61,7 @@ export async function generateMetadata({
   const description = (product.description || "").substring(0, 155);
   const title = `${product.name}${product.category ? ` · ${product.category}` : ""} · Infinity Global Shop`;
   const slug = product.slug || slugify(product.name);
-  const canonicalUrl = `${SITE_URL}/products/${slug}`;
+  const canonicalUrl = `${SITE_URL}/productos/${slug}`;
 
   return {
     title,
@@ -126,7 +126,7 @@ export default async function ProductPage({
   });
 
   const slug = product.slug || slugify(product.name);
-  const canonicalUrl = `${SITE_URL}/products/${slug}`;
+  const canonicalUrl = `${SITE_URL}/productos/${slug}`;
 
   // Schema Product COMPLETO para Google Merchant
   const productSchema: Record<string, unknown> = {
@@ -242,7 +242,7 @@ export default async function ProductPage({
         "@type": "ListItem",
         "position": 3,
         "name": product.category || "Vitaminas",
-        "item": `${SITE_URL}/products?category=${encodeURIComponent(product.category || "Vitaminas")}`,
+        "item": `${SITE_URL}/productos?category=${encodeURIComponent(product.category || "Vitaminas")}`,
       },
       {
         "@type": "ListItem",

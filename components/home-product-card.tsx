@@ -70,7 +70,7 @@ export function HomeProductCard({ product }: { product: Product }) {
         <div style={{ position: "absolute", top: 6, right: 6, zIndex: 2 }}>
           <WishlistButton productId={product.id} size={32} />
         </div>
-      <Link href={"/products/" + (product.slug || product.id)} style={{ textDecoration: "none", color: "inherit" }} prefetch={false}>
+      <Link href={"/productos/" + (product.slug || product.id)} style={{ textDecoration: "none", color: "inherit" }} prefetch={false}>
         <div style={{
           width: "100%",
           aspectRatio: "1",

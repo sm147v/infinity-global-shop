@@ -26,7 +26,7 @@ export async function GET() {
       <g:id>${p.id}</g:id>
       <title><![CDATA[${p.name}]]></title>
       <description><![CDATA[${p.description ?? p.name}]]></description>
-      <link>${baseUrl}/products/${p.slug ?? p.id}</link>
+      <link>${baseUrl}/productos/${p.slug ?? p.id}</link>
       <g:image_link>${image ?? ''}</g:image_link>
       <g:price>${Number(p.price).toFixed(2)} COP</g:price>
       <g:availability>in_stock</g:availability>
