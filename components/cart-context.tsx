@@ -86,15 +86,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setHydrated(true);
   }, []);
 
-  // Re-validar el cupón cuando cambia el carrito
+  // Re-validar el cupón cuando cambia el carrito (async, fuera del flujo del effect)
   useEffect(() => {
     if (!appliedCoupon) return;
     const subtotalNow = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+    let cancelled = false;
+    
     if (subtotalNow === 0) {
-      setAppliedCoupon(null);
-      localStorage.removeItem("igs_coupon");
-      return;
+      // Defer al next tick para evitar cascada
+      const timer = setTimeout(() => {
+        if (cancelled) return;
+        setAppliedCoupon(null);
+        localStorage.removeItem("igs_coupon");
+      }, 0);
+      return () => { cancelled = true; clearTimeout(timer); };
     }
+
     fetch("/api/coupons/validate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -102,21 +110,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
     })
       .then(r => r.json())
       .then(data => {
+        if (cancelled) return;
         if (data.valid) {
-          // Actualizar con el nuevo descuento recalculado
           const updated = data.coupon;
           if (updated.discount !== appliedCoupon.discount || updated.freeShipping !== appliedCoupon.freeShipping) {
             setAppliedCoupon(updated);
             localStorage.setItem("igs_coupon", JSON.stringify(updated));
           }
         } else {
-          // Cupón ya no es válido (no llega al mínimo, etc.)
           setAppliedCoupon(null);
           localStorage.removeItem("igs_coupon");
         }
       })
       .catch(() => {});
-  }, [items, appliedCoupon?.code]);
+
+    return () => { cancelled = true; };
+  }, [items, appliedCoupon]);
 
   function applyCoupon(coupon: AppliedCoupon | null) {
     setAppliedCoupon(coupon);

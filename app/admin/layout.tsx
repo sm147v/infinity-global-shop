@@ -23,12 +23,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
-    if (token) {
-      setAuthed(true);
-    } else if (!isLoginPage) {
+    const hasToken = !!token;
+    
+    if (!hasToken && !isLoginPage) {
       router.replace("/admin/login");
+      return;
     }
-    setMounted(true);
+    
+    // Defer state updates al siguiente tick para evitar cascadas
+    const timer = setTimeout(() => {
+      setAuthed(hasToken);
+      setMounted(true);
+    }, 0);
+    
+    return () => clearTimeout(timer);
   }, [router, isLoginPage]);
 
   async function logout() {
