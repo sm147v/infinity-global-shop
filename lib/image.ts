@@ -1,79 +1,39 @@
 /**
- * Image optimization utilities for Next.js Image component with Cloudinary
+ * Cloudinary loader optimizado.
+ *
+ * Cambios clave para velocidad:
+ * - Limita ancho a 1600px máx (en vez de 3840)
+ * - Calidad auto (Cloudinary elige la mejor compresión)
+ * - Formato auto (WebP o AVIF según navegador, mucho más liviano)
+ * - DPR auto (Retina sin pesar el doble)
  */
-
-import { ImageLoader } from "next/image";
-
-/**
- * Next.js loader for Cloudinary - handles automatic image transformations
- * Replaces /upload/ with /upload/{transformations} in the URL
- */
-export const cloudinaryLoader: ImageLoader = ({ src, width, quality = 75 }) => {
-  if (!src) return "";
-
-  if (src.includes("cloudinary.com")) {
-    // Cloudinary URL transformation
-    const transformations = `w_${width},c_limit,f_auto,q_${quality}`;
-    return src.replace("/upload/", `/upload/${transformations}/`);
+export function cloudinaryLoader({
+  src,
+  width,
+  quality,
+}: {
+  src: string;
+  width: number;
+  quality?: number;
+}) {
+  // Si no es Cloudinary, devolver tal cual
+  if (!src.includes("cloudinary.com")) {
+    return src;
   }
 
-  return src;
-};
+  // Limitar ancho máximo (no necesitamos 3840px nunca)
+  const w = Math.min(width, 1600);
 
-/**
- * Optimize Cloudinary URL for product cards (fixed 400x400)
- * @deprecated Use next/image with cloudinaryLoader instead
- */
-export function optimizeCard(url: string | null): string {
-  if (!url) return "";
-  if (url.includes("cloudinary.com")) {
-    return url.replace("/upload/", "/upload/w_400,h_400,c_pad,b_auto:predominant,f_auto,q_auto/");
+  // Calidad: 75 por defecto (no se ve diferencia con 100)
+  const q = quality || 75;
+
+  // Si la URL ya tiene transformaciones, las reemplazamos
+  const transformations = `w_${w},c_limit,f_auto,q_${q},dpr_auto`;
+
+  // Insertar transformaciones después de /upload/
+  if (src.includes("/upload/")) {
+    return src.replace(/\/upload\/[^/]+\//, `/upload/${transformations}/`).replace(/\/upload\/(v\d+\/)/, `/upload/${transformations}/$1`);
   }
-  return url;
+
+  return src.replace("/upload/", `/upload/${transformations}/`);
 }
-
-/**
- * Optimize Cloudinary URL for product details gallery (full resolution)
- * @deprecated Use next/image with cloudinaryLoader instead
- */
-export function optimizeImage(url: string | null): string {
-  if (!url) return "";
-  if (url.includes("cloudinary.com")) {
-    return url.replace("/upload/", "/upload/f_auto,q_auto/");
-  }
-  return url;
-}
-
-/**
- * Optimize Cloudinary URL for product thumbnails (70x70 preview)
- * @deprecated Use next/image with cloudinaryLoader instead
- */
-export function thumbImage(url: string | null): string {
-  if (!url) return "";
-  if (url.includes("cloudinary.com")) {
-    return url.replace("/upload/", "/upload/w_70,h_70,c_fill,g_auto,f_auto,q_auto/");
-  }
-  return url;
-}
-
-/**
- * Get image dimensions for next/image
- * Returns placeholder dimensions if actual dimensions are unknown
- */
-export const IMAGE_SIZES = {
-  // Product cards
-  CARD_WIDTH: 400,
-  CARD_HEIGHT: 400,
-  // Product gallery main image
-  GALLERY_WIDTH: 600,
-  GALLERY_HEIGHT: 600,
-  // Thumbnails
-  THUMB_WIDTH: 70,
-  THUMB_HEIGHT: 70,
-  // Cart/header
-  CART_WIDTH: 80,
-  CART_HEIGHT: 80,
-  // Admin upload
-  UPLOAD_WIDTH: 600,
-  UPLOAD_HEIGHT: 400,
-} as const;

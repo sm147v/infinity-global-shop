@@ -10,6 +10,7 @@ const menuItems = [
   { href: "/admin/products", label: "Productos", icon: "Tienda" },
   { href: "/admin/coupons", label: "Cupones", icon: "Ticket" },
   { href: "/admin/discounts", label: "Descuentos", icon: "Tag" },
+  { href: "/admin/banners", label: "Banners", icon: "Imagen" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

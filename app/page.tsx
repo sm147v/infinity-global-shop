@@ -1,3 +1,5 @@
+import { TiltCard } from "@/components/TiltCard";
+import HeroCarousel from "@/components/HeroCarousel";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { HomeProductCard } from "@/components/home-product-card";
@@ -38,61 +40,52 @@ export default async function Home() {
 
   return (
     <div style={{ background: "#F7F1E5", fontFamily: "var(--font-dm-sans), Inter, sans-serif" }}>
+      <HeroCarousel />
 
-      {/* HERO */}
-      <section style={{ padding: "2.5rem 1.5rem 3rem", maxWidth: "1280px", margin: "0 auto" }}>
-        <div className="hero-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: "2rem", alignItems: "center" }}>
-          <div>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontSize: "0.7rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.18em", color: "#C97B5C", marginBottom: "1rem" }}>
-              <span style={{ width: 20, height: 1, background: "#C97B5C" }} />
-              Bienvenida a Infinity
-            </div>
-            <h1 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(2.2rem, 5vw, 3.6rem)", lineHeight: 1.05, fontWeight: 400, letterSpacing: "-0.02em", color: "#4A5D3A", marginBottom: "1rem" }}>
-              Productos USA originales en Medellín.{" "}
-              <em style={{ fontStyle: "italic", fontWeight: 300, color: "#C97B5C" }}>Sin esperas, sin dólares,</em>{" "}
-              <span style={{ position: "relative", display: "inline-block" }}>
-                <span style={{ position: "relative", zIndex: 1 }}>sin aduanas</span>
-                <span style={{ position: "absolute", left: 0, right: 0, bottom: "4%", height: 8, background: "#E5D4A8", opacity: 0.7, zIndex: 0 }} />
-              </span>.
-            </h1>
-            <p style={{ fontSize: "1rem", color: "#4A4F45", marginBottom: "1.5rem", maxWidth: "520px", lineHeight: 1.6 }}>
-              Vitaminas, salud y belleza importados directamente desde Estados Unidos. En tu puerta en 24 horas — incluyendo lo que las farmacias colombianas no traen.
-            </p>
-            <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem", padding: "0.85rem", background: "#FDFAF3", borderRadius: 16, border: "1px solid rgba(74, 93, 58, 0.08)", maxWidth: "440px" }}>
-              {[
-                { num: "+125", label: "Reseñas" },
-                { num: "24h", label: "Envío" },
-                { num: "100%", label: "Originales" },
-              ].map((s, i) => (
-                <div key={s.label} style={{ flex: 1, textAlign: "center", borderLeft: i > 0 ? "1px solid rgba(74, 93, 58, 0.1)" : undefined }}>
-                  <span style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.3rem", fontWeight: 500, color: "#4A5D3A", display: "block" }}>{s.num}</span>
-                  <div style={{ fontSize: "0.65rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#4A4F45" }}>{s.label}</div>
-                </div>
-              ))}
-            </div>
-            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-              <Link href="/productos" style={{ background: "#4A5D3A", color: "#F7F1E5", padding: "1rem 1.75rem", borderRadius: 100, fontSize: "0.95rem", fontWeight: 500, display: "inline-flex", alignItems: "center", gap: "0.5rem", textDecoration: "none" }}>
-                Explorar tienda
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="5" y1="12" x2="19" y2="12"/>
-                  <polyline points="12 5 19 12 12 19"/>
-                </svg>
-              </Link>
-              <Link href="#exclusivos-usa" style={{ background: "transparent", color: "#4A5D3A", padding: "1rem 1.5rem", borderRadius: 100, fontSize: "0.95rem", fontWeight: 500, display: "inline-flex", alignItems: "center", gap: "0.5rem", textDecoration: "none", border: "1px solid rgba(74, 93, 58, 0.3)" }}>
-                Productos exclusivos USA
-              </Link>
-            </div>
+      {/* HERO COMPACTO */}
+      <section style={{ padding: "2rem 1.5rem 2.5rem", maxWidth: "1280px", margin: "0 auto" }}>
+        <div style={{ textAlign: "center", maxWidth: "780px", margin: "0 auto" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontSize: "0.7rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.18em", color: "#C97B5C", marginBottom: "1rem" }}>
+            <span style={{ width: 20, height: 1, background: "#C97B5C" }} />
+            Bienvenida a Infinity
+            <span style={{ width: 20, height: 1, background: "#C97B5C" }} />
           </div>
-          <div className="hero-visual" style={{ position: "relative", height: "400px" }}>
-            <div style={{ position: "absolute", top: 0, right: 0, width: "70%", height: "70%", borderRadius: 24, background: "linear-gradient(135deg, #A8B584 0%, #6B7B4F 70%, #4A5D3A 100%)", boxShadow: "0 20px 60px rgba(74, 93, 58, 0.2)" }} />
-            <div style={{ position: "absolute", bottom: 0, left: 0, width: "55%", height: "55%", borderRadius: 24, background: "linear-gradient(135deg, #C97B5C 0%, #A85E42 100%)", boxShadow: "0 20px 60px rgba(201, 123, 92, 0.2)", zIndex: 2 }} />
-            <div style={{ position: "absolute", top: "32%", left: "38%", width: "30%", height: "30%", borderRadius: "50%", background: "radial-gradient(circle at 30% 30%, #E5D4A8 0%, #C9A96E 70%, #8B7140 100%)", boxShadow: "0 12px 32px rgba(201, 169, 110, 0.4)", zIndex: 3 }} />
+          <h1 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(1.9rem, 4.5vw, 3rem)", lineHeight: 1.1, fontWeight: 400, letterSpacing: "-0.02em", color: "#4A5D3A", marginBottom: "1rem" }}>
+            Productos USA originales en Medellín.{" "}
+            <em style={{ fontStyle: "italic", fontWeight: 300, color: "#C97B5C" }}>Sin esperas, sin dólares,</em>{" "}
+            <span style={{ position: "relative", display: "inline-block" }}>
+              <span style={{ position: "relative", zIndex: 1 }}>sin aduanas</span>
+              <span style={{ position: "absolute", left: 0, right: 0, bottom: "4%", height: 6, background: "#E5D4A8", opacity: 0.7, zIndex: 0 }} />
+            </span>.
+          </h1>
+          <p style={{ fontSize: "1rem", color: "#4A4F45", marginBottom: "1.5rem", maxWidth: "560px", lineHeight: 1.55, margin: "0 auto 1.5rem" }}>
+            Vitaminas, salud y belleza importados directamente desde Estados Unidos. En tu puerta en 24 horas — incluyendo lo que las farmacias colombianas no traen.
+          </p>
+          <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem", padding: "0.85rem", background: "#FDFAF3", borderRadius: 16, border: "1px solid rgba(74, 93, 58, 0.08)", maxWidth: "440px", margin: "0 auto 1.5rem" }}>
+            {[
+              { num: "+125", label: "Reseñas" },
+              { num: "24h", label: "Envío" },
+              { num: "100%", label: "Originales" },
+            ].map((s, i) => (
+              <div key={s.label} style={{ flex: 1, textAlign: "center", borderLeft: i > 0 ? "1px solid rgba(74, 93, 58, 0.1)" : undefined }}>
+                <span style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.3rem", fontWeight: 500, color: "#4A5D3A", display: "block" }}>{s.num}</span>
+                <div style={{ fontSize: "0.65rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#4A4F45" }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", justifyContent: "center" }}>
+            <Link href="/productos" style={{ background: "#4A5D3A", color: "#F7F1E5", padding: "1rem 1.75rem", borderRadius: 100, fontSize: "0.95rem", fontWeight: 500, display: "inline-flex", alignItems: "center", gap: "0.5rem", textDecoration: "none" }}>
+              Explorar tienda
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </Link>
+            <Link href="#exclusivos-usa" style={{ background: "transparent", color: "#4A5D3A", padding: "1rem 1.5rem", borderRadius: 100, fontSize: "0.95rem", fontWeight: 500, display: "inline-flex", alignItems: "center", gap: "0.5rem", textDecoration: "none", border: "1px solid rgba(74, 93, 58, 0.3)" }}>
+              Productos exclusivos USA
+            </Link>
           </div>
         </div>
-        <style>{`
-          @media (min-width: 1024px) { .hero-grid { grid-template-columns: 1.1fr 1fr !important; } }
-          @media (max-width: 1023px) { .hero-visual { display: none !important; } }
-        `}</style>
       </section>
 
       {/* MARQUEE */}
@@ -130,7 +123,7 @@ export default async function Home() {
         </div>
         <ResponsiveGrid>
           {featured.map(p => (
-            <HomeProductCard key={p.id} product={{ id: p.id, name: p.name, price: Number(p.price), image: p.image, stock: p.stock, slug: p.slug }} />
+            <TiltCard key={p.id}><HomeProductCard product={{ id: p.id, name: p.name, price: Number(p.price), image: p.image, stock: p.stock, slug: p.slug }} /></TiltCard>
           ))}
         </ResponsiveGrid>
         <div style={{ textAlign: "center", marginTop: "2rem" }}>

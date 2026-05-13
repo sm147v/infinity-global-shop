@@ -1,3 +1,39 @@
+#!/bin/bash
+# ═══════════════════════════════════════════════════════════════
+# 🔧 ARREGLOS - Carrusel full-width + galería tipo Amazon
+# ═══════════════════════════════════════════════════════════════
+
+set -e
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+echo ""
+echo -e "${BLUE}🔧 Arreglando carrusel + galería...${NC}"
+echo ""
+
+if [ ! -f "package.json" ]; then
+    echo -e "${RED}❌ No estás en el proyecto Infinity${NC}"
+    exit 1
+fi
+
+# ─── 1. Carrusel FULL WIDTH (pegado a los bordes) ───
+echo -e "${YELLOW}📝 Haciendo el carrusel full-width...${NC}"
+
+# Cambiar maxWidth: 1280px por width 100%
+sed -i '' 's|maxWidth: "1280px",|maxWidth: "100%",|g' components/HeroCarousel.tsx
+# Asegurar que no tenga margin auto que lo limite
+sed -i '' 's|margin: "0 auto",|margin: 0,|g' components/HeroCarousel.tsx
+
+echo -e "${GREEN}✓ Carrusel ahora full-width${NC}"
+echo ""
+
+# ─── 2. Galería tipo Amazon (responsive: vertical en desktop, horizontal en mobile) ───
+echo -e "${YELLOW}📝 Mejorando galería estilo Amazon...${NC}"
+
+cat > components/product-gallery.tsx << 'EOF'
 "use client";
 import { useState, useRef } from "react";
 import Image from "next/image";
@@ -279,3 +315,33 @@ export function ProductGallery({ images, productName }: Props) {
     </div>
   );
 }
+EOF
+
+echo -e "${GREEN}✓ Galería actualizada (estilo Amazon)${NC}"
+echo ""
+
+# ─── 3. Reportar sobre la sección del HERO viejo ───
+echo -e "${YELLOW}📝 Sobre la sección 'Productos USA originales en Medellín'...${NC}"
+echo ""
+echo -e "   La sección que aparece DEBAJO del carrusel sigue siendo tu HERO original."
+echo -e "   El carrusel se agregó ENCIMA, pero el HERO sigue ahí."
+echo ""
+echo -e "${YELLOW}   ¿Quieres que la quite o solo la reduzca? Decídelo y ejecuta UNO:${NC}"
+echo ""
+echo -e "${BLUE}   Opción A - Quitar HERO completo (solo queda el carrusel):${NC}"
+echo -e "   Esto requiere editar app/page.tsx manualmente — te explico abajo"
+echo ""
+echo -e "${BLUE}   Opción B - Dejar el HERO pero más pequeño${NC}"
+echo -e "   No requiere cambios, solo ajustar padding"
+echo ""
+
+echo -e "${GREEN}✅ Carrusel + galería ya están arreglados${NC}"
+echo ""
+echo -e "${YELLOW}Ahora prueba con:${NC}"
+echo -e "   ${GREEN}npm run dev${NC}"
+echo ""
+echo -e "   Verás:"
+echo -e "   ✅ Carrusel pegado a los bordes"
+echo -e "   ✅ Galería de producto tipo Amazon (thumbs a la izquierda)"
+echo -e "   ✅ Zoom al hover, swipe en móvil, flechas, contador"
+echo ""
