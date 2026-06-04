@@ -14,10 +14,24 @@ const wompiWebhookSchema = z.object({
   }),
 });
 
+// Ventana anti-replay: rechaza webhooks de más de 5 minutos
+const MAX_WEBHOOK_AGE_MS = 5 * 60 * 1000;
+
 export async function processWompiWebhook(rawBody: string, signature: string | null, timestamp: string | null) {
   const isValidSignature = verifyWebhookSignature(rawBody, signature, timestamp);
   if (!isValidSignature) {
     throw new ApiError("Invalid webhook signature", 401);
+  }
+
+  // ── MEJORA 1: Anti-replay (rechaza webhooks viejos) ──
+  if (timestamp) {
+    const ts = Number(timestamp) * 1000; // Wompi manda en segundos
+    if (!Number.isNaN(ts)) {
+      const age = Date.now() - ts;
+      if (age > MAX_WEBHOOK_AGE_MS || age < -MAX_WEBHOOK_AGE_MS) {
+        throw new ApiError("Webhook timestamp out of range", 401);
+      }
+    }
   }
 
   let parsedJson: unknown;
@@ -50,14 +64,17 @@ export async function processWompiWebhook(rawBody: string, signature: string | n
   }
 
   const order = await prisma.order.findFirst({
-    where: {
-      OR: identityFilters,
-    },
-    select: { id: true },
+    where: { OR: identityFilters },
+    select: { id: true, paymentStatus: true },
   });
 
   if (!order) {
     throw new ApiError("Order not found for webhook", 404);
+  }
+
+  // ── MEJORA 2: Idempotencia — si ya está PAID, no reprocesar ──
+  if (order.paymentStatus === "PAID" && status === "APPROVED") {
+    return { ok: true, alreadyProcessed: true };
   }
 
   if (status === "APPROVED") {
@@ -77,7 +94,17 @@ export async function processWompiWebhook(rawBody: string, signature: string | n
         transactionId: transactionId ?? undefined,
       },
     });
+  } else if (status === "PENDING") {
+    // ── MEJORA 3: Manejar PENDING explícitamente ──
+    await prisma.order.update({
+      where: { id: order.id },
+      data: {
+        paymentStatus: "PENDING",
+        transactionId: transactionId ?? undefined,
+      },
+    });
   }
+  // Cualquier otro estado: respondemos ok pero no tocamos la orden
 
   return { ok: true };
 }
