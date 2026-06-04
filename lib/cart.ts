@@ -9,6 +9,26 @@ export type CartItem = {
 const STORAGE_KEY = "igs_cart_v1";
 const CART_UPDATED_EVENT = "igs-cart-updated";
 
+// ── Respaldo en memoria: si localStorage falla (Instagram iOS, modo privado),
+//    el carrito sigue funcionando durante la sesión ──
+let memoryCart: CartItem[] = [];
+let useMemoryFallback = false;
+
+// Detecta si localStorage es usable
+function storageAvailable(): boolean {
+  if (typeof window === "undefined") return false;
+  if (useMemoryFallback) return false;
+  try {
+    const testKey = "__igs_test__";
+    window.localStorage.setItem(testKey, "1");
+    window.localStorage.removeItem(testKey);
+    return true;
+  } catch {
+    useMemoryFallback = true;
+    return false;
+  }
+}
+
 function isCartItem(value: unknown): value is CartItem {
   if (!value || typeof value !== "object") return false;
   const v = value as Record<string, unknown>;
@@ -21,16 +41,27 @@ function isCartItem(value: unknown): value is CartItem {
   );
 }
 
+function normalize(items: CartItem[]): CartItem[] {
+  return items.map((item) => ({
+    ...item,
+    quantity: Math.max(1, Math.min(20, item.quantity)),
+  }));
+}
+
 export function loadCart(): CartItem[] {
   if (typeof window === "undefined") return [];
-  const raw = localStorage.getItem(STORAGE_KEY);
+
+  // Si localStorage no sirve, usar memoria
+  if (!storageAvailable()) {
+    return normalize(memoryCart);
+  }
+
+  const raw = window.localStorage.getItem(STORAGE_KEY);
   if (!raw) return [];
 
   try {
     const parsed = JSON.parse(raw) as unknown[];
-    return parsed
-      .filter(isCartItem)
-      .map((item) => ({ ...item, quantity: Math.max(1, Math.min(20, item.quantity)) }));
+    return normalize(parsed.filter(isCartItem));
   } catch {
     return [];
   }
@@ -38,7 +69,22 @@ export function loadCart(): CartItem[] {
 
 export function saveCart(items: CartItem[]): void {
   if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+
+  const normalized = normalize(items);
+
+  // Siempre guardar en memoria como respaldo
+  memoryCart = normalized;
+
+  // Intentar guardar en localStorage; si falla, ya tenemos memoria
+  if (storageAvailable()) {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+    } catch {
+      useMemoryFallback = true;
+    }
+  }
+
+  // Notificar a los componentes (esto siempre funciona)
   window.dispatchEvent(new Event(CART_UPDATED_EVENT));
 }
 
