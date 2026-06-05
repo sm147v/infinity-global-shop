@@ -2,6 +2,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { ApiError } from "@/lib/errors";
 import { verifyWebhookSignature } from "@/lib/wompi";
+import { sendPaymentConfirmedToAdmin } from "@/lib/email";
 
 const wompiWebhookSchema = z.object({
   event: z.string(),
@@ -23,9 +24,9 @@ export async function processWompiWebhook(rawBody: string, signature: string | n
     throw new ApiError("Invalid webhook signature", 401);
   }
 
-  // ── MEJORA 1: Anti-replay (rechaza webhooks viejos) ──
+  // ── Anti-replay (rechaza webhooks viejos) ──
   if (timestamp) {
-    const ts = Number(timestamp) * 1000; // Wompi manda en segundos
+    const ts = Number(timestamp) * 1000;
     if (!Number.isNaN(ts)) {
       const age = Date.now() - ts;
       if (age > MAX_WEBHOOK_AGE_MS || age < -MAX_WEBHOOK_AGE_MS) {
@@ -72,7 +73,7 @@ export async function processWompiWebhook(rawBody: string, signature: string | n
     throw new ApiError("Order not found for webhook", 404);
   }
 
-  // ── MEJORA 2: Idempotencia — si ya está PAID, no reprocesar ──
+  // ── Idempotencia — si ya está PAID, no reprocesar ni reenviar email ──
   if (order.paymentStatus === "PAID" && status === "APPROVED") {
     return { ok: true, alreadyProcessed: true };
   }
@@ -86,6 +87,32 @@ export async function processWompiWebhook(rawBody: string, signature: string | n
         transactionId: transactionId ?? undefined,
       },
     });
+
+    // ── Email de PAGO CONFIRMADO al admin (no rompe el webhook si falla) ──
+    try {
+      const fullOrder = await prisma.order.findUnique({
+        where: { id: order.id },
+        include: { items: { include: { product: true } } },
+      });
+
+      if (fullOrder) {
+        await sendPaymentConfirmedToAdmin({
+          orderNumber: fullOrder.paymentReference ?? ("#" + fullOrder.id),
+          customerName: fullOrder.customerName,
+          customerEmail: "",
+          customerPhone: fullOrder.customerPhone ?? "",
+          customerAddress: fullOrder.customerAddress ?? "",
+          total: Number(fullOrder.total),
+          items: fullOrder.items.map((i) => ({
+            name: i.product?.name ?? "Producto",
+            quantity: i.quantity,
+            unitPrice: Number(i.unitPrice),
+          })),
+        }).catch((e) => console.error("Email pago confirmado falló:", e));
+      }
+    } catch (e) {
+      console.error("Error preparando email de pago confirmado:", e);
+    }
   } else if (["DECLINED", "VOIDED", "ERROR"].includes(status)) {
     await prisma.order.update({
       where: { id: order.id },
@@ -95,7 +122,6 @@ export async function processWompiWebhook(rawBody: string, signature: string | n
       },
     });
   } else if (status === "PENDING") {
-    // ── MEJORA 3: Manejar PENDING explícitamente ──
     await prisma.order.update({
       where: { id: order.id },
       data: {
@@ -104,7 +130,6 @@ export async function processWompiWebhook(rawBody: string, signature: string | n
       },
     });
   }
-  // Cualquier otro estado: respondemos ok pero no tocamos la orden
 
   return { ok: true };
 }

@@ -180,3 +180,68 @@ export async function sendNewOrderNotificationToAdmin(data: OrderEmailData) {
     console.error("❌ Error enviando email admin:", e);
   }
 }
+// ════════════════════════════════════════════════════════════
+// AGREGAR ESTA FUNCIÓN AL FINAL DE lib/email.ts
+// (después de sendNewOrderNotificationToAdmin, antes del último cierre)
+// ════════════════════════════════════════════════════════════
+
+export async function sendPaymentConfirmedToAdmin(data: OrderEmailData) {
+  if (!process.env.RESEND_API_KEY) return;
+
+  const cleanedAdmin = cleanEmail(ADMIN_EMAIL);
+  if (!cleanedAdmin) {
+    console.log("❌ ADMIN_EMAIL inválido:", ADMIN_EMAIL);
+    return;
+  }
+
+  console.log("📧 Enviando confirmación de PAGO a admin:", cleanedAdmin);
+
+  try {
+    const result = await resend.emails.send({
+      from: `Infinity Global Shop <${FROM_EMAIL}>`,
+      to: cleanedAdmin,
+      subject: `✅ PAGO CONFIRMADO ${data.orderNumber} · ${fmt(data.total)} · ¡Despachar!`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <body style="margin:0;padding:0;background:#F7F1E5;font-family:Inter,sans-serif;">
+          <div style="max-width:580px;margin:0 auto;padding:32px 16px;">
+            <div style="background:#2E7D32;border-radius:20px;padding:24px;margin-bottom:24px;text-align:center;">
+              <p style="color:#C8E6C9;font-size:13px;margin:0 0 4px;text-transform:uppercase;letter-spacing:2px;">✅ Pago aprobado</p>
+              <h1 style="font-family:Georgia,serif;font-size:28px;color:#FFFFFF;font-weight:400;margin:0;">${data.orderNumber}</h1>
+              <p style="font-family:Georgia,serif;font-size:24px;color:#A5D6A7;margin:8px 0 0;">${fmt(data.total)}</p>
+              <p style="color:#E8F5E9;font-size:14px;margin:12px 0 0;font-weight:600;">Este pedido YA está pagado. Listo para despachar.</p>
+            </div>
+
+            <div style="background:#FDFAF3;border-radius:20px;padding:24px;border:1px solid #EDE3CD;margin-bottom:16px;">
+              <p style="font-size:12px;color:#6B7B4F;margin:0 0 12px;text-transform:uppercase;letter-spacing:1px;">Enviar a</p>
+              <p style="color:#4A5D3A;font-weight:600;font-size:16px;margin:0 0 6px;">${data.customerName}</p>
+              <p style="color:#4A4F45;font-size:14px;margin:0 0 4px;">📞 ${data.customerPhone}</p>
+              <p style="color:#4A4F45;font-size:14px;margin:0;">📍 ${data.customerAddress}</p>
+            </div>
+
+            <div style="background:#FDFAF3;border-radius:20px;padding:24px;border:1px solid #EDE3CD;margin-bottom:24px;">
+              <p style="font-size:12px;color:#6B7B4F;margin:0 0 12px;text-transform:uppercase;letter-spacing:1px;">Productos a despachar</p>
+              <table style="width:100%;border-collapse:collapse;">
+                <tbody>${itemsHtml(data.items)}</tbody>
+              </table>
+              <div style="text-align:right;border-top:2px solid #4A5D3A;padding-top:12px;margin-top:8px;">
+                <span style="font-family:Georgia,serif;font-size:18px;color:#4A5D3A;font-weight:600;">Total: ${fmt(data.total)}</span>
+              </div>
+            </div>
+
+            <div style="text-align:center;">
+              <a href="${APP_URL}/admin/orders" style="display:inline-block;background:#2E7D32;color:#FFFFFF;text-decoration:none;padding:14px 28px;border-radius:100px;font-size:15px;font-weight:500;">
+                Ver en admin →
+              </a>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+    });
+    console.log("✅ Email pago confirmado result:", JSON.stringify(result));
+  } catch (e) {
+    console.error("❌ Error enviando email pago confirmado:", e);
+  }
+}
