@@ -149,6 +149,15 @@ export function SiteFooter() {
                 </div>
               </div>
             </div>
+
+            {/* CONTACTO — datos visibles para transparencia (política Google) */}
+            <div style={{ marginTop: "1.5rem" }}>
+              <p style={{ fontSize: "0.65rem", color: "#C9A96E", textTransform: "uppercase", letterSpacing: "0.15em", margin: "0 0 0.65rem", fontWeight: 600 }}>Contacto</p>
+              <a href="mailto:contacto@infinityglobalshop.com" style={{ ...footerLinkStyle, opacity: 0.85 }}>contacto@infinityglobalshop.com</a>
+              <a href="tel:+573054223600" style={{ ...footerLinkStyle, opacity: 0.85 }}>+57 305 422 3600</a>
+              <span style={{ ...footerLinkStyle, opacity: 0.6 }}>Medellín, Colombia · Tienda en línea</span>
+              <span style={{ ...footerLinkStyle, opacity: 0.6, paddingTop: 0 }}>Entrega a domicilio</span>
+            </div>
           </div>
 
           {/* COL 2 */}

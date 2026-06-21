@@ -63,7 +63,7 @@ export default async function Home() {
           </p>
           <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem", padding: "0.85rem", background: "#FDFAF3", borderRadius: 16, border: "1px solid rgba(74, 93, 58, 0.08)", maxWidth: "440px", margin: "0 auto 1.5rem" }}>
             {[
-              { num: "+125", label: "Reseñas" },
+              { num: "USA", label: "Importado" },
               { num: "24h", label: "Envío" },
               { num: "100%", label: "Originales" },
             ].map((s, i) => (
@@ -166,54 +166,21 @@ export default async function Home() {
         </section>
       )}
 
-      {/* RESEÑAS REALES — reemplaza la sección "Una marca que nace contigo" */}
+      {/* RESEÑAS — tienda nueva, sé el primero (honesto, sin reseñas fabricadas) */}
       <section style={{ padding: "3.5rem 1.5rem", background: "#EDE3CD" }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{ marginBottom: "2rem", textAlign: "center" }}>
-            <span style={{ fontSize: "0.7rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.18em", color: "#C97B5C", marginBottom: "0.5rem", display: "block" }}>
-              — Lo que dicen quienes ya compraron
-            </span>
-            <h2 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(1.85rem, 4vw, 2.6rem)", fontWeight: 400, color: "#4A5D3A", letterSpacing: "-0.02em", margin: "0.5rem 0 0.75rem" }}>
-              +125 reseñas <em style={{ fontStyle: "italic", fontWeight: 300, color: "#C97B5C" }}>verificadas</em>. Y contando.
-            </h2>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "#FDFAF3", padding: "0.5rem 1rem", borderRadius: 100, marginTop: "0.5rem", border: "1px solid rgba(74, 93, 58, 0.08)" }}>
-              <span style={{ color: "#C9A96E", fontSize: "1rem", letterSpacing: "0.05em" }}>★★★★★</span>
-              <span style={{ fontWeight: 600, color: "#4A5D3A" }}>4.7</span>
-              <span style={{ color: "#4A4F45", fontSize: "0.85rem" }}>promedio</span>
-            </div>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.25rem", marginBottom: "2rem" }}>
-            {[
-              { name: "Laura T.", location: "Laureles", text: "Por fin productos americanos sin pagar dólares ni esperar 3 semanas.", initial: "L" },
-              { name: "Camila V.", location: "El Poblado", text: "Los empaques súper cuidados, se nota el cariño en cada detalle.", initial: "C" },
-              { name: "Andrea P.", location: "El Poblado", text: "Muy profesionales, el seguimiento por WhatsApp es genial.", initial: "A" },
-            ].map(r => (
-              <div key={r.name} style={{ background: "#FDFAF3", borderRadius: 20, padding: "1.5rem", border: "1px solid rgba(74, 93, 58, 0.08)" }}>
-                <div style={{ color: "#C9A96E", fontSize: "0.95rem", marginBottom: "0.75rem", letterSpacing: "0.05em" }}>★★★★★</div>
-                <p style={{ color: "#4A4F45", fontSize: "0.95rem", lineHeight: 1.55, margin: "0 0 1.25rem", fontStyle: "italic" }}>
-                  &ldquo;{r.text}&rdquo;
-                </p>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: "#4A5D3A", color: "#F7F1E5", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600, fontSize: "0.9rem" }}>
-                    {r.initial}
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 600, color: "#4A5D3A", fontSize: "0.9rem" }}>{r.name}</div>
-                    <div style={{ fontSize: "0.75rem", color: "#4A4F45", opacity: 0.7 }}>
-                      Compra verificada · {r.location}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ textAlign: "center" }}>
-            <Link href="/productos" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.85rem 1.5rem", background: "#4A5D3A", color: "#F7F1E5", borderRadius: 100, textDecoration: "none", fontSize: "0.88rem", fontWeight: 500 }}>
-              Ver productos →
-            </Link>
-          </div>
+        <div style={{ maxWidth: "720px", margin: "0 auto", textAlign: "center" }}>
+          <span style={{ fontSize: "0.7rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.18em", color: "#C97B5C", marginBottom: "0.5rem", display: "block" }}>
+            — Recién empezamos
+          </span>
+          <h2 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(1.85rem, 4vw, 2.6rem)", fontWeight: 400, color: "#4A5D3A", letterSpacing: "-0.02em", margin: "0.5rem 0 0.85rem" }}>
+            Sé de los <em style={{ fontStyle: "italic", fontWeight: 300, color: "#C97B5C" }}>primeros</em> en contar tu experiencia
+          </h2>
+          <p style={{ color: "#4A4F45", fontSize: "0.98rem", lineHeight: 1.6, margin: "0 auto 1.75rem", maxWidth: "520px" }}>
+            Somos una tienda nueva en Medellín y lo estamos haciendo bien desde el inicio. Tu reseña real será de las primeras en aparecer aquí — y nos ayuda a crecer con confianza.
+          </p>
+          <a href="https://wa.me/573054223600?text=Hola%21%20Quiero%20dejar%20mi%20rese%C3%B1a%20de%20Infinity%20Global%20Shop" target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.95rem 1.75rem", background: "#4A5D3A", color: "#F7F1E5", borderRadius: 100, textDecoration: "none", fontSize: "0.9rem", fontWeight: 500 }}>
+            Dejar mi reseña por WhatsApp
+          </a>
         </div>
       </section>
 

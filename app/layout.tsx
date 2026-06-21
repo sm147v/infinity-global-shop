@@ -54,9 +54,9 @@ export const metadata: Metadata = {
   creator: "Infinity Global Shop",
   publisher: "Infinity Global Shop",
   formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
+    email: true,
+    address: true,
+    telephone: true,
   },
   alternates: {
     canonical: "/",
@@ -133,7 +133,7 @@ export default function RootLayout({
             "description": "Tienda online de productos importados originales de USA: vitaminas Nature's Bounty, Spring Valley, Vitafusion, belleza y cuidado capilar. Envío 24h en Medellín.",
             "url": "https://www.infinityglobalshop.com",
             "telephone": "+573054223600",
-            "email": "hola@infinityglobalshop.com",
+            "email": "contacto@infinityglobalshop.com",
             "priceRange": "$$",
             "currenciesAccepted": "COP",
             "paymentAccepted": ["Visa", "Mastercard", "American Express", "PSE", "Nequi", "Bancolombia", "Daviplata"],
