@@ -7,7 +7,6 @@ import { HomeProductCard } from "./home-product-card";
 import { ResponsiveGrid } from "./responsive-grid";
 import { ProductGallery } from "./product-gallery";
 import { ProductReviews } from "./product-reviews";
-import { getProductReviews } from "@/lib/reviews";
 
 interface RelatedProduct {
   id: number;
@@ -32,8 +31,6 @@ export function ProductDetailClient({ product, related }: { product: Product; re
     ...(product.image ? [product.image] : [])
   ])].filter(Boolean);
 
-  const reviewsPreview = getProductReviews(product.id);
-
   function shareWhatsApp() {
     const url = typeof window !== "undefined" ? window.location.href : "";
     const text = "Mira este producto en Infinity Global Shop: " + product.name + " " + url;
@@ -45,9 +42,9 @@ export function ProductDetailClient({ product, related }: { product: Product; re
     const hasHalf = rating % 1 >= 0.5;
     return (
       <span style={{ display: "inline-flex", alignItems: "center", color: "#C9A96E", fontSize: size + "px", letterSpacing: "1px" }}>
-        {"★".repeat(full)}
-        {hasHalf && <span style={{ position: "relative", display: "inline-block" }}>★<span style={{ position: "absolute", left: 0, width: "50%", overflow: "hidden", color: "#EDE3CD" }}>★</span></span>}
-        {"☆".repeat(5 - full - (hasHalf ? 1 : 0))}
+        {"â".repeat(full)}
+        {hasHalf && <span style={{ position: "relative", display: "inline-block" }}>â<span style={{ position: "absolute", left: 0, width: "50%", overflow: "hidden", color: "#EDE3CD" }}>â</span></span>}
+        {"â".repeat(5 - full - (hasHalf ? 1 : 0))}
       </span>
     );
   }
@@ -58,15 +55,15 @@ export function ProductDetailClient({ product, related }: { product: Product; re
 
         <nav style={{ fontSize: "0.78rem", color: "#4A4F45", marginBottom: "1rem" }}>
           <Link href="/" style={{ color: "#4A4F45", textDecoration: "none" }}>Inicio</Link>
-          <span style={{ margin: "0 0.5rem", opacity: 0.5 }}>›</span>
+          <span style={{ margin: "0 0.5rem", opacity: 0.5 }}>âº</span>
           <Link href="/productos" style={{ color: "#4A4F45", textDecoration: "none" }}>Productos</Link>
           {product.category && (
             <>
-              <span style={{ margin: "0 0.5rem", opacity: 0.5 }}>›</span>
+              <span style={{ margin: "0 0.5rem", opacity: 0.5 }}>âº</span>
               <span style={{ color: "#4A4F45" }}>{product.category}</span>
             </>
           )}
-          <span style={{ margin: "0 0.5rem", opacity: 0.5 }}>›</span>
+          <span style={{ margin: "0 0.5rem", opacity: 0.5 }}>âº</span>
           <span style={{ color: "#4A5D3A", fontWeight: 500 }}>{product.name}</span>
         </nav>
 
@@ -79,14 +76,14 @@ export function ProductDetailClient({ product, related }: { product: Product; re
           <div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginBottom: "1rem" }}>
               <span style={{ padding: "0.3rem 0.8rem", background: "#EDE3CD", color: "#4A5D3A", borderRadius: 100, fontSize: "0.7rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em" }}>
-                ✓ Importado USA
+                â Importado USA
               </span>
               <span style={{ padding: "0.3rem 0.8rem", background: "rgba(92,138,94,0.15)", color: "#5C8A5E", borderRadius: 100, fontSize: "0.7rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em" }}>
                 100% Original
               </span>
               {lowStock && (
                 <span style={{ padding: "0.3rem 0.8rem", background: "rgba(201,83,61,0.1)", color: "#C9533D", borderRadius: 100, fontSize: "0.7rem", fontWeight: 700 }}>
-                  ⚠️ Solo {product.stock} disponibles
+                  â ï¸ Solo {product.stock} disponibles
                 </span>
               )}
             </div>
@@ -95,12 +92,7 @@ export function ProductDetailClient({ product, related }: { product: Product; re
               {product.name}
             </h1>
 
-            <a href="#reviews" style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1.25rem", textDecoration: "none", color: "inherit" }}>
-              {renderStars(reviewsPreview.rating, 16)}
-              <span style={{ fontSize: "0.85rem", color: "#4A5D3A", fontWeight: 600 }}>{reviewsPreview.rating.toFixed(1)}</span>
-              <span style={{ fontSize: "0.85rem", color: "#4A4F45" }}>· {reviewsPreview.count} reseñas</span>
-              <span style={{ fontSize: "0.78rem", color: "#5C8A5E", fontWeight: 600, marginLeft: "0.3rem" }}>✓ Verificadas</span>
-            </a>
+            <a href="#reviews" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", marginBottom: "1.25rem", textDecoration: "none", fontSize: "0.85rem", color: "#4A5D3A", fontWeight: 600 }}>Ver opiniones de clientes ↓</a>
 
             <div style={{ marginBottom: "1.5rem" }}>
               <span style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "2.4rem", fontWeight: 600, color: "#4A5D3A" }}>
@@ -118,11 +110,11 @@ export function ProductDetailClient({ product, related }: { product: Product; re
             {product.features && product.features.length > 0 && (
               <div style={{ background: "#FDFAF3", border: "1px solid #EDE3CD", borderRadius: 16, padding: "1rem", marginBottom: "1.5rem" }}>
                 <p style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#C97B5C", margin: "0 0 0.75rem" }}>
-                  Características
+                  CaracterÃ­sticas
                 </p>
                 {product.features.map((f, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "0.6rem", padding: "0.35rem 0", fontSize: "0.88rem", color: "#4A5D3A" }}>
-                    <span style={{ color: "#C9A96E", fontWeight: 700, marginTop: "1px" }}>✓</span>
+                    <span style={{ color: "#C9A96E", fontWeight: 700, marginTop: "1px" }}>â</span>
                     {f}
                   </div>
                 ))}
@@ -132,8 +124,8 @@ export function ProductDetailClient({ product, related }: { product: Product; re
             {product.longDescription && (
               <details style={{ marginBottom: "1.5rem" }}>
                 <summary style={{ fontSize: "0.88rem", fontWeight: 600, color: "#4A5D3A", cursor: "pointer", padding: "0.75rem 1rem", background: "#FDFAF3", borderRadius: 12, border: "1px solid #EDE3CD", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span>📖 Descripción completa</span>
-                  <span style={{ fontSize: "0.75rem", opacity: 0.6 }}>Ver más ▾</span>
+                  <span>ð DescripciÃ³n completa</span>
+                  <span style={{ fontSize: "0.75rem", opacity: 0.6 }}>Ver mÃ¡s â¾</span>
                 </summary>
                 <div style={{ padding: "1rem", fontSize: "0.9rem", color: "#4A4F45", lineHeight: 1.7, whiteSpace: "pre-line", borderRadius: "0 0 12px 12px", border: "1px solid #EDE3CD", borderTop: "none", background: "#FDFAF3" }}>
                   {product.longDescription}
@@ -144,10 +136,10 @@ export function ProductDetailClient({ product, related }: { product: Product; re
 
             {/* Badge originalidad */}
             <div style={{ background: "linear-gradient(135deg, rgba(74,93,58,0.06), rgba(201,169,110,0.08))", border: "1px solid #EDE3CD", borderRadius: 14, padding: "0.85rem 1rem", marginBottom: "1.5rem", display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
-              <span style={{ fontSize: "1.4rem", flexShrink: 0 }}>🛡️</span>
+              <span style={{ fontSize: "1.4rem", flexShrink: 0 }}>ð¡ï¸</span>
               <div>
                 <p style={{ fontSize: "0.8rem", fontWeight: 700, color: "#4A5D3A", margin: "0 0 0.25rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                  100% Original · Importado de USA
+                  100% Original Â· Importado de USA
                 </p>
                 <p style={{ fontSize: "0.78rem", color: "#4A4F45", margin: 0, lineHeight: 1.5 }}>
                   Todos nuestros productos son comprados directamente en tiendas y cadenas oficiales de Estados Unidos. Llegan sellados, con fecha de vencimiento vigente y sin intermediarios.
@@ -158,10 +150,10 @@ export function ProductDetailClient({ product, related }: { product: Product; re
 
             <div style={{ background: "#FDFAF3", border: "1px solid #EDE3CD", borderRadius: 16, padding: "1rem", marginBottom: "1.5rem" }}>
               {[
-                { icon: "🚚", text: "Envío gratis en pedidos +$150.000" },
-                { icon: "⚡", text: "Recibe en 24 horas en Medellín" },
-                { icon: "🔒", text: "Pago seguro con Wompi" },
-                { icon: "💬", text: "Soporte directo por WhatsApp" },
+                { icon: "ð", text: "EnvÃ­o gratis en pedidos +$150.000" },
+                { icon: "â¡", text: "Recibe en 24 horas en MedellÃ­n" },
+                { icon: "ð", text: "Pago seguro con Wompi" },
+                { icon: "ð¬", text: "Soporte directo por WhatsApp" },
               ].map(b => (
                 <div key={b.text} style={{ display: "flex", alignItems: "center", gap: "0.65rem", padding: "0.4rem 0", fontSize: "0.85rem", color: "#4A5D3A" }}>
                   <span style={{ fontSize: "1.1rem" }}>{b.icon}</span>
@@ -180,23 +172,23 @@ export function ProductDetailClient({ product, related }: { product: Product; re
                   <line x1="12" y1="5" x2="12" y2="19"/>
                   <line x1="5" y1="12" x2="19" y2="12"/>
                 </svg>
-                Agregar al carrito · {fmt(product.price)}
+                Agregar al carrito Â· {fmt(product.price)}
               </button>
             ) : (
               <div style={{ display: "flex", gap: "0.75rem", marginBottom: "1rem" }}>
                 <div style={{ display: "flex", alignItems: "center", background: "#4A5D3A", borderRadius: 100, padding: "0.3rem", flex: 1, justifyContent: "space-between" }}>
-                  <button onClick={() => updateQty(product.id, -1)} style={qtyBtn}>−</button>
+                  <button onClick={() => updateQty(product.id, -1)} style={qtyBtn}>â</button>
                   <span style={{ color: "#F7F1E5", fontSize: "1rem", fontWeight: 600, fontFamily: "var(--font-fraunces), Georgia, serif" }}>{qty} en carrito</span>
                   <button onClick={() => updateQty(product.id, 1)} disabled={qty >= product.stock} style={{ ...qtyBtn, opacity: qty >= product.stock ? 0.4 : 1 }}>+</button>
                 </div>
                 <button onClick={openCart} style={{ background: "#C97B5C", color: "white", border: "none", padding: "0 1.25rem", borderRadius: 100, fontSize: "0.9rem", fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>
-                  Ver carrito →
+                  Ver carrito â
                 </button>
               </div>
             )}
 
             <button onClick={shareWhatsApp} style={{ width: "100%", background: "transparent", border: "1px solid #EDE3CD", color: "#4A4F45", padding: "0.85rem", borderRadius: 100, fontSize: "0.85rem", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-              💬 Compartir por WhatsApp
+              ð¬ Compartir por WhatsApp
             </button>
           </div>
         </div>
@@ -206,9 +198,9 @@ export function ProductDetailClient({ product, related }: { product: Product; re
         <section style={{ marginTop: "3rem" }}>
           <div className="trust-section">
             {[
-              { icon: "🇺🇸", title: "Importado de EE.UU.", desc: "Productos auténticos directamente desde Estados Unidos" },
-              { icon: "🛡️", title: "Garantía de calidad", desc: "Si no quedas satisfecha, te devolvemos tu dinero" },
-              { icon: "📦", title: "Empaque cuidado", desc: "Cada pedido empacado con detalle y cariño" },
+              { icon: "ðºð¸", title: "Importado de EE.UU.", desc: "Productos autÃ©nticos directamente desde Estados Unidos" },
+              { icon: "ð¡ï¸", title: "GarantÃ­a de calidad", desc: "Si no quedas satisfecha, te devolvemos tu dinero" },
+              { icon: "ð¦", title: "Empaque cuidado", desc: "Cada pedido empacado con detalle y cariÃ±o" },
             ].map(t => (
               <div key={t.title} style={{ background: "#FDFAF3", border: "1px solid #EDE3CD", borderRadius: 18, padding: "1.5rem", textAlign: "center" }}>
                 <div style={{ fontSize: "2rem", marginBottom: "0.6rem" }}>{t.icon}</div>
@@ -222,7 +214,7 @@ export function ProductDetailClient({ product, related }: { product: Product; re
         {related.length > 0 && (
           <section style={{ marginTop: "4rem" }}>
             <h2 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.5rem", color: "#4A5D3A", fontWeight: 400, marginBottom: "1.5rem" }}>
-              También te puede <em style={{ color: "#C97B5C" }}>gustar</em>
+              TambiÃ©n te puede <em style={{ color: "#C97B5C" }}>gustar</em>
             </h2>
             <ResponsiveGrid>
               {related.map(p => (
