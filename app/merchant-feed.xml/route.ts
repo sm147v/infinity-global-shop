@@ -55,7 +55,8 @@ function mapToGoogleCategory(cat: string | null): string {
 export async function GET() {
   const EXCLUIR_FEED = [
     "tylenol", "acetaminof", "preparation h", "preparation-h",
-    "devrom", "ibuprofen", "advil", "aspirin", "bismuto", "subgalato",
+    "devrom", "ibuprofen", "ibuprofeno", "advil", "aspirin", "aspirina",
+    "bismuto", "subgalato", "pepcid", "famotidina", "antiacido", "antiácido",
   ];
 
   const productsRaw = await prisma.product.findMany({

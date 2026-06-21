@@ -16,9 +16,9 @@ export const revalidate = 600;
 // IMPORTANTE: si cambias slugs en tu DB, actualízalos aquí.
 const VERTICAL_B_SLUGS = [
   "gnc-glucosamina-y-condroitina-salud-articular-y-movilidad",
-  "tylenol-artritis-8hr-acetaminofen-650mg-290-capsulas-dolor-articular",
-  "devrom-desodorante-interno-200mg-100-tabletas-masticables-anti-olor",
-  "preparation-h-unguento-hemorroides-alivio-rapido-del-picor-y-ardor",
+  "spring-valley-cranberry-concentrado-salud-urinaria-femenina",
+  "spring-valley-l-lisina-1000mg-refuerzo-inmune-y-combate-herpes",
+  "spring-valley-magnesio-200mg-alta-absorcion-glicinato-tolerable",
 ];
 
 export default async function Home() {
