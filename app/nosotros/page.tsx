@@ -289,8 +289,8 @@ export default function NosotrosPage() {
               <span style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.14em", color: "#E8B89E", display: "block", marginBottom: "0.25rem" }}>
                 Correo
               </span>
-              <a href="mailto:infinityshop147@gmail.com" style={{ color: "#FDFAF3", textDecoration: "none", fontSize: "1rem", fontWeight: 500 }}>
-                infinityshop147@gmail.com
+              <a href="mailto:contacto@infinityglobalshop.com" style={{ color: "#FDFAF3", textDecoration: "none", fontSize: "1rem", fontWeight: 500 }}>
+                contacto@infinityglobalshop.com
               </a>
             </div>
 

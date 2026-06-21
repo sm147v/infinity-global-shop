@@ -1,3 +1,23 @@
+#!/usr/bin/env bash
+# ============================================================
+#  Infinity — Limpiar reseñas de producto (solo reales de DB)
+#  - Reescribe components/product-reviews.tsx sin reseñas inventadas
+#  - Estado honesto cuando un producto no tiene reseñas aún
+#  - Solo marca "Compra verificada" las que tienen pedido real
+#  - Busca correos hardcodeados en el código para estandarizar
+#  Hace backup .reviewsbak antes de tocar nada.
+# ============================================================
+set -euo pipefail
+
+cd ~/Desktop/infinity-global-shop 2>/dev/null || {
+  echo "❌ No encontré el proyecto."; exit 1;
+}
+[ -f components/product-reviews.tsx ] || { echo "❌ Falta components/product-reviews.tsx"; exit 1; }
+
+echo "📦 Backup…"
+cp components/product-reviews.tsx components/product-reviews.tsx.reviewsbak
+
+cat > components/product-reviews.tsx <<'TSX'
 "use client";
 
 import { useEffect, useState } from "react";
@@ -137,3 +157,11 @@ export function ProductReviews({ productId, productName }: Props) {
     </section>
   );
 }
+TSX
+
+echo "✅ product-reviews.tsx reescrito (solo reseñas reales)"
+echo ""
+echo "🔎 Correos encontrados en el código (revisa si alguno hay que cambiar a contacto@):"
+grep -rniE "gmail|hola@|pedidos@|contacto@|infinityshop147|@infinityglobalshop" app components lib 2>/dev/null || echo "  (ninguno)"
+echo ""
+echo "👉 Nota: lib/reviews.ts ya no se usa (tenía las reseñas inventadas). Puedes borrarlo luego si quieres."
