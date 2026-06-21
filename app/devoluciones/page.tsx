@@ -104,6 +104,24 @@ export default function DevolucionesPage() {
           ))}
         </div>
 
+        <div style={{ background: "#FDFAF3", borderRadius: 18, padding: "1.5rem", border: "1px solid #EDE3CD", marginBottom: "1rem" }}>
+          <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.2rem", color: "#4A5D3A", fontWeight: 500, margin: "0 0 1rem" }}>
+            ⚖️ Tus derechos como consumidor
+          </h3>
+          <p style={{ color: "#4A4F45", lineHeight: 1.7, fontSize: "0.92rem", margin: "0 0 0.75rem" }}>
+            <strong style={{ color: "#4A5D3A" }}>Derecho de retracto:</strong> según la Ley 1480 de 2011 (Estatuto del Consumidor), tienes hasta <strong>5 días hábiles</strong> luego de recibir tu pedido para retractarte, siempre que el producto no haya sido abierto ni usado y conserve su empaque y sellos originales. Te devolvemos el 100% del valor pagado.
+          </p>
+          <p style={{ color: "#4A4F45", lineHeight: 1.7, fontSize: "0.92rem", margin: "0 0 0.75rem" }}>
+            <strong style={{ color: "#4A5D3A" }}>Garantía legal:</strong> si el producto llega dañado, con defecto de fábrica, vencido o no corresponde a lo que pediste, tienes derecho a reposición, cambio o devolución del dinero sin costo para ti.
+          </p>
+          <p style={{ color: "#4A4F45", lineHeight: 1.7, fontSize: "0.92rem", margin: "0 0 0.75rem" }}>
+            <strong style={{ color: "#4A5D3A" }}>Tiempo de reembolso:</strong> una vez aprobada la devolución, el reembolso se realiza por el mismo medio de pago en un máximo de <strong>15 días hábiles</strong>.
+          </p>
+          <p style={{ color: "#4A4F45", lineHeight: 1.6, fontSize: "0.82rem", margin: 0, fontStyle: "italic", opacity: 0.85 }}>
+            Por razones sanitarias, los productos de salud, belleza y suplementos abiertos o sin sus sellos de seguridad no pueden devolverse, salvo defecto de fábrica. Los suplementos y cosméticos no son medicamentos.
+          </p>
+        </div>
+
         <div style={{ background: "#EDE3CD", borderRadius: 18, padding: "1.5rem", textAlign: "center" }}>
           <p style={{ color: "#4A4F45", marginBottom: "0.85rem", fontSize: "0.95rem" }}>
             ¿Necesitas hacer una devolución?

@@ -176,6 +176,9 @@ export function SiteFooter() {
             <Link href="/nosotros" style={footerLinkStyle}>Sobre nosotros</Link>
             <Link href="/envios" style={footerLinkStyle}>Política de envíos</Link>
             <Link href="/devoluciones" style={footerLinkStyle}>Cambios y devoluciones</Link>
+            <Link href="/contacto" style={footerLinkStyle}>Contacto</Link>
+            <Link href="/privacidad" style={footerLinkStyle}>Política de privacidad</Link>
+            <Link href="/terminos" style={footerLinkStyle}>Términos y condiciones</Link>
             <Link href="/pedido" style={footerLinkStyle}>Rastrear pedido</Link>
             <a href="https://wa.me/573054223600" target="_blank" rel="noreferrer" style={footerLinkStyle}>Atención al cliente</a>
           </div>
@@ -205,6 +208,10 @@ export function SiteFooter() {
             Productos importados auténticos · Envío en 24 horas
           </p>
         </div>
+
+        <p style={{ fontSize: "0.68rem", opacity: 0.35, margin: "1rem 0 0", lineHeight: 1.5, maxWidth: 760 }}>
+          Los suplementos dietarios y productos cosméticos no son medicamentos y no están destinados a diagnosticar, tratar, curar ni prevenir enfermedades. Consulta a tu médico antes de iniciar cualquier suplemento. Las marcas mencionadas son propiedad de sus respectivos titulares.
+        </p>
       </div>
 
       <style>{`

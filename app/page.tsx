@@ -26,7 +26,7 @@ export default async function Home() {
     prisma.product.findMany({
       take: 8,
       orderBy: { id: "asc" },
-      where: { stock: { gt: 0 } },
+      where: { stock: { gt: 0 }, slug: { notIn: VERTICAL_B_SLUGS } },
     }),
     prisma.product.findMany({
       where: { slug: { in: VERTICAL_B_SLUGS } },
@@ -151,7 +151,7 @@ export default async function Home() {
                 Productos USA que <em style={{ fontStyle: "italic", fontWeight: 300, color: "#E5D4A8" }}>Colombia no trae</em>
               </h2>
               <p style={{ color: "rgba(247, 241, 229, 0.85)", fontSize: "0.95rem", maxWidth: "620px", margin: "0 auto", lineHeight: 1.6 }}>
-                Productos de salud que cambian la vida de quien los necesita — pero que las cadenas farmacéuticas colombianas no importan. Para nuestros clientes, sí lo son.
+                Productos importados difíciles de conseguir en Colombia: los que las grandes cadenas farmacéuticas no traen, nosotros sí los conseguimos para ti.
               </p>
             </div>
             <ResponsiveGrid>
