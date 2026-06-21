@@ -53,19 +53,9 @@ function mapToGoogleCategory(cat: string | null): string {
 }
 
 export async function GET() {
-  const EXCLUIR_FEED = [
-    "tylenol", "acetaminof", "preparation h", "preparation-h",
-    "devrom", "ibuprofen", "advil", "aspirin", "bismuto", "subgalato",
-  ];
-
-  const productsRaw = await prisma.product.findMany({
+  const products = await prisma.product.findMany({
     where: { stock: { gt: 0 } },
     orderBy: { id: "asc" },
-  });
-
-  const products = productsRaw.filter((p) => {
-    const n = (p.name || "").toLowerCase();
-    return !EXCLUIR_FEED.some((term) => n.includes(term));
   });
 
   const items = products
