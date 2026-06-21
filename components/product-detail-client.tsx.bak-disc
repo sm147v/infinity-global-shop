@@ -195,10 +195,6 @@ export function ProductDetailClient({ product, related }: { product: Product; re
 
         <ProductReviews productId={product.id} productName={product.name} />
 
-        <p style={{ fontSize: "0.72rem", color: "#8A8A7E", lineHeight: 1.5, margin: "1.5rem 0 0", textAlign: "center", maxWidth: 720, marginInline: "auto" }}>
-          Los suplementos dietarios y productos cosméticos no son medicamentos y no están destinados a diagnosticar, tratar, curar ni prevenir enfermedades. La información de esta página es descriptiva y no sustituye la consulta con un profesional de la salud. Las marcas mencionadas son propiedad de sus respectivos titulares.
-        </p>
-
         <section style={{ marginTop: "3rem" }}>
           <div className="trust-section">
             {[
