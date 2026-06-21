@@ -57,3 +57,11 @@ aplicar-seo-completoV.sh
 *.backup
 admin-layout-clean.tsx
 fix-final-mundial.sh
+
+*.bak
+*.compliancebak
+*.reviewsbak
+fix-*.sh
+schema-infinity.sh
+.backup-schema.tsx
+/main
