@@ -50,9 +50,9 @@ export function ProductReviews({ productId, productName }: Props) {
   return (
     <section id="reviews" style={{ marginTop: "4rem", scrollMarginTop: "2rem" }}>
       <div style={{ marginBottom: "2rem" }}>
-        <span style={{ fontSize: "0.7rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.18em", color: "#C97B5C", marginBottom: "0.5rem", display: "block" }}>— Lo que opinan</span>
+        <span style={{ fontSize: "0.7rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.18em", color: "#A85A3C", marginBottom: "0.5rem", display: "block" }}>— Lo que opinan</span>
         <h2 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.6rem", color: "#4A5D3A", fontWeight: 400, margin: 0 }}>
-          Reseñas <em style={{ color: "#C97B5C" }}>de clientes</em>
+          Reseñas <em style={{ color: "#A85A3C" }}>de clientes</em>
         </h2>
       </div>
 
@@ -107,7 +107,7 @@ export function ProductReviews({ productId, productName }: Props) {
                   </span>
                 )}
                 <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.85rem" }}>
-                  <div style={{ width: 40, height: 40, borderRadius: "50%", background: "linear-gradient(135deg, #C97B5C, #C9A96E)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1rem", fontWeight: 600 }}>
+                  <div style={{ width: 40, height: 40, borderRadius: "50%", background: "linear-gradient(135deg, #A85A3C, #C9A96E)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1rem", fontWeight: 600 }}>
                     {(r.customerName || "U").charAt(0).toUpperCase()}
                   </div>
                   <div style={{ flex: 1 }}>

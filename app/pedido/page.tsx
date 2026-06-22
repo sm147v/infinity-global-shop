@@ -22,7 +22,7 @@ export default function MiPedidoPage() {
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
           <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>📦</div>
           <h1 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "2rem", color: "#4A5D3A", fontWeight: 400, margin: "0 0 0.5rem" }}>
-            Sigue tu <em style={{ color: "#C97B5C" }}>pedido</em>
+            Sigue tu <em style={{ color: "#A85A3C" }}>pedido</em>
           </h1>
           <p style={{ color: "#4A4F45", fontSize: "0.95rem" }}>
             Ingresa el número que recibiste por email o WhatsApp
@@ -68,7 +68,7 @@ export default function MiPedidoPage() {
           </button>
 
           <p style={{ marginTop: "1.5rem", fontSize: "0.78rem", color: "#4A4F45", textAlign: "center" }}>
-            ¿No encuentras tu número? <a href="https://wa.me/573054223600" style={{ color: "#C97B5C", fontWeight: 600 }}>Escríbenos por WhatsApp</a>
+            ¿No encuentras tu número? <a href="https://wa.me/573054223600" style={{ color: "#A85A3C", fontWeight: 600 }}>Escríbenos por WhatsApp</a>
           </p>
         </div>
       </div>

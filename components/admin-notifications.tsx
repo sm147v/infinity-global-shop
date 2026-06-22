@@ -201,7 +201,7 @@ function timeAgo(date: Date) {
               Notificaciones
             </h3>
             {notifications.length > 0 && (
-              <button onClick={() => setNotifications([])} style={{ background: "none", border: "none", fontSize: "0.75rem", color: "#C97B5C", cursor: "pointer", fontFamily: "inherit" }}>
+              <button onClick={() => setNotifications([])} style={{ background: "none", border: "none", fontSize: "0.75rem", color: "#A85A3C", cursor: "pointer", fontFamily: "inherit" }}>
                 Limpiar
               </button>
             )}

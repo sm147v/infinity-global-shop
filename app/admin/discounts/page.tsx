@@ -212,7 +212,7 @@ export default function DiscountsPage() {
                       </p>
                     </div>
                     {discValue > 0 && selectedIds.includes(p.id) && (
-                      <span style={{ fontSize: "0.75rem", color: "#C97B5C", fontWeight: 600 }}>
+                      <span style={{ fontSize: "0.75rem", color: "#A85A3C", fontWeight: 600 }}>
                         {fmt(previewPrice(p.price))}
                       </span>
                     )}

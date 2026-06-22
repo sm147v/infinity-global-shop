@@ -153,7 +153,7 @@ export default function AdminProductsPage() {
               <span style={{
                 display: "inline-block",
                 fontSize: "0.65rem",
-                color: "#C97B5C",
+                color: "#A85A3C",
                 background: "rgba(201, 123, 92, 0.1)",
                 padding: "0.2rem 0.6rem",
                 borderRadius: 100,

@@ -59,10 +59,10 @@ export function ProductsClient({ products, categories }: { products: Product[]; 
           fontWeight: 500,
           textTransform: "uppercase",
           letterSpacing: "0.18em",
-          color: "#C97B5C",
+          color: "#A85A3C",
           marginBottom: "0.75rem",
         }}>
-          <span style={{ width: 20, height: 1, background: "#C97B5C" }} />
+          <span style={{ width: 20, height: 1, background: "#A85A3C" }} />
           Catálogo curado
         </div>
 
@@ -75,7 +75,7 @@ export function ProductsClient({ products, categories }: { products: Product[]; 
           color: "#4A5D3A",
           marginBottom: "0.75rem",
         }}>
-          Todos nuestros <em style={{ fontStyle: "italic", fontWeight: 300, color: "#C97B5C" }}>productos</em>
+          Todos nuestros <em style={{ fontStyle: "italic", fontWeight: 300, color: "#A85A3C" }}>productos</em>
         </h1>
 
         <p style={{ fontSize: "0.95rem", color: "#4A4F45", maxWidth: "560px", marginBottom: "1.5rem" }}>

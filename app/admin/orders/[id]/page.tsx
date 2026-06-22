@@ -90,7 +90,7 @@ export default function AdminOrderPage() {
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
         <h1 style={{ fontFamily: "Georgia, serif", fontSize: "1.5rem", color: "#4A5D3A", fontWeight: 400, margin: 0 }}>
-          Pedido <em style={{ color: "#C97B5C" }}>{order.orderNumber || ("#" + order.id)}</em>
+          Pedido <em style={{ color: "#A85A3C" }}>{order.orderNumber || ("#" + order.id)}</em>
         </h1>
         <button onClick={() => router.push("/admin/orders")} style={{ background: "transparent", border: "1px solid #EDE3CD", padding: "0.5rem 1rem", borderRadius: 100, fontSize: "0.8rem", cursor: "pointer", color: "#4A4F45" }}>
           ← Volver
@@ -125,7 +125,7 @@ export default function AdminOrderPage() {
       )}
 
       <div style={{ background: "#FDFAF3", borderRadius: 20, padding: "1.5rem", border: "1px solid #EDE3CD", marginBottom: "1.25rem" }}>
-        <p style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "2px", color: "#C97B5C", margin: "0 0 1rem", fontWeight: 600 }}>Cambiar estado</p>
+        <p style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "2px", color: "#A85A3C", margin: "0 0 1rem", fontWeight: 600 }}>Cambiar estado</p>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem" }}>
           {Object.entries(STATUS_LABELS).map(([key, val]) => (
             <button
@@ -152,7 +152,7 @@ export default function AdminOrderPage() {
       </div>
 
       <div style={{ background: "#FDFAF3", borderRadius: 20, padding: "1.5rem", border: "1px solid #EDE3CD", marginBottom: "1.25rem" }}>
-        <p style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "2px", color: "#C97B5C", margin: "0 0 1rem", fontWeight: 600 }}>Cliente</p>
+        <p style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "2px", color: "#A85A3C", margin: "0 0 1rem", fontWeight: 600 }}>Cliente</p>
         <p style={{ color: "#4A5D3A", fontWeight: 600, margin: "0 0 4px", fontSize: "1rem" }}>{order.customerName}</p>
         <p style={{ color: "#4A4F45", fontSize: "0.88rem", margin: "0 0 4px" }}>📞 {order.customerPhone}</p>
         <p style={{ color: "#4A4F45", fontSize: "0.88rem", margin: "0 0 4px" }}>📧 {order.customerEmail || "—"}</p>
@@ -160,7 +160,7 @@ export default function AdminOrderPage() {
       </div>
 
       <div style={{ background: "#FDFAF3", borderRadius: 20, padding: "1.5rem", border: "1px solid #EDE3CD" }}>
-        <p style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "2px", color: "#C97B5C", margin: "0 0 1rem", fontWeight: 600 }}>Productos</p>
+        <p style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "2px", color: "#A85A3C", margin: "0 0 1rem", fontWeight: 600 }}>Productos</p>
         {order.items.map((item) => (
           <div key={item.id} style={{ display: "flex", justifyContent: "space-between", padding: "0.6rem 0", borderBottom: "1px solid #EDE3CD" }}>
             <span style={{ fontSize: "0.9rem", color: "#4A4F45" }}>{item.quantity}× {item.name}</span>

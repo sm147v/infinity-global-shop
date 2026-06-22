@@ -12,7 +12,7 @@ const COLORS = {
   border: "#EDE3CD",
   green: "#4A5D3A",
   greenSoft: "#6B7F58",
-  terracotta: "#C97B5C",
+  terracotta: "#A85A3C",
   text: "#4A4F45",
   textSoft: "#6B6F62",
 };

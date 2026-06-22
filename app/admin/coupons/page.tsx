@@ -222,7 +222,7 @@ export default function AdminCouponsPage() {
               </p>
 
               <div style={{ background: "#F7F1E5", padding: "0.75rem", borderRadius: 10, marginBottom: "0.75rem" }}>
-                <div style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.4rem", color: "#C97B5C", fontWeight: 600 }}>
+                <div style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.4rem", color: "#A85A3C", fontWeight: 600 }}>
                   {c.type === "PERCENTAGE" && Number(c.value) + "% OFF"}
                   {c.type === "FIXED" && fmt(Number(c.value)) + " OFF"}
                   {c.type === "FREE_SHIPPING" && "🚚 Envío gratis"}
@@ -245,8 +245,8 @@ export default function AdminCouponsPage() {
                 <button onClick={() => toggleActive(c.id, c.active)} style={{
                   flex: 1,
                   background: "transparent",
-                  border: "1px solid " + (c.active ? "#C97B5C" : "#5C8A5E"),
-                  color: c.active ? "#C97B5C" : "#5C8A5E",
+                  border: "1px solid " + (c.active ? "#A85A3C" : "#5C8A5E"),
+                  color: c.active ? "#A85A3C" : "#5C8A5E",
                   padding: "0.5rem",
                   borderRadius: 100,
                   fontSize: "0.78rem",

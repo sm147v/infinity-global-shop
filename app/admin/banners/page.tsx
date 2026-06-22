@@ -185,7 +185,7 @@ export default function AdminBannersPage() {
               </div>
               <div style={{ padding: ".75rem 1rem" }}>
                 <p style={{
-                  fontSize: ".7rem", color: "#C97B5C",
+                  fontSize: ".7rem", color: "#A85A3C",
                   textTransform: "uppercase", letterSpacing: ".1em",
                   margin: "0 0 .3rem", fontWeight: 600,
                 }}>Orden {b.order}</p>
@@ -274,7 +274,7 @@ export default function AdminBannersPage() {
                 >
                   {({ open }) => (
                     <button onClick={() => open()} style={{
-                      width: "100%", background: "#C97B5C", color: "#F7F1E5",
+                      width: "100%", background: "#A85A3C", color: "#F7F1E5",
                       border: "none", padding: ".7rem", borderRadius: 10,
                       fontSize: ".88rem", fontWeight: 500, cursor: "pointer",
                       fontFamily: "inherit",

@@ -61,7 +61,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div style={{ padding: "1.25rem", borderBottom: "1px solid #EDE3CD" }}>
             <Link href="/admin" style={{ textDecoration: "none" }}>
               <h2 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.3rem", color: "#4A5D3A", fontWeight: 400, margin: 0 }}>
-                Infinity <em style={{ color: "#C97B5C" }}>Admin</em>
+                Infinity <em style={{ color: "#A85A3C" }}>Admin</em>
               </h2>
             </Link>
           </div>

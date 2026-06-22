@@ -59,19 +59,19 @@ export const posts = [
 const CATEGORY_COLORS: Record<string, string> = {
   Vitaminas: "#6B7B4F",
   Salud: "#C9533D",
-  Belleza: "#C97B5C",
+  Belleza: "#A85A3C",
 };
 
 export default function BlogPage() {
   return (
     <div style={{ background: "#F7F1E5", minHeight: "100vh", fontFamily: "var(--font-dm-sans), Inter, sans-serif", paddingBottom: "4rem" }}>
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "2.5rem 1.5rem 1rem" }}>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontSize: "0.7rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.18em", color: "#C97B5C", marginBottom: "0.75rem" }}>
-          <span style={{ width: 20, height: 1, background: "#C97B5C" }} />
+        <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontSize: "0.7rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.18em", color: "#A85A3C", marginBottom: "0.75rem" }}>
+          <span style={{ width: 20, height: 1, background: "#A85A3C" }} />
           Bienestar & Salud
         </div>
         <h1 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(2rem, 5vw, 3rem)", color: "#4A5D3A", fontWeight: 400, margin: "0 0 0.75rem", lineHeight: 1.1 }}>
-          Blog de <em style={{ color: "#C97B5C", fontStyle: "italic" }}>Bienestar</em>
+          Blog de <em style={{ color: "#A85A3C", fontStyle: "italic" }}>Bienestar</em>
         </h1>
         <p style={{ color: "#4A4F45", fontSize: "1rem", maxWidth: 560, marginBottom: "2.5rem", lineHeight: 1.6 }}>
           Guías honestas sobre vitaminas, suplementos y belleza. Sin lenguaje técnico, sin publicidad engañosa.

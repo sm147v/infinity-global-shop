@@ -7,7 +7,7 @@ export default function AdminLoginPage() {
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
           <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>🌿</div>
           <h2 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.7rem", color: "#4A5D3A", fontWeight: 400, margin: "0 0 0.4rem" }}>
-            Infinity <em style={{ color: "#C97B5C" }}>Admin</em>
+            Infinity <em style={{ color: "#A85A3C" }}>Admin</em>
           </h2>
           <p style={{ color: "#4A4F45", fontSize: "0.9rem", margin: 0 }}>Centro de operaciones</p>
         </div>

@@ -153,7 +153,7 @@ export default function HeroCarousel() {
                     <Link href={b.ctaUrl} style={{
                       display: "inline-block",
                       alignSelf: "flex-start",
-                      background: "#C97B5C",
+                      background: "#A85A3C",
                       color: "#FDFAF3",
                       padding: "0.85rem 1.85rem",
                       borderRadius: 999,

@@ -15,13 +15,13 @@ export default function EnviosPage() {
             fontWeight: 500,
             textTransform: "uppercase",
             letterSpacing: "0.18em",
-            color: "#C97B5C",
+            color: "#A85A3C",
             display: "inline-flex",
             alignItems: "center",
             gap: "0.5rem",
             marginBottom: "1rem",
           }}>
-            <span style={{ width: 20, height: 1, background: "#C97B5C" }} />
+            <span style={{ width: 20, height: 1, background: "#A85A3C" }} />
             Información de envío
           </span>
 
@@ -33,7 +33,7 @@ export default function EnviosPage() {
             lineHeight: 1.1,
             margin: "0 0 1rem",
           }}>
-            Política de <em style={{ color: "#C97B5C" }}>envíos</em>
+            Política de <em style={{ color: "#A85A3C" }}>envíos</em>
           </h1>
         </div>
 
@@ -43,7 +43,7 @@ export default function EnviosPage() {
             <p style={{ fontSize: "0.7rem", color: "#C9A96E", textTransform: "uppercase", letterSpacing: "0.1em", margin: "0 0 0.3rem", fontWeight: 600 }}>Envío</p>
             <p style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.4rem", margin: 0, fontWeight: 500 }}>$8.000</p>
           </div>
-          <div style={{ background: "#C97B5C", borderRadius: 18, padding: "1.25rem", color: "#F7F1E5", textAlign: "center" }}>
+          <div style={{ background: "#A85A3C", borderRadius: 18, padding: "1.25rem", color: "#F7F1E5", textAlign: "center" }}>
             <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>✨</div>
             <p style={{ fontSize: "0.7rem", color: "#FDFAF3", textTransform: "uppercase", letterSpacing: "0.1em", margin: "0 0 0.3rem", fontWeight: 600 }}>Gratis desde</p>
             <p style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.4rem", margin: 0, fontWeight: 500 }}>$150.000</p>
@@ -60,7 +60,7 @@ export default function EnviosPage() {
           <p style={{ color: "#4A4F45", lineHeight: 1.7, fontSize: "0.9rem", margin: 0 }}>
             Medellín · Envigado · Itagüí · Sabaneta · La Estrella · Bello · Caldas · Copacabana · Girardota · Barbosa
           </p>
-          <p style={{ color: "#C97B5C", fontSize: "0.85rem", marginTop: "0.85rem", fontWeight: 500 }}>
+          <p style={{ color: "#A85A3C", fontSize: "0.85rem", marginTop: "0.85rem", fontWeight: 500 }}>
             🚛 ¿Estás fuera del área metropolitana? Escríbenos por WhatsApp para coordinar envíos especiales.
           </p>
         </div>
@@ -75,7 +75,7 @@ export default function EnviosPage() {
             { time: "48 horas", desc: "Pedidos hechos el viernes después de las 5 PM se entregan el lunes." },
           ].map(item => (
             <div key={item.time} style={{ padding: "0.85rem 0", borderBottom: "1px solid #EDE3CD" }}>
-              <p style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1rem", color: "#C97B5C", fontWeight: 600, margin: "0 0 0.3rem" }}>{item.time}</p>
+              <p style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1rem", color: "#A85A3C", fontWeight: 600, margin: "0 0 0.3rem" }}>{item.time}</p>
               <p style={{ color: "#4A4F45", fontSize: "0.88rem", lineHeight: 1.5, margin: 0 }}>{item.desc}</p>
             </div>
           ))}

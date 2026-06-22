@@ -26,7 +26,7 @@ function GraciasContent() {
           margin: "0 0 1rem",
           lineHeight: 1.1,
         }}>
-          ¡Gracias por tu <em style={{ color: "#C97B5C" }}>compra</em>!
+          ¡Gracias por tu <em style={{ color: "#A85A3C" }}>compra</em>!
         </h1>
 
         <p style={{ fontSize: "1.05rem", color: "#4A4F45", marginBottom: "2rem", lineHeight: 1.6 }}>
@@ -35,7 +35,7 @@ function GraciasContent() {
 
         {orderNumber && (
           <div style={{ background: "#FDFAF3", borderRadius: 20, padding: "1.5rem", border: "1px solid #EDE3CD", marginBottom: "2rem" }}>
-            <p style={{ fontSize: "0.78rem", color: "#C97B5C", textTransform: "uppercase", letterSpacing: "0.15em", margin: "0 0 0.4rem", fontWeight: 600 }}>
+            <p style={{ fontSize: "0.78rem", color: "#A85A3C", textTransform: "uppercase", letterSpacing: "0.15em", margin: "0 0 0.4rem", fontWeight: 600 }}>
               Tu número de pedido
             </p>
             <p style={{
@@ -117,7 +117,7 @@ function GraciasContent() {
         </div>
 
         <p style={{ marginTop: "2.5rem", fontSize: "0.85rem", color: "#4A4F45" }}>
-          ¿Tienes preguntas? <a href="https://wa.me/573054223600" style={{ color: "#C97B5C", fontWeight: 600 }}>Escríbenos por WhatsApp</a>
+          ¿Tienes preguntas? <a href="https://wa.me/573054223600" style={{ color: "#A85A3C", fontWeight: 600 }}>Escríbenos por WhatsApp</a>
         </p>
       </div>
     </main>

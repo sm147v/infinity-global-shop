@@ -53,7 +53,7 @@ export default async function OrderTrackingPage({
         </div>
 
         <div style={{ background: "#FDFAF3", borderRadius: 24, padding: "2rem 1.5rem", border: "1px solid #EDE3CD", marginBottom: "1.5rem" }}>
-          <p style={{ fontSize: "0.78rem", color: "#C97B5C", textTransform: "uppercase", letterSpacing: "0.15em", margin: "0 0 0.4rem", fontWeight: 600 }}>
+          <p style={{ fontSize: "0.78rem", color: "#A85A3C", textTransform: "uppercase", letterSpacing: "0.15em", margin: "0 0 0.4rem", fontWeight: 600 }}>
             Tu pedido
           </p>
           <h1 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.8rem", color: "#4A5D3A", fontWeight: 400, margin: "0 0 1.5rem" }}>
@@ -119,7 +119,7 @@ export default async function OrderTrackingPage({
         </div>
 
         <div style={{ background: "#FDFAF3", borderRadius: 20, padding: "1.5rem", border: "1px solid #EDE3CD", marginBottom: "1rem" }}>
-          <p style={{ fontSize: "0.78rem", color: "#C97B5C", textTransform: "uppercase", letterSpacing: "0.15em", margin: "0 0 0.85rem", fontWeight: 600 }}>
+          <p style={{ fontSize: "0.78rem", color: "#A85A3C", textTransform: "uppercase", letterSpacing: "0.15em", margin: "0 0 0.85rem", fontWeight: 600 }}>
             Productos
           </p>
           {order.items.map((item) => (
@@ -135,7 +135,7 @@ export default async function OrderTrackingPage({
         </div>
 
         <div style={{ background: "#FDFAF3", borderRadius: 20, padding: "1.5rem", border: "1px solid #EDE3CD", marginBottom: "1.5rem" }}>
-          <p style={{ fontSize: "0.78rem", color: "#C97B5C", textTransform: "uppercase", letterSpacing: "0.15em", margin: "0 0 0.85rem", fontWeight: 600 }}>
+          <p style={{ fontSize: "0.78rem", color: "#A85A3C", textTransform: "uppercase", letterSpacing: "0.15em", margin: "0 0 0.85rem", fontWeight: 600 }}>
             Datos de entrega
           </p>
           <p style={{ color: "#4A5D3A", fontWeight: 600, margin: "0 0 0.3rem", fontSize: "1rem" }}>{order.customerName}</p>

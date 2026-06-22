@@ -89,7 +89,7 @@ export function WelcomePopup() {
         }}>✕</button>
 
         <div style={{
-          background: "linear-gradient(135deg, #C97B5C 0%, #A85E42 100%)",
+          background: "linear-gradient(135deg, #A85A3C 0%, #A85E42 100%)",
           padding: "2.5rem 1.5rem 1.5rem", color: "#F7F1E5", textAlign: "center",
         }}>
           <div style={{ fontSize: "3rem", marginBottom: "0.5rem" }}>🎁</div>
@@ -132,7 +132,7 @@ export function WelcomePopup() {
                   style={{ flex: 1, padding: "0.85rem 1rem", borderRadius: 100, border: "1px solid #EDE3CD",
                     background: "#F7F1E5", fontSize: "0.9rem", outline: "none", fontFamily: "inherit", color: "#4A5D3A" }} />
                 <button onClick={submitEmail} style={{
-                  background: "#C97B5C", color: "white", border: "none", padding: "0 1.25rem",
+                  background: "#A85A3C", color: "white", border: "none", padding: "0 1.25rem",
                   borderRadius: 100, fontSize: "0.85rem", fontWeight: 600, cursor: "pointer",
                   fontFamily: "inherit", whiteSpace: "nowrap",
                 }}>Recibir</button>

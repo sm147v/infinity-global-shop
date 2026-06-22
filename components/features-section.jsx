@@ -26,7 +26,7 @@ export function FeaturesSection() {
               <div style={{ width: 48, height: 48, borderRadius: "50%", background: "rgba(201, 169, 110, 0.15)", border: "1px solid rgba(201, 169, 110, 0.3)", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: "0.85rem" }}>
                 <Icon size={22} strokeWidth={1.75} color="#C9A96E" aria-hidden="true" />
               </div>
-              <h4 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1rem", fontWeight: 500, marginBottom: "0.35rem", color: "#F7F1E5" }}>{title}</h4>
+              <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1rem", fontWeight: 500, marginBottom: "0.35rem", color: "#F7F1E5" }}>{title}</h3>
               <p style={{ fontSize: "0.8rem", opacity: 0.75, lineHeight: 1.5, margin: 0, color: "#F7F1E5" }}>{desc}</p>
             </div>
           ))}

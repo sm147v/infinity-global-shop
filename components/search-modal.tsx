@@ -226,7 +226,7 @@ export function SearchModal({ onClose, doSearch, goToCategory, query, setQuery }
                       <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.78rem" }}>
                         <span style={{ color: "#4A5D3A", fontWeight: 600 }}>{fmt(Number(p.price))}</span>
                         <span style={{ color: "#4A4F45", opacity: 0.6 }}>·</span>
-                        <span style={{ color: "#C97B5C" }}>{p.category}</span>
+                        <span style={{ color: "#A85A3C" }}>{p.category}</span>
                       </div>
                     </div>
                     <span style={{ color: "#4A5D3A", fontSize: "1.2rem" }}>›</span>

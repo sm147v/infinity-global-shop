@@ -13,7 +13,7 @@ export function CouponBanner({ code = "BIENVENIDA10", description = "10% de desc
 
   return (
     <div style={{
-      background: "linear-gradient(135deg, #C97B5C 0%, #A85E42 100%)",
+      background: "linear-gradient(135deg, #A85A3C 0%, #A85E42 100%)",
       color: "#F7F1E5",
       padding: "1.5rem",
       borderRadius: 18,

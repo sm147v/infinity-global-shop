@@ -65,7 +65,7 @@ export function NewsletterForm() {
           }}
         />
         <button onClick={submit} disabled={loading} style={{
-          background: loading ? "#6B7B4F" : "#C97B5C", color: "white", border: "none",
+          background: loading ? "#6B7B4F" : "#A85A3C", color: "white", border: "none",
           padding: "0 1.1rem", borderRadius: 100, fontSize: "0.82rem", fontWeight: 600,
           cursor: loading ? "wait" : "pointer", fontFamily: "inherit", whiteSpace: "nowrap",
         }}>

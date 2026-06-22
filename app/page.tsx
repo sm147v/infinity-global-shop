@@ -45,14 +45,14 @@ export default async function Home() {
       {/* HERO COMPACTO */}
       <section style={{ padding: "2rem 1.5rem 2.5rem", maxWidth: "1280px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", maxWidth: "780px", margin: "0 auto" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontSize: "0.7rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.18em", color: "#C97B5C", marginBottom: "1rem" }}>
-            <span style={{ width: 20, height: 1, background: "#C97B5C" }} />
+          <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontSize: "0.7rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.18em", color: "#A85A3C", marginBottom: "1rem" }}>
+            <span style={{ width: 20, height: 1, background: "#A85A3C" }} />
             Bienvenida a Infinity
-            <span style={{ width: 20, height: 1, background: "#C97B5C" }} />
+            <span style={{ width: 20, height: 1, background: "#A85A3C" }} />
           </div>
           <h1 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(1.9rem, 4.5vw, 3rem)", lineHeight: 1.1, fontWeight: 400, letterSpacing: "-0.02em", color: "#4A5D3A", marginBottom: "1rem" }}>
             Productos USA originales en Medellín.{" "}
-            <em style={{ fontStyle: "italic", fontWeight: 300, color: "#C97B5C" }}>Sin esperas, sin dólares,</em>{" "}
+            <em style={{ fontStyle: "italic", fontWeight: 300, color: "#A85A3C" }}>Sin esperas, sin dólares,</em>{" "}
             <span style={{ position: "relative", display: "inline-block" }}>
               <span style={{ position: "relative", zIndex: 1 }}>sin aduanas</span>
               <span style={{ position: "absolute", left: 0, right: 0, bottom: "4%", height: 6, background: "#E5D4A8", opacity: 0.7, zIndex: 0 }} />
@@ -116,9 +116,9 @@ export default async function Home() {
       {/* PRODUCTOS DESTACADOS */}
       <section style={{ padding: "3rem 1.5rem", maxWidth: "1280px", margin: "0 auto" }}>
         <div style={{ marginBottom: "2rem", textAlign: "center" }}>
-          <span style={{ fontSize: "0.7rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.18em", color: "#C97B5C", marginBottom: "0.5rem", display: "block" }}>— Lo más querido</span>
+          <span style={{ fontSize: "0.7rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.18em", color: "#A85A3C", marginBottom: "0.5rem", display: "block" }}>— Lo más querido</span>
           <h2 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(1.85rem, 4vw, 2.6rem)", fontWeight: 400, lineHeight: 1.1, color: "#4A5D3A", letterSpacing: "-0.02em" }}>
-            Productos <em style={{ fontStyle: "italic", fontWeight: 300, color: "#C97B5C" }}>destacados</em>
+            Productos <em style={{ fontStyle: "italic", fontWeight: 300, color: "#A85A3C" }}>destacados</em>
           </h2>
         </div>
         <ResponsiveGrid>
@@ -169,11 +169,11 @@ export default async function Home() {
       {/* RESEÑAS — tienda nueva, sé el primero (honesto, sin reseñas fabricadas) */}
       <section style={{ padding: "3.5rem 1.5rem", background: "#EDE3CD" }}>
         <div style={{ maxWidth: "720px", margin: "0 auto", textAlign: "center" }}>
-          <span style={{ fontSize: "0.7rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.18em", color: "#C97B5C", marginBottom: "0.5rem", display: "block" }}>
+          <span style={{ fontSize: "0.7rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.18em", color: "#A85A3C", marginBottom: "0.5rem", display: "block" }}>
             — Recién empezamos
           </span>
           <h2 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(1.85rem, 4vw, 2.6rem)", fontWeight: 400, color: "#4A5D3A", letterSpacing: "-0.02em", margin: "0.5rem 0 0.85rem" }}>
-            Sé de los <em style={{ fontStyle: "italic", fontWeight: 300, color: "#C97B5C" }}>primeros</em> en contar tu experiencia
+            Sé de los <em style={{ fontStyle: "italic", fontWeight: 300, color: "#A85A3C" }}>primeros</em> en contar tu experiencia
           </h2>
           <p style={{ color: "#4A4F45", fontSize: "0.98rem", lineHeight: 1.6, margin: "0 auto 1.75rem", maxWidth: "520px" }}>
             Somos una tienda nueva en Medellín y lo estamos haciendo bien desde el inicio. Tu reseña real será de las primeras en aparecer aquí — y nos ayuda a crecer con confianza.

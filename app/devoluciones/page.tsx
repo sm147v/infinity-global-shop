@@ -15,13 +15,13 @@ export default function DevolucionesPage() {
             fontWeight: 500,
             textTransform: "uppercase",
             letterSpacing: "0.18em",
-            color: "#C97B5C",
+            color: "#A85A3C",
             display: "inline-flex",
             alignItems: "center",
             gap: "0.5rem",
             marginBottom: "1rem",
           }}>
-            <span style={{ width: 20, height: 1, background: "#C97B5C" }} />
+            <span style={{ width: 20, height: 1, background: "#A85A3C" }} />
             Garantía total
           </span>
 
@@ -33,7 +33,7 @@ export default function DevolucionesPage() {
             lineHeight: 1.1,
             margin: "0 0 1rem",
           }}>
-            Cambios y <em style={{ color: "#C97B5C" }}>devoluciones</em>
+            Cambios y <em style={{ color: "#A85A3C" }}>devoluciones</em>
           </h1>
         </div>
 

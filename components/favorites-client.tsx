@@ -14,11 +14,11 @@ export function FavoritesClient({ allProducts }: { allProducts: Product[] }) {
     <main style={{ background: "#F7F1E5", padding: "2rem 1.5rem 3rem", minHeight: "60vh", fontFamily: "var(--font-dm-sans), Inter, sans-serif" }}>
       <div style={{ maxWidth: 1280, margin: "0 auto" }}>
         <div style={{ marginBottom: "2rem" }}>
-          <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.18em", color: "#C97B5C", fontWeight: 600 }}>
+          <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.18em", color: "#A85A3C", fontWeight: 600 }}>
             ❤️ Tus favoritos
           </span>
           <h1 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(1.8rem, 4vw, 2.5rem)", color: "#4A5D3A", fontWeight: 400, margin: "0.5rem 0 0", lineHeight: 1.1 }}>
-            Mis <em style={{ color: "#C97B5C" }}>favoritos</em>
+            Mis <em style={{ color: "#A85A3C" }}>favoritos</em>
           </h1>
           {count > 0 && <p style={{ color: "#4A4F45", marginTop: "0.5rem", fontSize: "0.9rem" }}>{count} producto{count !== 1 ? "s" : ""} guardado{count !== 1 ? "s" : ""}</p>}
         </div>

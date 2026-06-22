@@ -13,12 +13,12 @@ export default function PrivacidadPage() {
     <main style={{ background: "#F7F1E5", fontFamily: "var(--font-dm-sans), Inter, sans-serif", padding: "2.5rem 1.5rem 3rem" }}>
       <div style={{ maxWidth: 720, margin: "0 auto" }}>
         <div style={{ marginBottom: "2rem" }}>
-          <span style={{ fontSize: "0.7rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.18em", color: "#C97B5C", display: "inline-flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
-            <span style={{ width: 20, height: 1, background: "#C97B5C" }} />
+          <span style={{ fontSize: "0.7rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.18em", color: "#A85A3C", display: "inline-flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
+            <span style={{ width: 20, height: 1, background: "#A85A3C" }} />
             Tus datos protegidos
           </span>
           <h1 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(2rem, 5vw, 3rem)", color: "#4A5D3A", fontWeight: 400, lineHeight: 1.1, margin: "0 0 0.5rem" }}>
-            Política de <em style={{ color: "#C97B5C" }}>privacidad</em>
+            Política de <em style={{ color: "#A85A3C" }}>privacidad</em>
           </h1>
           <p style={{ color: "#4A4F45", fontSize: "0.85rem", margin: 0, opacity: 0.8 }}>Última actualización: junio de 2026</p>
         </div>

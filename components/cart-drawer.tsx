@@ -26,9 +26,9 @@ export function CartDrawer() {
   } else if (isFree) {
     shippingMsg = "🎉 ¡Envío gratis desbloqueado!";
   } else if (remaining <= 30000) {
-    shippingMsg = <>¡Casi lo logras! Solo <em style={{color:"#C97B5C",fontStyle:"italic",fontWeight:600}}>{fmt(remaining)}</em> más ✨</>;
+    shippingMsg = <>¡Casi lo logras! Solo <em style={{color:"#A85A3C",fontStyle:"italic",fontWeight:600}}>{fmt(remaining)}</em> más ✨</>;
   } else {
-    shippingMsg = <>Agrega <em style={{color:"#C97B5C",fontStyle:"italic",fontWeight:600}}>{fmt(remaining)}</em> más para <em style={{color:"#C97B5C",fontStyle:"italic",fontWeight:600}}>envío gratis</em> 🚚</>;
+    shippingMsg = <>Agrega <em style={{color:"#A85A3C",fontStyle:"italic",fontWeight:600}}>{fmt(remaining)}</em> más para <em style={{color:"#A85A3C",fontStyle:"italic",fontWeight:600}}>envío gratis</em> 🚚</>;
   }
 
   return (

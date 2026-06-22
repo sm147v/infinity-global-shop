@@ -94,7 +94,7 @@ export function SiteHeader() {
           }}
         >
           Infinity{" "}
-          <em style={{ fontStyle: "italic", fontWeight: 300, color: "#C97B5C" }}>
+          <em style={{ fontStyle: "italic", fontWeight: 300, color: "#A85A3C" }}>
             Global
           </em>
         </span>
@@ -140,7 +140,7 @@ export function SiteHeader() {
               width: 36,
               height: 36,
               borderRadius: "50%",
-              color: "#C97B5C",
+              color: "#A85A3C",
               background: "rgba(201, 123, 92, 0.08)",
               border: "1px solid rgba(201, 123, 92, 0.2)",
               textDecoration: "none",

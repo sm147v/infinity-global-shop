@@ -17,7 +17,7 @@ export default function NotFound() {
           fontWeight: 400,
           margin: "0 0 0.5rem",
         }}>
-          Página no <em style={{ color: "#C97B5C" }}>encontrada</em>
+          Página no <em style={{ color: "#A85A3C" }}>encontrada</em>
         </h1>
         <p style={{ color: "#4A4F45", fontSize: "1rem", marginBottom: "2rem", lineHeight: 1.6 }}>
           La página que buscas no existe o se ha movido. Vuelve a la tienda y descubre nuestros productos.

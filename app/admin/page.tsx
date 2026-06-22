@@ -46,7 +46,7 @@ export default function AdminDashboard() {
   return (
     <div style={{ padding: "2rem 1.5rem" }}>
       <div style={{ marginBottom: "2rem" }}>
-        <p style={{ fontSize: "0.85rem", color: "#C97B5C", textTransform: "uppercase", letterSpacing: "0.15em", margin: "0 0 0.4rem", fontWeight: 600 }}>
+        <p style={{ fontSize: "0.85rem", color: "#A85A3C", textTransform: "uppercase", letterSpacing: "0.15em", margin: "0 0 0.4rem", fontWeight: 600 }}>
           {today}
         </p>
         <h1 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "2rem", color: "#4A5D3A", fontWeight: 400, margin: 0 }}>
@@ -86,7 +86,7 @@ export default function AdminDashboard() {
           <h2 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.3rem", color: "#4A5D3A", fontWeight: 500, margin: 0 }}>
             Estado de pedidos
           </h2>
-          <Link href="/admin/orders" style={{ color: "#C97B5C", textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>
+          <Link href="/admin/orders" style={{ color: "#A85A3C", textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>
             Ver todos →
           </Link>
         </div>
@@ -135,7 +135,7 @@ export default function AdminDashboard() {
           textDecoration: "none",
           display: "block",
         }}>
-          <p style={{ margin: "0 0 0.4rem", fontSize: "0.78rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#C97B5C" }}>Catálogo</p>
+          <p style={{ margin: "0 0 0.4rem", fontSize: "0.78rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#A85A3C" }}>Catálogo</p>
           <p style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.2rem", margin: 0, fontWeight: 400 }}>
             Subir imágenes de productos →
           </p>

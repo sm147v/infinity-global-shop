@@ -110,7 +110,7 @@ export function ProductDetailClient({ product, related }: { product: Product; re
 
             {product.features && product.features.length > 0 && (
               <div style={{ background: "#FDFAF3", border: "1px solid #EDE3CD", borderRadius: 16, padding: "1rem", marginBottom: "1.5rem" }}>
-                <p style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#C97B5C", margin: "0 0 0.75rem" }}>
+                <p style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#A85A3C", margin: "0 0 0.75rem" }}>
                   Características
                 </p>
                 {product.features.map((f, i) => (
@@ -182,7 +182,7 @@ export function ProductDetailClient({ product, related }: { product: Product; re
                   <span style={{ color: "#F7F1E5", fontSize: "1rem", fontWeight: 600, fontFamily: "var(--font-fraunces), Georgia, serif" }}>{qty} en carrito</span>
                   <button onClick={() => updateQty(product.id, 1)} disabled={qty >= product.stock} style={{ ...qtyBtn, opacity: qty >= product.stock ? 0.4 : 1 }}>+</button>
                 </div>
-                <button onClick={openCart} style={{ background: "#C97B5C", color: "white", border: "none", padding: "0 1.25rem", borderRadius: 100, fontSize: "0.9rem", fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>
+                <button onClick={openCart} style={{ background: "#A85A3C", color: "white", border: "none", padding: "0 1.25rem", borderRadius: 100, fontSize: "0.9rem", fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>
                   Ver carrito →
                 </button>
               </div>
@@ -219,7 +219,7 @@ export function ProductDetailClient({ product, related }: { product: Product; re
         {related.length > 0 && (
           <section style={{ marginTop: "4rem" }}>
             <h2 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.5rem", color: "#4A5D3A", fontWeight: 400, marginBottom: "1.5rem" }}>
-              También te puede <em style={{ color: "#C97B5C" }}>gustar</em>
+              También te puede <em style={{ color: "#A85A3C" }}>gustar</em>
             </h2>
             <ResponsiveGrid>
               {related.map(p => (

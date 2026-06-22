@@ -39,7 +39,7 @@ const listStyle: React.CSSProperties = {
 const calloutStyle: React.CSSProperties = {
   background: "#FDFAF3",
   border: "1px solid #EDE3CD",
-  borderLeft: "4px solid #C97B5C",
+  borderLeft: "4px solid #A85A3C",
   borderRadius: 12,
   padding: "1rem 1.25rem",
   margin: "1.5rem 0",
@@ -805,7 +805,7 @@ const POSTS_CONTENT: Record<
 const CATEGORY_COLORS: Record<string, string> = {
   Vitaminas: "#6B7B4F",
   Salud: "#C9533D",
-  Belleza: "#C97B5C",
+  Belleza: "#A85A3C",
 };
 
 // Estilos compartidos

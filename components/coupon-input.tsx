@@ -97,8 +97,8 @@ export function CouponInput({ subtotal, appliedCoupon, onApply }: Props) {
       <button onClick={() => setIsOpen(true)} style={{
         width: "100%",
         background: "transparent",
-        border: "1px dashed #C97B5C",
-        color: "#C97B5C",
+        border: "1px dashed #A85A3C",
+        color: "#A85A3C",
         padding: "0.85rem",
         borderRadius: 14,
         fontSize: "0.88rem",
