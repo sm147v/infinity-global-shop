@@ -10,7 +10,7 @@ export const revalidate = 600;
 
 // Pre-genera estáticamente todos los slugs en build time.
 export async function generateStaticParams() {
-  const products = await prisma.product.findMany({ select: { slug: true, name: true } });
+  const products = await prisma.product.findMany({ where: { active: true }, select: { slug: true, name: true } });
   return products
     .map((p) => ({ id: p.slug || slugify(p.name) }))
     .filter((p) => p.id);
@@ -100,6 +100,7 @@ export default async function ProductPage({
   const { product, redirectTo } = await findProduct(id);
 
   if (!product) notFound();
+  if (!product.active) notFound();
 
   // Si llegó por ID legacy, redirect 301 a slug canónico
   if (redirectTo) {
@@ -120,7 +121,7 @@ export default async function ProductPage({
       : null;
 
   const related = await prisma.product.findMany({
-    where: { id: { not: product.id }, category: product.category },
+    where: { id: { not: product.id }, category: product.category, active: true },
     take: 4,
     orderBy: { id: "desc" },
   });

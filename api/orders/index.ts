@@ -19,7 +19,7 @@ export async function createOrderFromPayload(payload: unknown) {
 
   const products = await prisma.product.findMany({
     where: { id: { in: productIds } },
-    select: { id: true, name: true, price: true, stock: true },
+    select: { id: true, name: true, price: true, stock: true, active: true },
   });
 
   if (products.length !== productIds.length) {
@@ -31,6 +31,9 @@ export async function createOrderFromPayload(payload: unknown) {
   const orderItems = data.items.map((item) => {
     const product = map.get(item.productId);
     if (!product) throw new ApiError("Producto no encontrado", 400);
+    if (!product.active) {
+      throw new ApiError(`Este producto no está disponible para la venta`, 400);
+    }
     if (product.stock < item.quantity) {
       throw new ApiError(`Sin stock suficiente para ${product.name}`, 409);
     }

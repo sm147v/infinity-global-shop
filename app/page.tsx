@@ -26,10 +26,10 @@ export default async function Home() {
     prisma.product.findMany({
       take: 8,
       orderBy: { id: "asc" },
-      where: { stock: { gt: 0 }, slug: { notIn: VERTICAL_B_SLUGS } },
+      where: { stock: { gt: 0 }, active: true, slug: { notIn: VERTICAL_B_SLUGS } },
     }),
     prisma.product.findMany({
-      where: { slug: { in: VERTICAL_B_SLUGS } },
+      where: { slug: { in: VERTICAL_B_SLUGS }, active: true },
     }),
   ]);
 

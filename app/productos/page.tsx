@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ProductsPage() {
-  const products = await prisma.product.findMany({ orderBy: { id: "desc" } });
+  const products = await prisma.product.findMany({ where: { active: true }, orderBy: { id: "desc" } });
   const CATEGORY_ORDER = ["Vitaminas", "Belleza", "Cabello", "Salud", "Hogar", "Herramientas", "Más productos"];
   const categories = Array.from(new Set(products.map(p => p.category).filter(Boolean))) as string[];
   categories.sort((a, b) => {

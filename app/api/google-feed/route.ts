@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 export async function GET() {
   const products = await prisma.product.findMany({
-    
+    where: { active: true, stock: { gt: 0 } },
     select: {
       id: true,
       name: true,

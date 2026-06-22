@@ -18,6 +18,7 @@ function escapeXml(s: string): string {
 
 export async function GET() {
   const products = await prisma.product.findMany({
+    where: { active: true },
     select: {
       id: true,
       slug: true,

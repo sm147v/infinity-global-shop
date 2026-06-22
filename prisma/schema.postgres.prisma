@@ -24,6 +24,7 @@ model Product {
   brand           String?
   sku             String?     @unique
   gtin            String?
+  active          Boolean     @default(true)
     items           OrderItem[]
   Review          Review[]
 }

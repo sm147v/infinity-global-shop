@@ -60,7 +60,7 @@ export async function GET() {
   ];
 
   const productsRaw = await prisma.product.findMany({
-    where: { stock: { gt: 0 } },
+    where: { stock: { gt: 0 }, active: true },
     orderBy: { id: "asc" },
   });
 
