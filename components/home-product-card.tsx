@@ -85,7 +85,7 @@ export function HomeProductCard({ product }: { product: Product }) {
               src={product.image}
               alt={product.name}
               fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 300px"
               style={{
                 objectFit: "cover",
                 objectPosition: "center",
