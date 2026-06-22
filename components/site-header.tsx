@@ -58,13 +58,13 @@ export function SiteHeader() {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        background: "rgba(74, 93, 58, 0.97)",
+        background: "rgba(247, 241, 229, 0.95)",
         backdropFilter: "blur(10px)",
         WebkitBackdropFilter: "blur(10px)",
         position: "sticky",
         top: 36,
         zIndex: 99,
-        borderBottom: "1px solid rgba(247, 241, 229, 0.12)",
+        borderBottom: "1px solid rgba(74, 93, 58, 0.08)",
       }}
     >
       <Link
@@ -72,17 +72,32 @@ export function SiteHeader() {
         style={{
           display: "flex",
           alignItems: "center",
+          gap: "0.5rem",
           textDecoration: "none",
+          color: "#4A5D3A",
         }}
       >
         <Image
-          src="/logo-hd.png"
+          src="/logo.png"
           alt="Infinity Global Shop"
-          width={150}
-          height={40}
+          width={36}
+          height={36}
           priority
-          style={{ objectFit: "contain", display: "block", height: "40px", width: "auto" }}
+          style={{ objectFit: "contain", display: "block" }}
         />
+        <span
+          style={{
+            fontFamily: "var(--font-fraunces), Georgia, serif",
+            fontSize: "1.15rem",
+            fontWeight: 500,
+            letterSpacing: "-0.02em",
+          }}
+        >
+          Infinity{" "}
+          <em style={{ fontStyle: "italic", fontWeight: 300, color: "#A85A3C" }}>
+            Global
+          </em>
+        </span>
       </Link>
 
       <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
@@ -90,7 +105,7 @@ export function SiteHeader() {
           href="/blog"
           style={{
             fontSize: "0.78rem",
-            color: "#F7F1E5",
+            color: "#4A4F45",
             textDecoration: "none",
             padding: "0.5rem 0.85rem",
             borderRadius: 100,
@@ -103,7 +118,7 @@ export function SiteHeader() {
           href="/pedido"
           style={{
             fontSize: "0.78rem",
-            color: "#F7F1E5",
+            color: "#4A4F45",
             textDecoration: "none",
             padding: "0.5rem 0.85rem",
             borderRadius: 100,
