@@ -54,7 +54,22 @@ export default function HeroCarousel() {
     setIdx(((i % banners.length) + banners.length) % banners.length);
   };
 
-  if (!loaded || banners.length === 0) return null;
+  // Placeholder con el MISMO tamaño que el carrusel para evitar CLS.
+  // Reservamos el espacio desde el primer render, así nada "salta"
+  // cuando llegan los banners.
+  if (!loaded || banners.length === 0) {
+    return (
+      <div
+        aria-hidden="true"
+        style={{
+          width: "100%",
+          aspectRatio: "16/7",
+          minHeight: 280,
+          background: "#EDE3CD",
+        }}
+      />
+    );
+  }
 
   return (
     <section
