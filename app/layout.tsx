@@ -195,8 +195,8 @@ export default function RootLayout({
         <WishlistProvider>
           <CartProvider>
           <div style={{
-            background: "#4A5D3A",
-            color: "#F7F1E5",
+            background: "#EDE3CD",
+            color: "#4A5D3A",
             padding: "0.6rem 1rem",
             textAlign: "center",
             fontSize: "0.78rem",
