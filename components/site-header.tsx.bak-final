@@ -78,10 +78,10 @@ export function SiteHeader() {
         <Image
           src="/logo-hd.png"
           alt="Infinity Global Shop"
-          width={200}
-          height={52}
+          width={210}
+          height={56}
           priority
-          style={{ objectFit: "contain", display: "block", height: "52px", width: "auto" }}
+          style={{ objectFit: "contain", display: "block", height: "56px", width: "auto" }}
         />
       </Link>
 
