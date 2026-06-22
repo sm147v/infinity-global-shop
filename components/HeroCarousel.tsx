@@ -18,10 +18,10 @@ type Banner = {
 
 const AUTOPLAY_MS = 5500;
 
-export default function HeroCarousel() {
-  const [banners, setBanners] = useState<Banner[]>([]);
+export default function HeroCarousel({ initialBanners = [] }: { initialBanners?: Banner[] }) {
+  const [banners, setBanners] = useState<Banner[]>(initialBanners);
   const [idx, setIdx] = useState(0);
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(initialBanners.length > 0);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const touchX = useRef<number | null>(null);
 
@@ -31,7 +31,7 @@ export default function HeroCarousel() {
       .then(r => r.ok ? r.json() : [])
       .then((data: Banner[]) => {
         if (cancelled) return;
-        setBanners(Array.isArray(data) ? data : []);
+        if (Array.isArray(data) && data.length > 0) setBanners(data);
         setLoaded(true);
       })
       .catch(() => { if (!cancelled) setLoaded(true); });

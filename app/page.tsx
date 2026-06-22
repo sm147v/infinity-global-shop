@@ -22,7 +22,7 @@ const VERTICAL_B_SLUGS = [
 ];
 
 export default async function Home() {
-  const [featured, exclusivos] = await Promise.all([
+  const [featured, exclusivos, banners] = await Promise.all([
     prisma.product.findMany({
       take: 8,
       orderBy: { id: "asc" },
@@ -30,6 +30,10 @@ export default async function Home() {
     }),
     prisma.product.findMany({
       where: { slug: { in: VERTICAL_B_SLUGS }, active: true },
+    }),
+    prisma.banner.findMany({
+      where: { active: true },
+      orderBy: { order: "asc" },
     }),
   ]);
 
@@ -40,7 +44,7 @@ export default async function Home() {
 
   return (
     <div style={{ background: "#F7F1E5", fontFamily: "var(--font-dm-sans), Inter, sans-serif" }}>
-      <HeroCarousel />
+      <HeroCarousel initialBanners={banners.map(b => ({ id: b.id, imageUrl: b.imageUrl, title: b.title, subtitle: b.subtitle, ctaText: b.ctaText, ctaUrl: b.ctaUrl, alt: b.alt, active: b.active, order: b.order }))} />
 
       {/* HERO COMPACTO */}
       <section style={{ padding: "2rem 1.5rem 2.5rem", maxWidth: "1280px", margin: "0 auto" }}>
