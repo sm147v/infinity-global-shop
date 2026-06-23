@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
+import { prisma } from "@/lib/prisma";
 
 const schema = z.object({
   email: z.string().email(),
@@ -13,8 +14,30 @@ export async function POST(req: NextRequest) {
     if (!parsed.success) {
       return NextResponse.json({ error: "Email inválido" }, { status: 400 });
     }
+    const email = parsed.data.email.toLowerCase().trim();
 
-    const { email } = parsed.data;
+    // 1) GUARDAR EN LA BASE DE DATOS (lo más importante: es TU lista)
+    // upsert = si ya existe ese correo, no lo duplica; si no, lo crea.
+    let yaExistia = false;
+    try {
+      const existing = await prisma.subscriber.findUnique({ where: { email } });
+      yaExistia = !!existing;
+      await prisma.subscriber.upsert({
+        where: { email },
+        update: {}, // si ya existe, no cambia nada
+        create: { email },
+      });
+    } catch (dbError) {
+      console.error("Error guardando suscriptor:", dbError);
+      // seguimos igual: aunque falle el guardado, intentamos el correo
+    }
+
+    // Si ya estaba suscrito, no le reenviamos el cupón ni te notificamos otra vez
+    if (yaExistia) {
+      return NextResponse.json({ ok: true, alreadySubscribed: true });
+    }
+
+    // 2) ENVIAR EL CUPÓN DE BIENVENIDA (Resend)
     const resend = new Resend(process.env.RESEND_API_KEY);
     const from = process.env.EMAIL_FROM || "pedidos@infinityglobalshop.com";
 
@@ -34,7 +57,7 @@ export async function POST(req: NextRequest) {
               BIENVENIDA10
             </div>
             <p><strong>Cómo usarlo:</strong></p>
-            <p>1. Visita <a href="https://www.infinityglobalshop.com/products" style="color: #C97B5C;">nuestra tienda</a><br>
+            <p>1. Visita <a href="https://www.infinityglobalshop.com/productos" style="color: #C97B5C;">nuestra tienda</a><br>
             2. Agrega productos al carrito<br>
             3. En el checkout, ingresa el código <strong>BIENVENIDA10</strong><br>
             4. ¡Listo! 10% de descuento aplicado</p>
@@ -48,7 +71,7 @@ export async function POST(req: NextRequest) {
       `,
     });
 
-    // También notificar al admin
+    // 3) NOTIFICARTE A TI
     await resend.emails.send({
       from: `Infinity Global Shop <${from}>`,
       to: [process.env.ADMIN_EMAIL || "infinityshop147@gmail.com"],

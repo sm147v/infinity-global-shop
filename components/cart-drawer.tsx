@@ -1,6 +1,6 @@
 "use client";
 
-import { useCart, SHIPPING } from "./cart-context";
+import { useCart, ZONES } from "./cart-context";
 import { CouponInput } from "./coupon-input";
 import Link from "next/link";
 import Image from "next/image";
@@ -8,15 +8,19 @@ import { cloudinaryLoader } from "@/lib/image";
 
 const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
 
+// El carrito lateral usa el umbral de Medellín como referencia (mercado principal).
+// El envío real se calcula en el checkout según la zona elegida.
+const MED = ZONES.medellin;
+
 export function CartDrawer() {
   const { items, isOpen, closeCart, updateQty, removeItem, subtotal, itemCount, appliedCoupon, applyCoupon } = useCart();
 
-  const remaining = SHIPPING.FREE_THRESHOLD - subtotal;
-  const baseFreeShipping = subtotal >= SHIPPING.FREE_THRESHOLD;
+  const remaining = MED.freeThreshold - subtotal;
+  const baseFreeShipping = subtotal >= MED.freeThreshold;
   const couponFreeShipping = appliedCoupon ? appliedCoupon.freeShipping : false;
   const isFree = baseFreeShipping || couponFreeShipping;
-  const progress = Math.min((subtotal / SHIPPING.FREE_THRESHOLD) * 100, 100);
-  const shipping = isFree ? 0 : SHIPPING.COST;
+  const progress = Math.min((subtotal / MED.freeThreshold) * 100, 100);
+  const shipping = isFree ? 0 : MED.cost;
   const couponDiscount = (appliedCoupon && !appliedCoupon.freeShipping) ? appliedCoupon.discount : 0;
   const total = Math.max(0, subtotal + shipping - couponDiscount);
 
@@ -24,11 +28,11 @@ export function CartDrawer() {
   if (subtotal === 0) {
     shippingMsg = "Agrega productos para empezar 🌿";
   } else if (isFree) {
-    shippingMsg = "🎉 ¡Envío gratis desbloqueado!";
+    shippingMsg = "🎉 ¡Envío gratis en Medellín desbloqueado!";
   } else if (remaining <= 30000) {
-    shippingMsg = <>¡Casi lo logras! Solo <em style={{color:"#A85A3C",fontStyle:"italic",fontWeight:600}}>{fmt(remaining)}</em> más ✨</>;
+    shippingMsg = <>¡Casi! Solo <em style={{color:"#A85A3C",fontStyle:"italic",fontWeight:600}}>{fmt(remaining)}</em> más para envío gratis en Medellín ✨</>;
   } else {
-    shippingMsg = <>Agrega <em style={{color:"#A85A3C",fontStyle:"italic",fontWeight:600}}>{fmt(remaining)}</em> más para <em style={{color:"#A85A3C",fontStyle:"italic",fontWeight:600}}>envío gratis</em> 🚚</>;
+    shippingMsg = <>Agrega <em style={{color:"#A85A3C",fontStyle:"italic",fontWeight:600}}>{fmt(remaining)}</em> más para <em style={{color:"#A85A3C",fontStyle:"italic",fontWeight:600}}>envío gratis en Medellín</em> 🚚</>;
   }
 
   return (
@@ -64,7 +68,7 @@ export function CartDrawer() {
           justifyContent: "space-between", alignItems: "center",
           borderBottom: "1px solid #EDE3CD", background: "#FDFAF3",
         }}>
-          <h2 style={{ fontFamily: "Georgia, serif", fontSize: "1.4rem", color: "#4A5D3A", fontWeight: 500, margin: 0 }}>
+          <h2 style={{ fontFamily: "Georgia, serif", fontSize: "1.4rem", color: "#4A5D3A", fontWeight: 500, margin:0 }}>
             Tu carrito <span style={{ fontSize: "0.85rem", color: "#4A4F45", fontWeight: 400 }}>({itemCount})</span>
           </h2>
           <button onClick={closeCart} style={{
@@ -107,7 +111,7 @@ export function CartDrawer() {
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.68rem", color: "#4A4F45" }}>
             <span style={{ color: "#5C8A5E", fontWeight: 600 }}>✓ $0</span>
             <span style={{ color: isFree ? "#5C8A5E" : "#4A4F45", fontWeight: isFree ? 600 : 400 }}>
-              {isFree ? "✓" : "🚚"} $150k envío gratis
+              {isFree ? "✓" : "🚚"} {fmt(MED.freeThreshold)} gratis en Medellín
             </span>
           </div>
         </div>
@@ -233,12 +237,11 @@ export function CartDrawer() {
             )}
             <div style={{
               display: "flex", justifyContent: "space-between",
-              padding: "0.4rem 0", fontSize: "0.88rem",
-              color: isFree ? "#5C8A5E" : "#4A4F45",
-              fontWeight: isFree ? 600 : 400,
+              padding: "0.4rem 0", fontSize: "0.82rem",
+              color: "#4A4F45",
             }}>
               <span>Envío</span>
-              <span>{isFree ? "GRATIS ✨" : fmt(SHIPPING.COST)}</span>
+              <span style={{ fontStyle: "italic" }}>Según zona (eliges al pagar)</span>
             </div>
             <div style={{
               display: "flex", justifyContent: "space-between",
@@ -247,9 +250,12 @@ export function CartDrawer() {
               borderTop: "2px solid #4A5D3A",
               marginTop: "0.4rem", paddingTop: "0.6rem",
             }}>
-              <span>Total</span>
-              <span>{fmt(total)}</span>
+              <span>Subtotal</span>
+              <span>{fmt(Math.max(0, subtotal - couponDiscount))}</span>
             </div>
+            <p style={{ fontSize: "0.7rem", color: "#4A4F45", margin: "0.4rem 0 0", textAlign: "right" }}>
+              + envío según tu zona
+            </p>
 
             <Link href="/pago" onClick={closeCart} style={{
               display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem",
@@ -258,7 +264,7 @@ export function CartDrawer() {
               fontSize: "0.95rem", fontWeight: 500,
               marginTop: "1rem", textDecoration: "none",
             }}>
-              Pagar con Wompi
+              Ir a pagar
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
             </Link>
 

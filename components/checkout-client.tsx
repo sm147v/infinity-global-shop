@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { cloudinaryLoader } from "@/lib/image";
 import { CartItem, loadCart, saveCart } from "@/lib/cart";
-import { useCart } from "./cart-context";
+import { useCart, ZONES, Zone } from "./cart-context";
 import { CouponInput } from "@/components/coupon-input";
 
 const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
@@ -14,15 +14,21 @@ const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
 export function CheckoutClient() {
   const searchParams = useSearchParams();
   const { appliedCoupon, applyCoupon } = useCart();
-  const [items, setItems] = useState<CartItem[]>(() => loadCart());
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [hydrated, setHydrated] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerAddress, setCustomerAddress] = useState("");
+  const [zone, setZone] = useState<Zone | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  
-  // items se inicializa desde loadCart() directamente en useState (ver arriba)
+
+  // Cargar el carrito despues de hidratar (evita hydration mismatch)
+  useEffect(() => {
+    setItems(loadCart());
+    setHydrated(true);
+  }, []);
 
   // Cuando regresa de Wompi real
   useEffect(() => {
@@ -34,7 +40,6 @@ export function CheckoutClient() {
     sessionStorage.setItem(key, "1");
     void (async () => {
       try {
-        // Consultar el estado de la transacción a Wompi
         const baseUrl = env === "test"
           ? "https://sandbox.wompi.co/v1/transactions/"
           : "https://production.wompi.co/v1/transactions/";
@@ -43,10 +48,9 @@ export function CheckoutClient() {
         const tx = data?.data;
         if (!tx) return;
         const status = tx.status;
-        const reference = tx.reference; // "order-123-timestamp"
+        const reference = tx.reference;
         const orderId = reference ? Number(reference.split("-")[1]) : null;
         if (!orderId) return;
-        // Buscar el orderNumber desde nuestra API
         const orderRes = await fetch("/api/orders/" + orderId);
         const orderData = orderRes.ok ? await orderRes.json() : null;
         const orderNumber = orderData?.orderNumber || "";
@@ -63,7 +67,7 @@ export function CheckoutClient() {
     })();
   }, [searchParams]);
 
-  // Cuando regresa del mock pago, confirmar y redirigir a gracias
+  // Cuando regresa del mock pago
   useEffect(() => {
     const isMockPaid = searchParams.get("mockPaid") === "1";
     const orderId = Number(searchParams.get("orderId"));
@@ -91,12 +95,18 @@ export function CheckoutClient() {
   }, [searchParams]);
 
   const subtotal = useMemo(() => items.reduce((sum, item) => sum + item.price * item.quantity, 0), [items]);
-  const baseFreeShipping = subtotal >= 150000;
+
+  // Envío según zona elegida
+  const zoneRule = zone ? ZONES[zone] : null;
   const couponFreeShipping = appliedCoupon ? appliedCoupon.freeShipping : false;
+  const baseFreeShipping = zoneRule ? subtotal >= zoneRule.freeThreshold : false;
   const isFreeShipping = baseFreeShipping || couponFreeShipping;
-  const shipping = isFreeShipping ? 0 : 8000;
+  const shipping = !zoneRule ? 0 : (isFreeShipping ? 0 : zoneRule.cost);
   const couponDiscount = (appliedCoupon && !appliedCoupon.freeShipping) ? appliedCoupon.discount : 0;
   const total = Math.max(0, subtotal + shipping - couponDiscount);
+
+  // Cuánto falta para envío gratis en la zona elegida
+  const remaining = zoneRule ? Math.max(0, zoneRule.freeThreshold - subtotal) : 0;
 
   function setQuantity(productId: number, quantity: number) {
     const normalized = Math.min(20, Math.max(1, quantity));
@@ -121,6 +131,10 @@ export function CheckoutClient() {
       setError("El carrito está vacío.");
       return;
     }
+    if (!zone) {
+      setError("Por favor elige tu zona de envío (Medellín o Resto de Colombia).");
+      return;
+    }
 
     try {
       setLoading(true);
@@ -132,6 +146,7 @@ export function CheckoutClient() {
           customerEmail,
           customerPhone,
           customerAddress,
+          zone,
           items: items.map((item) => ({
             productId: item.productId,
             quantity: item.quantity,
@@ -145,7 +160,6 @@ export function CheckoutClient() {
         throw new Error(orderJson.error || "No se pudo crear la orden");
       }
 
-      // Llamar al payment para crear la URL del mock o de Wompi real
       const paymentResponse = await fetch("/api/payments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -157,12 +171,10 @@ export function CheckoutClient() {
         throw new Error(paymentJson.error || "No se pudo iniciar el pago");
       }
 
-      // Si es mock, agregar el orderNumber a la URL
       let paymentUrl = paymentJson.paymentUrl;
       if (paymentUrl.includes("mockPaid=1")) {
         paymentUrl += "&orderNumber=" + (orderJson.orderNumber || "");
       } else {
-        // Es Wompi real - limpiar carrito ya, porque la persona se va a otra página
         saveCart([]);
         window.dispatchEvent(new Event("igs-cart-updated"));
       }
@@ -183,7 +195,13 @@ export function CheckoutClient() {
           Resumen de compra
         </h2>
 
-        {items.length === 0 && (
+        {!hydrated && (
+          <div style={{ textAlign: "center", padding: "2rem", color: "#4A4F45", fontSize: "0.9rem" }}>
+            Cargando tu carrito…
+          </div>
+        )}
+
+        {hydrated && items.length === 0 && (
           <div style={{ background: "#F7F1E5", padding: "1.5rem", borderRadius: 12, textAlign: "center" }}>
             <p style={{ color: "#4A4F45", marginBottom: "1rem" }}>No hay productos en carrito.</p>
             <Link href="/productos" style={{
@@ -262,6 +280,49 @@ export function CheckoutClient() {
 
         {items.length > 0 && (
           <div style={{ paddingTop: "1rem" }}>
+
+            {/* SELECTOR DE ZONA */}
+            <div style={{ marginBottom: "1rem" }}>
+              <p style={{ fontSize: "0.82rem", color: "#4A5D3A", fontWeight: 600, margin: "0 0 0.6rem" }}>
+                📍 ¿A dónde enviamos tu pedido?
+              </p>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem" }}>
+                {(Object.keys(ZONES) as Zone[]).map((z) => {
+                  const rule = ZONES[z];
+                  const selected = zone === z;
+                  return (
+                    <button
+                      key={z}
+                      type="button"
+                      onClick={() => setZone(z)}
+                      style={{
+                        textAlign: "left",
+                        padding: "0.85rem",
+                        borderRadius: 14,
+                        border: selected ? "2px solid #4A5D3A" : "1px solid #EDE3CD",
+                        background: selected ? "#EDE3CD" : "#F7F1E5",
+                        cursor: "pointer",
+                        fontFamily: "inherit",
+                        transition: "all 0.15s ease",
+                      }}
+                    >
+                      <div style={{ fontSize: "0.9rem", fontWeight: 600, color: "#4A5D3A", marginBottom: "0.2rem" }}>
+                        {z === "medellin" ? "📍 Medellín" : "🇨🇴 Resto de Colombia"}
+                      </div>
+                      <div style={{ fontSize: "0.72rem", color: "#4A4F45", lineHeight: 1.4 }}>
+                        {fmt(rule.cost)} · gratis desde {fmt(rule.freeThreshold)}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+              {zone && remaining > 0 && (
+                <p style={{ fontSize: "0.75rem", color: "#A85A3C", margin: "0.6rem 0 0", fontWeight: 500 }}>
+                  ✨ Agrega {fmt(remaining)} más y tu envío es GRATIS
+                </p>
+              )}
+            </div>
+
             <div style={{ marginBottom: "0.85rem" }}>
               <CouponInput subtotal={subtotal} appliedCoupon={appliedCoupon} onApply={applyCoupon} />
             </div>
@@ -283,8 +344,8 @@ export function CheckoutClient() {
               color: isFreeShipping ? "#5C8A5E" : "#4A4F45",
               fontWeight: isFreeShipping ? 600 : 400,
             }}>
-              <span>Envío</span>
-              <span>{isFreeShipping ? "GRATIS ✨" : fmt(shipping)}</span>
+              <span>Envío {zoneRule ? `(${zoneRule.label})` : ""}</span>
+              <span>{!zone ? "Elige zona" : (isFreeShipping ? "GRATIS ✨" : fmt(shipping))}</span>
             </div>
             <div style={{
               display: "flex",
@@ -298,8 +359,13 @@ export function CheckoutClient() {
               paddingTop: "0.75rem",
             }}>
               <span>Total</span>
-              <span>{fmt(total)}</span>
+              <span>{!zone ? fmt(subtotal - couponDiscount) + "*" : fmt(total)}</span>
             </div>
+            {!zone && (
+              <p style={{ fontSize: "0.72rem", color: "#4A4F45", margin: "0.4rem 0 0", textAlign: "right" }}>
+                * elige tu zona para ver el total con envío
+              </p>
+            )}
           </div>
         )}
       </section>
@@ -338,7 +404,7 @@ export function CheckoutClient() {
             fontFamily: "inherit",
             marginTop: "0.5rem",
           }}>
-            {loading ? "Procesando..." : "Pagar con Wompi · " + fmt(total)}
+            {loading ? "Procesando..." : (zone ? "Pagar con Wompi · " + fmt(total) : "Pagar con Wompi")}
           </button>
 
           <div style={{ display: "flex", justifyContent: "center", gap: "0.4rem", marginTop: "0.5rem", fontSize: "0.7rem", color: "#4A4F45", alignItems: "center", flexWrap: "wrap" }}>

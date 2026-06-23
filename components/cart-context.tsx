@@ -47,6 +47,12 @@ interface CartContextType {
 const FREE_SHIPPING_THRESHOLD = 150000;
 const SHIPPING_COST = 8000;
 
+export type Zone = "medellin" | "nacional";
+export const ZONES = {
+  medellin: { label: "Medellín", cost: 8000, freeThreshold: 80000 },
+  nacional: { label: "Resto de Colombia", cost: 15000, freeThreshold: 150000 },
+} as const;
+
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 function libToCtx(items: LibCartItem[]): CartItem[] {

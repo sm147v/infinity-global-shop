@@ -5,8 +5,11 @@ import { createOrderSchema } from "@/lib/validation";
 import { generateOrderNumber } from "@/lib/order-number";
 import { sendOrderConfirmationToCustomer, sendNewOrderNotificationToAdmin } from "@/lib/email";
 
-const SHIPPING_COST = 8000;
-const FREE_SHIPPING_THRESHOLD = 150000;
+// Reglas de envío por zona (deben coincidir con cart-context.tsx)
+const ZONE_RULES = {
+  medellin: { label: "Medellín", cost: 8000, freeThreshold: 80000 },
+  nacional: { label: "Resto de Colombia", cost: 15000, freeThreshold: 150000 },
+} as const;
 
 export async function createOrderFromPayload(payload: unknown) {
   const parsed = createOrderSchema.safeParse(payload);
@@ -78,9 +81,18 @@ export async function createOrderFromPayload(payload: unknown) {
     }
   }
 
-  const baseFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
-  const shipping = (baseFreeShipping || couponFreeShipping) ? 0 : SHIPPING_COST;
+  // ENVÍO SEGÚN ZONA — el servidor manda, no confía en el navegador
+  const zoneRule = ZONE_RULES[data.zone];
+  if (!zoneRule) {
+    throw new ApiError("Zona de envío inválida", 400);
+  }
+  const baseFreeShipping = subtotal >= zoneRule.freeThreshold;
+  const shipping = (baseFreeShipping || couponFreeShipping) ? 0 : zoneRule.cost;
   const total = Math.max(0, subtotal + shipping - couponDiscount);
+
+  // Guardar la zona en la dirección para que aparezca en el panel de admin
+  const zoneTag = `[ENVÍO: ${zoneRule.label}]`;
+  const addressWithZone = `${zoneTag} ${data.customerAddress}`;
 
   const orderNumber = await generateOrderNumber();
 
@@ -108,7 +120,7 @@ export async function createOrderFromPayload(payload: unknown) {
         customerName: data.customerName,
         customerEmail: data.customerEmail || "",
         customerPhone: data.customerPhone,
-        customerAddress: data.customerAddress,
+        customerAddress: addressWithZone,
         total: new Prisma.Decimal(total.toFixed(2)),
         items: {
           create: orderItems.map((item) => ({
@@ -128,7 +140,7 @@ export async function createOrderFromPayload(payload: unknown) {
       customerName: data.customerName,
       customerEmail: data.customerEmail || "",
       customerPhone: data.customerPhone,
-      customerAddress: data.customerAddress,
+      customerAddress: addressWithZone,
       total,
       items: orderItems.map(i => ({
         name: i.productName,
