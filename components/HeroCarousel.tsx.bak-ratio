@@ -62,9 +62,9 @@ export default function HeroCarousel({ initialBanners = [] }: { initialBanners?:
     return (
       <div
         aria-hidden="true"
-        className="hero-slide"
         style={{
           width: "100%",
+          aspectRatio: "16/7",
           minHeight: 280,
           background: "#EDE3CD",
         }}
@@ -97,9 +97,10 @@ export default function HeroCarousel({ initialBanners = [] }: { initialBanners?:
         transition: "transform 700ms cubic-bezier(0.65,0,0.35,1)",
       }}>
         {banners.map((b, i) => (
-          <div key={b.id} className="hero-slide" style={{
+          <div key={b.id} style={{
             minWidth: "100%",
             position: "relative",
+            aspectRatio: "16/7",
             minHeight: 280,
           }}>
             <Image

@@ -616,3 +616,10 @@ html {
   .banner-mobile { display: block !important; }
 }
 /* BANNER-RESPONSIVE-END */
+
+/* HERO SLIDE: proporcion distinta movil vs PC */
+.hero-slide { aspect-ratio: 16 / 7; }
+@media (max-width: 768px) {
+  .hero-slide { aspect-ratio: 4 / 5; }
+}
+/* HERO-SLIDE-END */
