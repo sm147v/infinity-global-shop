@@ -146,3 +146,16 @@ model Subscriber {
   email     String   @unique
   createdAt DateTime @default(now())
 }
+
+model DiscountRule {
+  id         String   @id @default(uuid())
+  scope      String   // "all" | "category" | "products"
+  category   String?  // si scope = category
+  productIds Int[]    @default([])  // si scope = products
+  type       String   // "percentage" | "fixed"
+  value      Float
+  label      String   @default("OFERTA")
+  expiresAt  DateTime?
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+}
