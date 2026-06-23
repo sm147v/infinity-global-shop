@@ -269,7 +269,7 @@ export default function AdminBannersPage() {
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   onSuccess={(result: any) => {
                     if (result?.info?.secure_url) {
-                      setEditing(prev => ({ ...prev, imageUrl: result.info.secure_url }));
+                      setEditing({ ...editing, imageUrl: result.info.secure_url });
                     }
                   }}
                 >
@@ -311,7 +311,7 @@ export default function AdminBannersPage() {
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   onSuccess={(result: any) => {
                     if (result?.info?.secure_url) {
-                      setEditing(prev => ({ ...prev, imageUrlMobile: result.info.secure_url }));
+                      setEditing({ ...editing, imageUrlMobile: result.info.secure_url });
                     }
                   }}
                 >
