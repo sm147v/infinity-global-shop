@@ -607,3 +607,12 @@ html {
 }
 
 /* MODERN-EFFECTS-END */
+
+/* BANNER RESPONSIVE: imagen distinta para movil y desktop */
+.banner-desktop { display: block; }
+.banner-mobile { display: none; }
+@media (max-width: 768px) {
+  .banner-desktop { display: none !important; }
+  .banner-mobile { display: block !important; }
+}
+/* BANNER-RESPONSIVE-END */

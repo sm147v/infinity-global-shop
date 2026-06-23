@@ -7,7 +7,6 @@ import { cloudinaryLoader } from "@/lib/image";
 type Banner = {
   id: number;
   imageUrl: string;
-  imageUrlMobile?: string | null;
   title?: string | null;
   subtitle?: string | null;
   ctaText?: string | null;
@@ -281,48 +280,6 @@ export default function AdminBannersPage() {
                       fontFamily: "inherit",
                     }}>
                       📸 {editing.imageUrl ? "Cambiar imagen" : "Subir imagen"}
-                    </button>
-                  )}
-                </CldUploadWidget>
-              </div>
-
-              <div>
-                <label style={{
-                  display: "block", fontSize: ".78rem",
-                  color: "#4A4F45", marginBottom: ".4rem",
-                  fontWeight: 500, textTransform: "uppercase",
-                  letterSpacing: ".08em",
-                }}>Imagen para movil (vertical, opcional)</label>
-                {editing.imageUrlMobile && (
-                  <div style={{
-                    width: "100%", maxWidth: 200, aspectRatio: "4/5",
-                    borderRadius: 10, overflow: "hidden",
-                    marginBottom: ".5rem", position: "relative",
-                  }}>
-                    <Image
-                      src={editing.imageUrlMobile} alt=""
-                      fill sizes="200px" loader={cloudinaryLoader}
-                      style={{ objectFit: "cover" }}
-                    />
-                  </div>
-                )}
-                <CldUploadWidget
-                  uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  onSuccess={(result: any) => {
-                    if (result?.info?.secure_url) {
-                      setEditing({ ...editing, imageUrlMobile: result.info.secure_url });
-                    }
-                  }}
-                >
-                  {({ open }) => (
-                    <button onClick={() => open()} style={{
-                      width: "100%", background: "transparent", color: "#A85A3C",
-                      border: "1px solid #A85A3C", padding: ".7rem", borderRadius: 10,
-                      fontSize: ".88rem", fontWeight: 500, cursor: "pointer",
-                      fontFamily: "inherit",
-                    }}>
-                      📱 {editing.imageUrlMobile ? "Cambiar imagen movil" : "Subir imagen movil"}
                     </button>
                   )}
                 </CldUploadWidget>

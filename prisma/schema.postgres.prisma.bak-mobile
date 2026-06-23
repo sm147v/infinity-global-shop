@@ -127,7 +127,6 @@ enum PaymentStatus {
 model Banner {
   id          Int      @id @default(autoincrement())
   imageUrl    String
-  imageUrlMobile String?
   title       String?
   subtitle    String?
   ctaText     String?

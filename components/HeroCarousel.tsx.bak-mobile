@@ -7,7 +7,6 @@ import { cloudinaryLoader } from "@/lib/image";
 type Banner = {
   id: number;
   imageUrl: string;
-  imageUrlMobile?: string | null;
   title?: string | null;
   subtitle?: string | null;
   ctaText?: string | null;
@@ -112,23 +111,8 @@ export default function HeroCarousel({ initialBanners = [] }: { initialBanners?:
               priority={i === 0}
               fetchPriority={i === 0 ? "high" : "auto"}
               loading={i === 0 ? "eager" : "lazy"}
-              className={b.imageUrlMobile ? "banner-desktop" : ""}
               style={{ objectFit: "cover", objectPosition: "center" }}
             />
-            {b.imageUrlMobile && (
-              <Image
-                src={b.imageUrlMobile}
-                alt={b.alt || b.title || "Banner"}
-                fill
-                sizes="100vw"
-                loader={cloudinaryLoader}
-                priority={i === 0}
-                fetchPriority={i === 0 ? "high" : "auto"}
-                loading={i === 0 ? "eager" : "lazy"}
-                className="banner-mobile"
-                style={{ objectFit: "cover", objectPosition: "center" }}
-              />
-            )}
             {(b.title || b.ctaText) && (
               <>
                 <div style={{
