@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { applyDiscountsToProducts } from "@/lib/discounts";
 import { ProductsClient } from "@/components/products-client";
 import { Suspense } from "react";
 
@@ -66,7 +67,7 @@ export default async function ProductsPage() {
     ],
   };
 
-  const mappedProducts = products.map(p => ({
+  const mappedBase = products.map(p => ({
     id: p.id,
     name: p.name,
     price: Number(p.price),
@@ -76,6 +77,7 @@ export default async function ProductsPage() {
     description: p.description,
     createdAt: p.createdAt,
   }));
+  const mappedProducts = await applyDiscountsToProducts(mappedBase);
 
   return (
     <>

@@ -2,6 +2,7 @@ import { TiltCard } from "@/components/TiltCard";
 import HeroCarousel from "@/components/HeroCarousel";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { applyDiscountsToProducts } from "@/lib/discounts";
 import { HomeProductCard } from "@/components/home-product-card";
 import { ResponsiveGrid } from "@/components/responsive-grid";
 import { CouponBanner } from "@/components/coupon-banner";
@@ -41,6 +42,14 @@ export default async function Home() {
   const exclusivosOrdered = VERTICAL_B_SLUGS
     .map(slug => exclusivos.find(p => p.slug === slug))
     .filter((p): p is NonNullable<typeof p> => p !== undefined);
+
+  // Aplicar descuentos activos (precio tachado + etiqueta)
+  const featuredD = await applyDiscountsToProducts(
+    featured.map(p => ({ id: p.id, name: p.name, price: Number(p.price), image: p.image, stock: p.stock, slug: p.slug, category: p.category }))
+  );
+  const exclusivosD = await applyDiscountsToProducts(
+    exclusivosOrdered.map(p => ({ id: p.id, name: p.name, price: Number(p.price), image: p.image, stock: p.stock, slug: p.slug, category: p.category }))
+  );
 
   return (
     <div style={{ background: "#F7F1E5", fontFamily: "var(--font-dm-sans), Inter, sans-serif" }}>
@@ -126,8 +135,8 @@ export default async function Home() {
           </h2>
         </div>
         <ResponsiveGrid>
-          {featured.map(p => (
-            <TiltCard key={p.id}><HomeProductCard product={{ id: p.id, name: p.name, price: Number(p.price), image: p.image, stock: p.stock, slug: p.slug }} /></TiltCard>
+          {featuredD.map(p => (
+            <TiltCard key={p.id}><HomeProductCard product={p} /></TiltCard>
           ))}
         </ResponsiveGrid>
         <div style={{ textAlign: "center", marginTop: "2rem" }}>
@@ -159,10 +168,10 @@ export default async function Home() {
               </p>
             </div>
             <ResponsiveGrid>
-              {exclusivosOrdered.map(p => (
+              {exclusivosD.map(p => (
                 <HomeProductCard
                   key={p.id}
-                  product={{ id: p.id, name: p.name, price: Number(p.price), image: p.image, stock: p.stock, slug: p.slug }}
+                  product={p}
                 />
               ))}
             </ResponsiveGrid>

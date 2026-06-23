@@ -72,6 +72,10 @@ export interface Product {
   features?: string[];
   brand?: string | null;
   createdAt: Date | string;
+  originalPrice?: number;
+  hasDiscount?: boolean;
+  discountLabel?: string | null;
+  discountPercent?: number;
 }
 
 // ============================================================================

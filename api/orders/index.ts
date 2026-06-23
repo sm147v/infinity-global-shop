@@ -4,6 +4,7 @@ import { ApiError } from "@/lib/errors";
 import { createOrderSchema } from "@/lib/validation";
 import { generateOrderNumber } from "@/lib/order-number";
 import { sendOrderConfirmationToCustomer, sendNewOrderNotificationToAdmin } from "@/lib/email";
+import { getActiveDiscountRules, priceWithDiscount } from "@/lib/discounts";
 
 // Reglas de envío por zona (deben coincidir con cart-context.tsx)
 const ZONE_RULES = {
@@ -22,8 +23,11 @@ export async function createOrderFromPayload(payload: unknown) {
 
   const products = await prisma.product.findMany({
     where: { id: { in: productIds } },
-    select: { id: true, name: true, price: true, stock: true, active: true },
+    select: { id: true, name: true, price: true, stock: true, active: true, category: true },
   });
+
+  // Reglas de descuento activas (para cobrar el precio rebajado, no el lleno)
+  const discountRules = await getActiveDiscountRules();
 
   if (products.length !== productIds.length) {
     throw new ApiError("Algunos productos no existen", 400);
@@ -40,7 +44,11 @@ export async function createOrderFromPayload(payload: unknown) {
     if (product.stock < item.quantity) {
       throw new ApiError(`Sin stock suficiente para ${product.name}`, 409);
     }
-    const unitPrice = Number(product.price);
+    const _priced = priceWithDiscount(
+      { id: product.id, category: product.category, price: Number(product.price) },
+      discountRules
+    );
+    const unitPrice = _priced.price;
     return {
       productId: product.id,
       productName: product.name,

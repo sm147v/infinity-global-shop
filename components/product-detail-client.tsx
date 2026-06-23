@@ -26,6 +26,11 @@ export function ProductDetailClient({ product, related }: { product: Product; re
   const lowStock = product.stock > 0 && product.stock <= 5;
   const outOfStock = product.stock === 0;
 
+  // Descuento (viene del servidor en product, campos opcionales)
+  const _p = product as unknown as { originalPrice?: number; hasDiscount?: boolean; discountPercent?: number; discountLabel?: string | null };
+  const hasDiscount = !!_p.hasDiscount && (_p.originalPrice ?? 0) > product.price;
+  const discPct = _p.discountPercent ?? 0;
+
   const allImages = [...new Set([
     ...(product.images || []),
     ...(product.image ? [product.image] : [])
@@ -96,7 +101,17 @@ export function ProductDetailClient({ product, related }: { product: Product; re
             <a href="#reviews" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", marginBottom: "1.25rem", textDecoration: "none", fontSize: "0.85rem", color: "#4A5D3A", fontWeight: 600 }}>Ver opiniones de clientes ↓</a>
 
             <div style={{ marginBottom: "1.5rem" }}>
-              <span style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "2.4rem", fontWeight: 600, color: "#4A5D3A" }}>
+              {hasDiscount && (
+                <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.35rem" }}>
+                  <span style={{ fontSize: "1.1rem", color: "#8A8A7E", textDecoration: "line-through" }}>
+                    {fmt(_p.originalPrice as number)}
+                  </span>
+                  <span style={{ background: "#C9533D", color: "white", fontSize: "0.8rem", fontWeight: 800, padding: "0.2rem 0.6rem", borderRadius: 100 }}>
+                    {discPct > 0 ? `-${discPct}%` : (_p.discountLabel || "OFERTA")}
+                  </span>
+                </div>
+              )}
+              <span style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "2.4rem", fontWeight: 600, color: hasDiscount ? "#C9533D" : "#4A5D3A" }}>
                 {fmt(product.price)}
               </span>
               <span style={{ fontSize: "0.78rem", color: "#5C8A5E", marginLeft: "0.85rem", fontWeight: 600 }}>

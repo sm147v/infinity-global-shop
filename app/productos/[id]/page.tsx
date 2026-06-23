@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { getActiveDiscountRules, priceWithDiscount } from "@/lib/discounts";
 import { ProductDetailClient } from "@/components/product-detail-client";
 import { slugify, isLegacyId } from "@/lib/slug";
 
@@ -125,6 +126,10 @@ export default async function ProductPage({
     take: 4,
     orderBy: { id: "desc" },
   });
+
+  // Descuento del producto + de los relacionados
+  const _rules = await getActiveDiscountRules();
+  const _disc = priceWithDiscount({ id: product.id, category: product.category, price: Number(product.price) }, _rules);
 
   const slug = product.slug || slugify(product.name);
   const canonicalUrl = `${SITE_URL}/productos/${slug}`;
@@ -269,7 +274,11 @@ export default async function ProductPage({
           id: product.id,
           name: product.name,
           description: product.description,
-          price: Number(product.price),
+          price: _disc.price,
+          originalPrice: _disc.originalPrice,
+          hasDiscount: _disc.hasDiscount,
+          discountPercent: _disc.discountPercent,
+          discountLabel: _disc.discountLabel,
           image: product.image,
           images: product.images || [],
           stock: product.stock,
@@ -279,13 +288,21 @@ export default async function ProductPage({
           features: product.features || [],
           brand: product.brand,
         }}
-        related={related.map((p) => ({
-          id: p.id,
-          name: p.name,
-          price: Number(p.price),
-          image: p.image,
-          stock: p.stock,
-        }))}
+        related={related.map((p) => {
+          const d = priceWithDiscount({ id: p.id, category: p.category, price: Number(p.price) }, _rules);
+          return {
+            id: p.id,
+            name: p.name,
+            price: d.price,
+            originalPrice: d.originalPrice,
+            hasDiscount: d.hasDiscount,
+            discountPercent: d.discountPercent,
+            discountLabel: d.discountLabel,
+            image: p.image,
+            stock: p.stock,
+            slug: p.slug,
+          };
+        })}
       />
     </>
   );

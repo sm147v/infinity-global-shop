@@ -13,6 +13,11 @@ interface Product {
   image: string | null;
   stock: number;
   slug?: string | null;
+  // Campos de descuento (opcionales — vienen del servidor si hay oferta activa)
+  originalPrice?: number;
+  hasDiscount?: boolean;
+  discountLabel?: string | null;
+  discountPercent?: number;
 }
 
 const fmt = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
@@ -21,6 +26,9 @@ export function HomeProductCard({ product }: { product: Product }) {
   const { items, addItem, updateQty } = useCart();
   const inCart = items.find(item => item.id === product.id);
   const qty = inCart?.quantity ?? 0;
+
+  const hasDiscount = !!product.hasDiscount && (product.originalPrice ?? 0) > product.price;
+  const pct = product.discountPercent ?? 0;
 
   return (
     <div style={{
@@ -32,11 +40,30 @@ export function HomeProductCard({ product }: { product: Product }) {
       flexDirection: "column",
     }}>
       <div style={{ position: "relative", marginBottom: "0.6rem" }}>
-        {product.stock > 0 && product.stock <= 5 && (
+        {/* Etiqueta de descuento (esquina superior izquierda) */}
+        {hasDiscount && (
           <span style={{
             position: "absolute",
             top: 8, left: 8,
             background: "#C9533D",
+            color: "white",
+            fontSize: "0.7rem",
+            fontWeight: 800,
+            padding: "0.3rem 0.6rem",
+            borderRadius: 100,
+            zIndex: 3,
+            letterSpacing: "0.02em",
+            boxShadow: "0 2px 8px rgba(201,83,61,0.4)",
+          }}>
+            {pct > 0 ? `-${pct}%` : (product.discountLabel || "OFERTA")}
+          </span>
+        )}
+        {/* Stock bajo — debajo de la etiqueta de descuento si ambas existen */}
+        {product.stock > 0 && product.stock <= 5 && (
+          <span style={{
+            position: "absolute",
+            top: hasDiscount ? 40 : 8, left: 8,
+            background: "#4A4F45",
             color: "white",
             fontSize: "0.62rem",
             fontWeight: 700,
@@ -111,14 +138,35 @@ export function HomeProductCard({ product }: { product: Product }) {
           {product.name}
         </div>
 
-        <div style={{
-          fontSize: "0.98rem",
-          fontWeight: 700,
-          color: "#2A2E26",
-          marginBottom: "0.5rem",
-        }}>
-          {fmt(product.price)}
-        </div>
+        {/* Precio: con o sin descuento */}
+        {hasDiscount ? (
+          <div style={{ marginBottom: "0.5rem" }}>
+            <span style={{
+              fontSize: "0.78rem",
+              color: "#8A8A7E",
+              textDecoration: "line-through",
+              marginRight: "0.4rem",
+            }}>
+              {fmt(product.originalPrice as number)}
+            </span>
+            <span style={{
+              fontSize: "1.02rem",
+              fontWeight: 800,
+              color: "#C9533D",
+            }}>
+              {fmt(product.price)}
+            </span>
+          </div>
+        ) : (
+          <div style={{
+            fontSize: "0.98rem",
+            fontWeight: 700,
+            color: "#2A2E26",
+            marginBottom: "0.5rem",
+          }}>
+            {fmt(product.price)}
+          </div>
+        )}
       </Link>
       </div>
 
