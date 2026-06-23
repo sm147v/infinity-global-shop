@@ -96,7 +96,6 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon.ico" },
-      { url: "/favicon.svg", type: "image/svg+xml" },
       { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
     ],
     apple: "/apple-touch-icon.png",
@@ -195,8 +194,8 @@ export default function RootLayout({
         <WishlistProvider>
           <CartProvider>
           <div style={{
-            background: "#4A5D3A",
-            color: "#F7F1E5",
+            background: "#F7F1E5",
+            color: "#4A5D3A",
             padding: "0.6rem 1rem",
             textAlign: "center",
             fontSize: "0.78rem",
@@ -205,6 +204,7 @@ export default function RootLayout({
             position: "sticky",
             top: 0,
             zIndex: 100,
+            borderBottom: "1px solid rgba(74, 93, 58, 0.12)",
           }}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
               <span style={{ width: 6, height: 6, background: "#C9A96E", borderRadius: "50%", display: "inline-block" }} />

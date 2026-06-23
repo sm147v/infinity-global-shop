@@ -54,17 +54,15 @@ export function SiteHeader() {
   return (
     <header
       style={{
-        padding: "0.65rem 1.25rem",
+        padding: "0.7rem 1.25rem",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        background: "rgba(247, 241, 229, 0.95)",
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
+        background: "#4A5D3A",
         position: "sticky",
         top: 36,
         zIndex: 99,
-        borderBottom: "1px solid rgba(74, 93, 58, 0.08)",
+        borderBottom: "1px solid rgba(247, 241, 229, 0.12)",
       }}
     >
       <Link
@@ -72,31 +70,48 @@ export function SiteHeader() {
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "0.5rem",
+          gap: "0.7rem",
           textDecoration: "none",
-          color: "#4A5D3A",
         }}
       >
         <Image
           src="/logo.png"
           alt="Infinity Global Shop"
-          width={36}
-          height={36}
+          width={42}
+          height={42}
           priority
           style={{ objectFit: "contain", display: "block" }}
         />
         <span
           style={{
-            fontFamily: "var(--font-fraunces), Georgia, serif",
-            fontSize: "1.15rem",
-            fontWeight: 500,
-            letterSpacing: "-0.02em",
+            display: "flex",
+            flexDirection: "column",
+            lineHeight: 1,
           }}
         >
-          Infinity{" "}
-          <em style={{ fontStyle: "italic", fontWeight: 300, color: "#A85A3C" }}>
-            Global
-          </em>
+          <span
+            style={{
+              fontFamily: "var(--font-fraunces), Georgia, serif",
+              fontSize: "1.3rem",
+              fontWeight: 400,
+              letterSpacing: "0.22em",
+              color: "#F7F1E5",
+            }}
+          >
+            INFINITY
+          </span>
+          <span
+            style={{
+              fontFamily: "var(--font-fraunces), Georgia, serif",
+              fontSize: "0.62rem",
+              fontWeight: 400,
+              letterSpacing: "0.34em",
+              color: "#E5D4A8",
+              marginTop: "0.28rem",
+            }}
+          >
+            GLOBAL SHOP
+          </span>
         </span>
       </Link>
 
@@ -105,7 +120,7 @@ export function SiteHeader() {
           href="/blog"
           style={{
             fontSize: "0.78rem",
-            color: "#4A4F45",
+            color: "#F7F1E5",
             textDecoration: "none",
             padding: "0.5rem 0.85rem",
             borderRadius: 100,
@@ -118,7 +133,7 @@ export function SiteHeader() {
           href="/pedido"
           style={{
             fontSize: "0.78rem",
-            color: "#4A4F45",
+            color: "#F7F1E5",
             textDecoration: "none",
             padding: "0.5rem 0.85rem",
             borderRadius: 100,
@@ -140,9 +155,9 @@ export function SiteHeader() {
               width: 36,
               height: 36,
               borderRadius: "50%",
-              color: "#A85A3C",
-              background: "rgba(201, 123, 92, 0.08)",
-              border: "1px solid rgba(201, 123, 92, 0.2)",
+              color: "#F7F1E5",
+              background: "rgba(247, 241, 229, 0.1)",
+              border: "1px solid rgba(247, 241, 229, 0.2)",
               textDecoration: "none",
               transition: "all 0.2s ease",
             }}
