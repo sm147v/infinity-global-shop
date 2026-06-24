@@ -27,7 +27,17 @@ export const metadata: Metadata = {
 };
 
 export default async function ProductsPage() {
-  const products = await prisma.product.findMany({ where: { active: true }, orderBy: { id: "desc" } });
+  const productsRaw = await prisma.product.findMany({ where: { active: true }, orderBy: { id: "desc" } });
+  // Prioridad de categorías: salud/vitaminas primero
+  const CAT_PRIORITY: Record<string, number> = {
+    "Vitaminas": 0, "Salud": 1, "Belleza": 2, "Cabello": 3,
+  };
+  const prioridad = (cat: string | null) => (cat && cat in CAT_PRIORITY) ? CAT_PRIORITY[cat] : 99;
+  const products = [...productsRaw].sort((a, b) => {
+    const pa = prioridad(a.category), pb = prioridad(b.category);
+    if (pa !== pb) return pa - pb;
+    return b.id - a.id; // dentro de la misma categoría, los más nuevos primero
+  });
   const CATEGORY_ORDER = ["Vitaminas", "Belleza", "Cabello", "Salud", "Hogar", "Herramientas", "Más productos"];
   const categories = Array.from(new Set(products.map(p => p.category).filter(Boolean))) as string[];
   categories.sort((a, b) => {
