@@ -3,6 +3,7 @@ import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { saveCart } from "@/lib/cart";
+import ConversionTracker from "../components/ConversionTracker";
 
 function GraciasContent() {
   const searchParams = useSearchParams();
@@ -16,6 +17,7 @@ function GraciasContent() {
   return (
     <main style={{ minHeight: "calc(100vh - 200px)", background: "#F7F1E5", padding: "3rem 1.5rem", fontFamily: "var(--font-dm-sans), Inter, sans-serif" }}>
       <div style={{ maxWidth: 540, margin: "0 auto", textAlign: "center" }}>
+        <ConversionTracker orderNumber={orderNumber} />
         <div style={{ fontSize: "4rem", marginBottom: "1rem" }}>🌿</div>
 
         <h1 style={{
