@@ -65,3 +65,9 @@ fix-*.sh
 schema-infinity.sh
 .backup-schema.tsx
 /main
+* 2.*
+/*.sh
+/buscar-*.ts
+/ver-*.ts
+/update-*.ts
+/patch-*.py
