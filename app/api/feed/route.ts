@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/slug";
+import { getActiveDiscountRules, priceWithDiscount } from "@/lib/discounts";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 3600; // refresca cada hora
@@ -32,6 +33,8 @@ export async function GET() {
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&apos;");
 
+  const rules = await getActiveDiscountRules();
+
   const items = products
     .map((p) => {
       const slug = p.slug || slugify(p.name);
@@ -39,6 +42,8 @@ export async function GET() {
       const desc = (p.description || p.name).substring(0, 5000);
       const brand = p.brand || "Infinity Global Shop";
       const sku = p.sku || `IGS-${p.id}`;
+      const pricing = priceWithDiscount({ id: p.id, category: p.category, price: Number(p.price) }, rules);
+      const salePriceLine = pricing.hasDiscount ? `<g:sale_price>${pricing.price} COP</g:sale_price>` : "";
 
       return `
     <item>
@@ -49,6 +54,7 @@ export async function GET() {
       <g:image_link>${escape(p.image || "")}</g:image_link>
       <g:availability>in stock</g:availability>
       <g:price>${Number(p.price)} COP</g:price>
+      ${salePriceLine}
       <g:brand>${escape(brand)}</g:brand>
       <g:condition>new</g:condition>
       <g:identifier_exists>${p.gtin ? "yes" : "no"}</g:identifier_exists>

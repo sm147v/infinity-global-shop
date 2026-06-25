@@ -24,6 +24,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/slug";
+import { getActiveDiscountRules, priceWithDiscount } from "@/lib/discounts";
 
 // Regenera cada hora — evita pegar la DB en cada visita de Google
 export const revalidate = 3600;
@@ -69,11 +70,15 @@ export async function GET() {
     return !EXCLUIR_FEED.some((term) => n.includes(term));
   });
 
+  const rules = await getActiveDiscountRules();
+
   const items = products
     .map((p) => {
       const slug = p.slug || slugify(p.name);
       const productUrl = `${SITE_URL}/productos/${slug}`;
       const price = Number(p.price).toFixed(2);
+      const pricing = priceWithDiscount({ id: p.id, category: p.category, price: Number(p.price) }, rules);
+      const salePriceLine = pricing.hasDiscount ? `<g:sale_price>${pricing.price} COP</g:sale_price>` : "";
       const availability = p.stock > 0 ? "in_stock" : "out_of_stock";
       const brand = p.brand || BRAND_DEFAULT;
       const googleCategory = mapToGoogleCategory(p.category);
@@ -115,6 +120,7 @@ export async function GET() {
 ${additionalImagesXml}
     <g:availability>${availability}</g:availability>
     <g:price>${price} COP</g:price>
+    ${salePriceLine}
     <g:brand>${escapeXml(brand)}</g:brand>
 ${identifierBlock}
 ${mpnBlock}
