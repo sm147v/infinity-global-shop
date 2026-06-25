@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { validateAdminToken, getAdminTokenFromHeaders } from "@/lib/admin-auth";
 
@@ -23,6 +24,15 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       where: { id },
       data: { name, description: description || "", price, stock, category: category || "General" },
     });
+
+    // Refresca al instante las paginas que muestran este producto
+    const slug = product.slug || String(product.id);
+    revalidatePath(`/productos/${slug}`);
+    revalidatePath("/productos");
+    revalidatePath("/");
+    revalidatePath("/merchant-feed.xml");
+    revalidatePath("/api/feed");
+
     return NextResponse.json({ success: true, product });
   } catch (error) {
     console.error("Error:", error);

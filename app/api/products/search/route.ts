@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { applyDiscountsToProducts } from "@/lib/discounts";
 
 export async function GET(req: NextRequest) {
   try {
@@ -23,7 +24,9 @@ export async function GET(req: NextRequest) {
       select: { id: true, name: true, price: true, image: true, category: true, stock: true, slug: true },
     });
 
-    return NextResponse.json({ products });
+    const normalizados = products.map((p) => ({ ...p, price: Number(p.price) }));
+    const withDiscounts = await applyDiscountsToProducts(normalizados);
+    return NextResponse.json({ products: withDiscounts });
   } catch (error) {
     console.error("Error en búsqueda:", error);
     return NextResponse.json({ products: [] });
